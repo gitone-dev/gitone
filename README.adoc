@@ -1,0 +1,4 @@
+# GitOne
+
+- https://spring.io/projects/spring-graphql[Spring for GraphQL]
+- https://www.apollographql.com/docs/react[Apollo GraphQL Client (React Client + TypeScript)]
