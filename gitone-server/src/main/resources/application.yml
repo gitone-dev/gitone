@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1/gitone_development
+    username: gitone
+  graphql:
+    graphiql:
+      enabled: true
+    schema:
+      printer:
+        enabled: true

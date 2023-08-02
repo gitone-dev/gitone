@@ -1,0 +1,58 @@
+= 开发环境搭建
+
+操作系统环境 Ubuntu 22.04
+
+== 安装
+
+- NodeJS 18
+- OpenJDK 17
+- PostgreSQL 15
+- Redis 6
+
+[source,bash]
+----
+sudo apt install nodejs
+sudo apt install openjdk-17-jdk
+sudo apt install postgresql-15
+sudo apt install redis
+----
+
+参考文档：
+
+- NodeJS 安装：https://github.com/nodesource/distributions/blob/master/README.md
+- PostgreSQL 安装：https://www.postgresql.org/download/linux/ubuntu/
+
+== 数据库
+
+创建用户 `gitone` 以及数据库 `gitone_development` ：
+
+[source,bash]
+----
+sudo -u postgres createuser --interactive --password gitone
+sudo -u postgres createdb gitone_development -O gitone
+----
+
+查询配置文件位置：
+
+[source,bash]
+----
+sudo -u postgres psql
+show hba_file;
+----
+
+修改配置：
+
+./etc/postgresql/15/main/pg_hba.conf
+[source,conf]
+----
+host    gitone_development  gitone      127.0.0.1/32            trust
+----
+* 用户 `gitone` 可以免密通过 `127.0.0.1` 访问数据库 `gitone_development`
+
+重启后免密访问数据库：
+
+[source,bash]
+----
+sudo systemctl restart postgresql.service
+psql -h 127.0.0.1 -U gitone -d gitone_development
+----
