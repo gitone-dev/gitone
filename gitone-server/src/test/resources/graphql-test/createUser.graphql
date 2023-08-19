@@ -1,0 +1,32 @@
+fragment UserFragment on User {
+    id
+    createdAt
+    updatedAt
+    name
+    username
+    active
+    role
+}
+
+fragment NamespaceFragment on Namespace {
+    id
+    createdAt
+    updatedAt
+    name
+    path
+    fullName
+    fullPath
+    visibility
+    description
+}
+
+mutation CreateUser($input: CreateUserInput!) {
+    payload: createUser(input: $input) {
+        user {
+            ...UserFragment
+            namespace {
+                ...NamespaceFragment
+            }
+        }
+    }
+}

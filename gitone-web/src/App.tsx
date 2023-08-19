@@ -1,19 +1,18 @@
 import { usePingQuery } from "./generated/types";
+import Layout from "./layout";
+import ErrorPage from "./pages/ErrorPage";
+import LoadingPage from "./pages/LoadingPage";
 
 function App() {
   const { data, loading, error } = usePingQuery();
 
   if (loading) {
-    return <div className="App">loading</div>;
+    return <LoadingPage />;
   } else if (error) {
-    return <div className="App">{error.message}</div>;
+    return <ErrorPage message={error.message} />;
+  } else {
+    return <Layout.Simple>{data?.ping}</Layout.Simple>;
   }
-
-  return (
-    <div className="App">
-      <header className="App-header">{data?.ping}</header>
-    </div>
-  );
 }
 
 export default App;

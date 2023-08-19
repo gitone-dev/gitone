@@ -1,0 +1,7 @@
+fragment SessionFragment on Session {
+    email
+    username
+    active
+    header
+    token
+}

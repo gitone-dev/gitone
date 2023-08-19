@@ -1,0 +1,24 @@
+query ViewerEmails {
+    viewer {
+        emails {
+            edges {
+                node {
+                    ...EmailFragment
+                }
+            }
+            pageInfo {
+                ...PageInfoFragment
+            }
+        }
+        unconfirmedEmails {
+            edges {
+                node {
+                    ...EmailFragment
+                }
+            }
+            pageInfo {
+                ...PageInfoFragment
+            }
+        }
+    }
+}

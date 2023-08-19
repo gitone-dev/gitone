@@ -1,0 +1,3 @@
+query ExistFullPath($fullPath: String!) {
+    existFullPath(fullPath: $fullPath)
+}

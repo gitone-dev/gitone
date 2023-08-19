@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.notfound.gitone.server.mappers.UserMapper">
+    <resultMap id="userMap" type="cn.notfound.gitone.server.entities.UserEntity">
+        <id property="id"  column="id" jdbcType="INTEGER" />
+        <result property="createdAt"  column="created_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="namespaceId" column="namespace_id" jdbcType="INTEGER" />
+        <result property="email" column="email" jdbcType="VARCHAR" />
+        <result property="name" column="name" jdbcType="VARCHAR" />
+        <result property="username" column="username" jdbcType="VARCHAR" />
+        <result property="password" column="password" jdbcType="VARCHAR" />
+        <result property="resetPasswordToken" column="reset_password_token" jdbcType="VARCHAR" />
+        <result property="resetPasswordSentAt" column="reset_password_sent_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="active" column="active" jdbcType="BOOLEAN" />
+        <result property="role"  column="role" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="userColumns">
+        id,
+        created_at,
+        updated_at,
+        namespace_id,
+        email,
+        name,
+        username,
+        password,
+        reset_password_token,
+        reset_password_sent_at,
+        active,
+        role
+    </sql>
+    <sql id="direction">
+        <choose>
+            <when test="before">
+                <choose>
+                    <when test="page.order.direction.name == 'DESC'">&gt;</when>
+                    <otherwise>&lt;</otherwise>
+                </choose>
+            </when>
+            <when test="after">
+                <choose>
+                    <when test="page.order.direction.name == 'DESC'">&lt;</when>
+                    <otherwise>&gt;</otherwise>
+                </choose>
+            </when>
+        </choose>
+    </sql>
+    <sql id="cursorOp">
+        <choose>
+            <when test="cursor.createdAt != null">
+                AND (
+                    created_at = #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR created_at <include refid="direction" /> #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.updatedAt != null">
+                AND (
+                    updated_at = #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR updated_at <include refid="direction" /> #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.username != null">
+                AND (
+                    username = #{cursor.username,jdbcType=VARCHAR} AND id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR username <include refid="direction" /> #{cursor.username,jdbcType=VARCHAR}
+                )
+            </when>
+        </choose>
+    </sql>
+    <select id="find" parameterType="java.lang.Integer" resultMap="userMap">
+        SELECT <include refid="userColumns" />
+        FROM users
+        WHERE id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="findByIds" parameterType="java.util.Collection" resultMap="userMap">
+        SELECT <include refid="userColumns" />
+        FROM users
+        WHERE id IN
+        <foreach collection="ids" open="(" item="id" separator="," close=")" >
+            #{id,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="findByEmail" parameterType="java.lang.String" resultMap="userMap">
+        SELECT <include refid="userColumns" />
+        FROM users
+        WHERE email = #{email,jdbcType=VARCHAR}
+    </select>
+    <select id="findByUsername" parameterType="java.lang.String" resultMap="userMap">
+        SELECT <include refid="userColumns" />
+        FROM users
+        WHERE username = #{username,jdbcType=VARCHAR}
+    </select>
+    <select id="findByResetPasswordToken" parameterType="java.lang.String" resultMap="userMap">
+        SELECT <include refid="userColumns" />
+        FROM users
+        WHERE reset_password_token = #{resetPasswordToken,jdbcType=VARCHAR}
+    </select>
+    <select id="findAll"  resultMap="userMap">
+        SELECT <include refid="userColumns" />
+        FROM users
+        <where>
+            <if test="filter">
+                <if test="filter.query != null">
+                    AND username LIKE #{filter.query,jdbcType=VARCHAR} || '%'
+                </if>
+            </if>
+            <if test="page.before != null">
+                <bind name="cursor" value="page.before"/>
+                <bind name="before" value="true"/>
+                <bind name="after" value="false"/>
+                <include refid="cursorOp" />
+            </if>
+            <if test="page.after != null">
+                <bind name="cursor" value="page.after"/>
+                <bind name="before" value="false"/>
+                <bind name="after" value="true"/>
+                <include refid="cursorOp" />
+            </if>
+        </where>
+        ORDER BY ${page.order.field}
+        <choose>
+            <when test="page.last != null">${page.order.direction.reverse}</when>
+            <otherwise>${page.order.direction}</otherwise>
+        </choose>
+        , id ASC
+        LIMIT #{page.limit,jdbcType=INTEGER}
+    </select>
+    <insert id="create" parameterType="cn.notfound.gitone.server.entities.UserEntity" keyProperty="id" useGeneratedKeys="true" >
+        INSERT INTO users (
+            created_at,
+            updated_at,
+            namespace_id,
+            email,
+            name,
+            username,
+            password,
+            reset_password_token,
+            reset_password_sent_at,
+            active,
+            role
+        ) VALUES (
+            #{createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
+            #{updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
+            #{namespaceId,jdbcType=INTEGER},
+            #{email,jdbcType=VARCHAR},
+            #{name,jdbcType=VARCHAR},
+            #{username,jdbcType=VARCHAR},
+            #{password,jdbcType=VARCHAR},
+            #{resetPasswordToken,jdbcType=VARCHAR},
+            #{resetPasswordSentAt,jdbcType=TIMESTAMP},
+            #{active,jdbcType=BOOLEAN},
+            #{role,jdbcType=INTEGER}
+        )
+    </insert>
+    <update id="update" parameterType="cn.notfound.gitone.server.entities.UserEntity">
+        UPDATE users SET
+            created_at = #{createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
+            updated_at = #{updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
+            namespace_id = #{namespaceId,jdbcType=INTEGER},
+            email = #{email,jdbcType=VARCHAR},
+            name = #{name,jdbcType=VARCHAR},
+            username = #{username,jdbcType=VARCHAR},
+            password = #{password,jdbcType=VARCHAR},
+            reset_password_token = #{resetPasswordToken,jdbcType=VARCHAR},
+            reset_password_sent_at = #{resetPasswordSentAt,jdbcType=TIMESTAMP},
+            active = #{active,jdbcType=BOOLEAN},
+            role = #{role,jdbcType=INTEGER}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+    <delete id="delete" parameterType="cn.notfound.gitone.server.entities.UserEntity">
+        DELETE FROM users
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+</mapper>

@@ -1,0 +1,13 @@
+fragment UserFragment on User {
+    id
+    createdAt
+    updatedAt
+    name
+    username
+}
+
+query Viewer {
+    viewer {
+        ...UserFragment
+    }
+}

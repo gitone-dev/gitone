@@ -1,0 +1,5 @@
+mutation DeleteSession {
+    payload: deleteSession {
+        message
+    }
+}

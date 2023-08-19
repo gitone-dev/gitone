@@ -1,0 +1,17 @@
+fragment NamespaceFragment on Namespace {
+    id
+    createdAt
+    updatedAt
+    name
+    path
+    fullName
+    fullPath
+    visibility
+    description
+}
+
+query Namespace($fullPath: String!) {
+    namespace(fullPath: $fullPath) {
+        ...NamespaceFragment
+    }
+}

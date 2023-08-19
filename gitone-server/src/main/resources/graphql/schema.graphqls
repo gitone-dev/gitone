@@ -1,7 +1,195 @@
+scalar DateTime
+
+interface Node {
+    id: ID!
+}
+
+enum OrderDirection {
+    ASC
+    DESC
+}
+
+enum Visibility {
+    PRIVATE
+    PUBLIC
+}
+
+type PageInfo {
+    hasPreviousPage: Boolean!
+    hasNextPage: Boolean!
+    startCursor: String
+    endCursor: String
+}
+
 schema {
     query: Query
+    mutation: Mutation
 }
 
 type Query {
     ping: String!
+
+    existEmail(email: String!): Boolean!
+    existFullPath(fullPath: String!): Boolean!
+
+    namespace(fullPath: String!): Namespace!
+
+    viewer: User!
+    user(username: String!): User!
+}
+
+type Mutation {
+    # session
+    createSession(input: CreateSessionInput!): CreateSessionPayload
+    deleteSession: DeleteSessionPayload
+
+    # user
+    createUser(input: CreateUserInput!): CreateUserPayload
+    deleteUser(input: DeleteUserInput!): DeleteUserPayload
+
+    updateActivationEmail(input: UpdateActivationEmailInput!): UpdateActivationEmailPayload
+    sendActivationEmail(input: SendActivationEmailInput!): SendActivationEmailPayload
+    activateUser(input: ActivateUserInput!): ActivateUserPayload
+
+    sendPasswordResetEmail(input: SendPasswordResetEmailInput!): SendPasswordResetEmailPayload
+    resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
+}
+
+# session
+
+type Session {
+    email: String
+    username: String!
+    header: String!
+    token: String!
+    active: Boolean!
+}
+
+input CreateSessionInput {
+    username: String!
+    password: String!
+}
+
+type CreateSessionPayload {
+    session: Session
+}
+
+type DeleteSessionPayload {
+    message: String
+}
+
+# namespace
+
+type Namespace implements Node {
+    id: ID!
+    createdAt: DateTime
+    updatedAt: DateTime
+    name: String
+    path: String
+    fullName: String
+    fullPath: String
+    visibility: Visibility
+    description: String
+}
+
+# user
+
+type User implements Node {
+    id: ID!
+    createdAt: DateTime
+    updatedAt: DateTime
+    name: String
+    username: String
+    active: Boolean
+    role: Role
+
+    namespace: Namespace
+
+    emails: EmailConnection
+    unconfirmedEmails: EmailConnection
+}
+
+enum Role {
+    USER,
+    ADMIN
+}
+
+input CreateUserInput {
+    email: String!
+    name: String!
+    username: String!
+    password: String!
+}
+
+type CreateUserPayload {
+    user: User
+}
+
+input DeleteUserInput {
+    id: ID!
+}
+
+type DeleteUserPayload {
+    user: User
+}
+
+input UpdateActivationEmailInput {
+    email: String!
+}
+
+type UpdateActivationEmailPayload {
+    message: String
+}
+
+input SendActivationEmailInput {
+    email: String
+}
+
+type SendActivationEmailPayload {
+    message: String
+}
+
+input ActivateUserInput {
+    token: String!
+}
+
+type ActivateUserPayload {
+    message: String
+}
+
+input SendPasswordResetEmailInput {
+    email: String!
+}
+
+type SendPasswordResetEmailPayload {
+    message: String
+}
+
+input ResetPasswordInput {
+    token: String!
+    password: String!
+}
+
+type ResetPasswordPayload {
+    message: String
+}
+
+# email
+
+type Email implements Node {
+    id: ID!
+    createdAt: DateTime
+    updatedAt: DateTime
+    email: String!
+    primary: Boolean!
+}
+
+type EmailEdge {
+    node: Email!
+    cursor: String!
+}
+
+type EmailConnection {
+    edges: [EmailEdge!]
+    pageInfo: PageInfo
 }

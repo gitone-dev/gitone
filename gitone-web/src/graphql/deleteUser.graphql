@@ -1,0 +1,7 @@
+mutation DeleteUser($input: DeleteUserInput!) {
+    payload: deleteUser(input: $input) {
+        user {
+            ...UserFragment
+        }
+    }
+}

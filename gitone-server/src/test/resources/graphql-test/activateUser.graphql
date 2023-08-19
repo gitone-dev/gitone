@@ -1,0 +1,5 @@
+mutation ActivateUser($input: ActivateUserInput!) {
+    payload: activateUser(input: $input) {
+        message
+    }
+}

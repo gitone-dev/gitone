@@ -8,3 +8,23 @@ spring:
     schema:
       printer:
         enabled: true
+  mail:
+    host: 127.0.0.1
+    port: 1025
+    protocol: smtp
+    username: ''
+    password: ''
+  artemis:
+    mode: embedded
+cn:
+  notfound:
+    gitone:
+      site-name: GitOne
+      base-url: http://127.0.0.1:3000
+logging:
+  level:
+    cn:
+      notfound:
+        gitone:
+          server:
+            mappers: DEBUG

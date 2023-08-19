@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.notfound.gitone.server.mappers.UserNamespaceMapper">
+    <resultMap id="userNamespaceMap" type="cn.notfound.gitone.server.entities.UserNamespaceEntity"
+               extends="cn.notfound.gitone.server.mappers.NamespaceMapper.namespaceMap">
+    </resultMap>
+    <sql id="userNamespaceColumns">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.namespaceColumns" />
+    </sql>
+    <select id="find" parameterType="java.lang.Integer" resultMap="userNamespaceMap">
+        SELECT <include refid="userNamespaceColumns" />
+        FROM namespaces
+        WHERE id = #{id,jdbcType=INTEGER} AND type = 1
+    </select>
+    <select id="findByIds" parameterType="java.util.Collection" resultMap="userNamespaceMap">
+        SELECT <include refid="userNamespaceColumns" />
+        FROM namespaces
+        WHERE id IN
+        <foreach collection="ids" open="(" item="id" separator="," close=")">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+        AND type = 1
+    </select>
+    <insert id="create" parameterType="cn.notfound.gitone.server.entities.UserNamespaceEntity" keyProperty="id" useGeneratedKeys="true" >
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.insert" />
+    </insert>
+    <update id="update" parameterType="cn.notfound.gitone.server.entities.UserNamespaceEntity">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.update" />
+    </update>
+    <delete id="delete" parameterType="cn.notfound.gitone.server.entities.UserNamespaceEntity">
+        DELETE FROM namespaces
+        WHERE id = #{id,jdbcType=INTEGER} AND type = 1
+    </delete>
+</mapper>

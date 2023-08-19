@@ -1,0 +1,15 @@
+fragment SessionFragment on Session {
+    email
+    username
+    active
+    header
+    token
+}
+
+mutation CreateSession($input: CreateSessionInput!) {
+    payload: createSession(input: $input) {
+        session {
+            ...SessionFragment
+        }
+    }
+}

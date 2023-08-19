@@ -56,3 +56,11 @@ host    gitone_development  gitone      127.0.0.1/32            trust
 sudo systemctl restart postgresql.service
 psql -h 127.0.0.1 -U gitone -d gitone_development
 ----
+
+=== 邮件服务
+
+开发时使用的邮件服务 https://mailcatcher.me/[MailCatcher]（需要 Ruby 环境）。
+
+1. 安装 `gem install mailcatcher`
+2. 启动服务 `mailcatcher`
+3. 页面访问 http://127.0.0.1:1080/

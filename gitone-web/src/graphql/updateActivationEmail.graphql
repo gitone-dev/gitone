@@ -1,0 +1,5 @@
+mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {
+    updateActivationEmail(input: $input) {
+        message
+    }
+}

@@ -1,0 +1,5 @@
+mutation SendActivationEmail($input: SendActivationEmailInput!) {
+    payload: sendActivationEmail(input: $input) {
+        message
+    }
+}
