@@ -4,5 +4,5 @@ import cn.notfound.gitone.server.entities.UserNamespaceEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface UserNamespaceMapper extends BaseMapper<Integer, UserNamespaceEntity> {
+public interface UserNamespaceMapper extends NodeMapper<Integer, UserNamespaceEntity> {
 }

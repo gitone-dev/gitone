@@ -1,19 +1,56 @@
 const user = {
   email: {
     helper: "可正常接收邮件的邮箱",
-    pattern: /^\S+@\S+\.\S+$/,
+    rules: {
+      pattern: /^\S+@\S+\.\S+$/,
+      maxLength: 255,
+      required: true,
+    },
   },
   name: {
     helper: "长度 2~64",
-    pattern: /^.{2,64}$/,
+    rules: {
+      pattern: /^.{2,64}$/,
+      maxLength: 64,
+      required: true,
+    },
   },
   username: {
     helper: "长度 2~64，可包含字母、数字且以字母开头",
-    pattern: /^[A-Za-z][A-Za-z0-9]{1,63}$/,
+    rules: {
+      pattern: /^[A-Za-z][A-Za-z0-9]{1,63}$/,
+      maxLength: 64,
+      required: true,
+    },
   },
   password: {
     helper: "长度 6~32",
-    pattern: /^.{6,32}$/,
+    rules: {
+      pattern: /^.{6,32}$/,
+      maxLength: 32,
+      required: true,
+    },
+  },
+  bio: {
+    helper: "介绍一下自己，长度 0~255",
+    rules: {
+      pattern: /^.{0,255}$/,
+      maxLength: 255,
+    },
+  },
+  location: {
+    helper: "所在地区，长度 0~255",
+    rules: {
+      pattern: /^.{0,255}$/,
+      maxLength: 255,
+    },
+  },
+  websiteUrl: {
+    helper: "个人主页，以 http(s) 开头",
+    rules: {
+      pattern: /^https?:\/\/\S+\.\S+$/,
+      maxLength: 255,
+    },
   },
 };
 

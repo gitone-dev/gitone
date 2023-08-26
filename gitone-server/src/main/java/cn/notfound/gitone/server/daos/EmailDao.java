@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
-public class EmailDao extends BaseDao<Integer, EmailEntity, EmailMapper> {
+public class EmailDao extends TimestampDao<Integer, EmailEntity, EmailMapper> {
 
     public EmailDao(EmailMapper mapper) {
         super(mapper);
@@ -19,6 +19,10 @@ public class EmailDao extends BaseDao<Integer, EmailEntity, EmailMapper> {
 
     public EmailEntity findByEmail(String email) {
         return mapper.findByEmail(email);
+    }
+
+    public int countByEmail(String email) {
+        return mapper.countByEmail(email);
     }
 
     public List<EmailEntity> findByUserId(Integer userId) {
@@ -42,10 +46,10 @@ public class EmailDao extends BaseDao<Integer, EmailEntity, EmailMapper> {
 
     public EmailEntity confirm(String confirmationToken) {
         EmailEntity emailEntity = mapper.findByConfirmationToken(confirmationToken);
-        Assert.notNull(emailEntity, "token 不合规");
+        Assert.notNull(emailEntity, "邮箱令牌不合规");
 
-        Assert.isTrue(!emailEntity.isConfirmed(), "token 不合规");
-        Assert.isTrue(!emailEntity.isExpired(), "token 不合规");
+        Assert.isTrue(!emailEntity.isConfirmed(), "邮箱令牌不合规");
+        Assert.isTrue(!emailEntity.isExpired(), "邮箱令牌不合规");
 
         emailEntity.setConfirmedAt(OffsetDateTime.now());
         return super.update(emailEntity);
@@ -56,5 +60,9 @@ public class EmailDao extends BaseDao<Integer, EmailEntity, EmailMapper> {
         byte[] data = new byte[16];
         random.nextBytes(data);
         return String.valueOf(Hex.encode(data));
+    }
+
+    public int deleteByUserId(Integer userId) {
+        return mapper.deleteByUserId(userId);
     }
 }

@@ -14,4 +14,6 @@ public class SessionResult {
     private String header;
 
     private String token;
+
+    private String password;
 }

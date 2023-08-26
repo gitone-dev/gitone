@@ -1,11 +1,13 @@
+import Center from "./Center";
 import Profile from "./Profile";
-import SignInOrUp from "./SignInOrUp";
 import Simple from "./Simple";
+import Unauthorized from "./Unauthorized";
 
 const Layout = {
+  Center,
   Profile,
-  SignInOrUp,
   Simple,
+  Unauthorized,
 };
 
 export default Layout;

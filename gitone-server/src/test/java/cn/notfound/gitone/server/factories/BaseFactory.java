@@ -71,6 +71,7 @@ public class BaseFactory {
         session.setHeader(sessionEntity.getHeader());
         session.setToken(sessionEntity.getToken());
         session.setActive(sessionEntity.isActive());
+        session.setPassword(input.getPassword());
         return session;
     }
 }

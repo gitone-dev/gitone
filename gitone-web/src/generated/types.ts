@@ -27,6 +27,24 @@ export type ActivateUserPayload = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
+export type ConfirmEmailInput = {
+  token: Scalars['String']['input'];
+};
+
+export type ConfirmEmailPayload = {
+  __typename?: 'ConfirmEmailPayload';
+  email?: Maybe<Email>;
+};
+
+export type CreateEmailInput = {
+  email: Scalars['String']['input'];
+};
+
+export type CreateEmailPayload = {
+  __typename?: 'CreateEmailPayload';
+  email?: Maybe<Email>;
+};
+
 export type CreateSessionInput = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -47,6 +65,15 @@ export type CreateUserInput = {
 export type CreateUserPayload = {
   __typename?: 'CreateUserPayload';
   user?: Maybe<User>;
+};
+
+export type DeleteEmailInput = {
+  email: Scalars['String']['input'];
+};
+
+export type DeleteEmailPayload = {
+  __typename?: 'DeleteEmailPayload';
+  email?: Maybe<Email>;
 };
 
 export type DeleteSessionPayload = {
@@ -88,21 +115,38 @@ export type EmailEdge = {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser?: Maybe<ActivateUserPayload>;
+  confirmEmail?: Maybe<ConfirmEmailPayload>;
+  createEmail?: Maybe<CreateEmailPayload>;
   /**  session */
   createSession?: Maybe<CreateSessionPayload>;
   /**  user */
   createUser?: Maybe<CreateUserPayload>;
+  deleteEmail?: Maybe<DeleteEmailPayload>;
   deleteSession?: Maybe<DeleteSessionPayload>;
   deleteUser?: Maybe<DeleteUserPayload>;
   resetPassword?: Maybe<ResetPasswordPayload>;
   sendActivationEmail?: Maybe<SendActivationEmailPayload>;
   sendPasswordResetEmail?: Maybe<SendPasswordResetEmailPayload>;
+  setPrimaryEmail?: Maybe<SetPrimaryEmailPayload>;
   updateActivationEmail?: Maybe<UpdateActivationEmailPayload>;
+  updatePassword?: Maybe<UpdatePasswordPayload>;
+  updateUser?: Maybe<UpdateUserPayload>;
+  updateUsername?: Maybe<UpdateUsernamePayload>;
 };
 
 
 export type MutationActivateUserArgs = {
   input: ActivateUserInput;
+};
+
+
+export type MutationConfirmEmailArgs = {
+  input: ConfirmEmailInput;
+};
+
+
+export type MutationCreateEmailArgs = {
+  input: CreateEmailInput;
 };
 
 
@@ -113,6 +157,11 @@ export type MutationCreateSessionArgs = {
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type MutationDeleteEmailArgs = {
+  input: DeleteEmailInput;
 };
 
 
@@ -136,8 +185,28 @@ export type MutationSendPasswordResetEmailArgs = {
 };
 
 
+export type MutationSetPrimaryEmailArgs = {
+  input: SetPrimaryEmailInput;
+};
+
+
 export type MutationUpdateActivationEmailArgs = {
   input: UpdateActivationEmailInput;
+};
+
+
+export type MutationUpdatePasswordArgs = {
+  input: UpdatePasswordInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  input: UpdateUserInput;
+};
+
+
+export type MutationUpdateUsernameArgs = {
+  input: UpdateUsernameInput;
 };
 
 /**  namespace */
@@ -244,6 +313,15 @@ export type Session = {
   username: Scalars['String']['output'];
 };
 
+export type SetPrimaryEmailInput = {
+  email: Scalars['String']['input'];
+};
+
+export type SetPrimaryEmailPayload = {
+  __typename?: 'SetPrimaryEmailPayload';
+  email?: Maybe<Email>;
+};
+
 export type UpdateActivationEmailInput = {
   email: Scalars['String']['input'];
 };
@@ -253,19 +331,55 @@ export type UpdateActivationEmailPayload = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
+export type UpdatePasswordInput = {
+  oldPassword: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  passwordConfirmation: Scalars['String']['input'];
+};
+
+export type UpdatePasswordPayload = {
+  __typename?: 'UpdatePasswordPayload';
+  user?: Maybe<User>;
+};
+
+export type UpdateUserInput = {
+  bio: Scalars['String']['input'];
+  location: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  websiteUrl: Scalars['String']['input'];
+};
+
+export type UpdateUserPayload = {
+  __typename?: 'UpdateUserPayload';
+  user?: Maybe<User>;
+};
+
+export type UpdateUsernameInput = {
+  username: Scalars['String']['input'];
+};
+
+export type UpdateUsernamePayload = {
+  __typename?: 'UpdateUsernamePayload';
+  user?: Maybe<User>;
+};
+
 /**  user */
 export type User = Node & {
   __typename?: 'User';
   active?: Maybe<Scalars['Boolean']['output']>;
+  avatarUrl?: Maybe<Scalars['String']['output']>;
+  bio?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   emails?: Maybe<EmailConnection>;
   id: Scalars['ID']['output'];
+  location?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   namespace?: Maybe<Namespace>;
   role?: Maybe<Role>;
   unconfirmedEmails?: Maybe<EmailConnection>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   username?: Maybe<Scalars['String']['output']>;
+  websiteUrl?: Maybe<Scalars['String']['output']>;
 };
 
 export enum Visibility {
@@ -280,6 +394,20 @@ export type ActivateUserMutationVariables = Exact<{
 
 export type ActivateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'ActivateUserPayload', message?: string | null } | null };
 
+export type ConfirmEmailMutationVariables = Exact<{
+  input: ConfirmEmailInput;
+}>;
+
+
+export type ConfirmEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'ConfirmEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
+
+export type CreateEmailMutationVariables = Exact<{
+  input: CreateEmailInput;
+}>;
+
+
+export type CreateEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
+
 export type CreateSessionMutationVariables = Exact<{
   input: CreateSessionInput;
 }>;
@@ -292,7 +420,14 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null } | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+
+export type DeleteEmailMutationVariables = Exact<{
+  input: DeleteEmailInput;
+}>;
+
+
+export type DeleteEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
 
 export type DeleteSessionMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -304,7 +439,7 @@ export type DeleteUserMutationVariables = Exact<{
 }>;
 
 
-export type DeleteUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null } | null } | null };
+export type DeleteUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type EmailFragmentFragment = { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean };
 
@@ -361,6 +496,13 @@ export type SendPasswordResetEmailMutation = { __typename?: 'Mutation', payload?
 
 export type SessionFragmentFragment = { __typename?: 'Session', email?: string | null, username: string, active: boolean, header: string, token: string };
 
+export type SetPrimaryEmailMutationVariables = Exact<{
+  input: SetPrimaryEmailInput;
+}>;
+
+
+export type SetPrimaryEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'SetPrimaryEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
+
 export type UpdateActivationEmailMutationVariables = Exact<{
   input: UpdateActivationEmailInput;
 }>;
@@ -368,24 +510,59 @@ export type UpdateActivationEmailMutationVariables = Exact<{
 
 export type UpdateActivationEmailMutation = { __typename?: 'Mutation', updateActivationEmail?: { __typename?: 'UpdateActivationEmailPayload', message?: string | null } | null };
 
-export type UserFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null };
+export type UpdatePasswordMutationVariables = Exact<{
+  input: UpdatePasswordInput;
+}>;
+
+
+export type UpdatePasswordMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdatePasswordPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+
+export type UpdateUserMutationVariables = Exact<{
+  input: UpdateUserInput;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null } | null } | null };
+
+export type UpdateUsernameMutationVariables = Exact<{
+  input: UpdateUsernameInput;
+}>;
+
+
+export type UpdateUsernameMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateUsernamePayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+
+export type UserFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null };
 
 export type UserQueryVariables = Exact<{
   username: Scalars['String']['input'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } };
+
+export type UserDetailFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null };
+
+export type UserDetailQueryVariables = Exact<{
+  username: Scalars['String']['input'];
+}>;
+
+
+export type UserDetailQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null } };
 
 export type ViewerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ViewerQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null } };
+export type ViewerQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } };
+
+export type ViewerDetailQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ViewerDetailQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null } };
 
 export type ViewerEmailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ViewerEmailsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', emails?: { __typename?: 'EmailConnection', edges?: Array<{ __typename?: 'EmailEdge', node: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null, unconfirmedEmails?: { __typename?: 'EmailConnection', edges?: Array<{ __typename?: 'EmailEdge', node: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
+export type ViewerEmailsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, emails?: { __typename?: 'EmailConnection', edges?: Array<{ __typename?: 'EmailEdge', cursor: string, node: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null, unconfirmedEmails?: { __typename?: 'EmailConnection', edges?: Array<{ __typename?: 'EmailEdge', cursor: string, node: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
 
 export const EmailFragmentFragmentDoc = gql`
     fragment EmailFragment on Email {
@@ -433,6 +610,20 @@ export const UserFragmentFragmentDoc = gql`
   updatedAt
   name
   username
+  avatarUrl
+}
+    `;
+export const UserDetailFragmentFragmentDoc = gql`
+    fragment UserDetailFragment on User {
+  id
+  createdAt
+  updatedAt
+  name
+  username
+  avatarUrl
+  bio
+  location
+  websiteUrl
 }
     `;
 export const ActivateUserDocument = gql`
@@ -468,6 +659,76 @@ export function useActivateUserMutation(baseOptions?: Apollo.MutationHookOptions
 export type ActivateUserMutationHookResult = ReturnType<typeof useActivateUserMutation>;
 export type ActivateUserMutationResult = Apollo.MutationResult<ActivateUserMutation>;
 export type ActivateUserMutationOptions = Apollo.BaseMutationOptions<ActivateUserMutation, ActivateUserMutationVariables>;
+export const ConfirmEmailDocument = gql`
+    mutation ConfirmEmail($input: ConfirmEmailInput!) {
+  payload: confirmEmail(input: $input) {
+    email {
+      ...EmailFragment
+    }
+  }
+}
+    ${EmailFragmentFragmentDoc}`;
+export type ConfirmEmailMutationFn = Apollo.MutationFunction<ConfirmEmailMutation, ConfirmEmailMutationVariables>;
+
+/**
+ * __useConfirmEmailMutation__
+ *
+ * To run a mutation, you first call `useConfirmEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConfirmEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [confirmEmailMutation, { data, loading, error }] = useConfirmEmailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useConfirmEmailMutation(baseOptions?: Apollo.MutationHookOptions<ConfirmEmailMutation, ConfirmEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConfirmEmailMutation, ConfirmEmailMutationVariables>(ConfirmEmailDocument, options);
+      }
+export type ConfirmEmailMutationHookResult = ReturnType<typeof useConfirmEmailMutation>;
+export type ConfirmEmailMutationResult = Apollo.MutationResult<ConfirmEmailMutation>;
+export type ConfirmEmailMutationOptions = Apollo.BaseMutationOptions<ConfirmEmailMutation, ConfirmEmailMutationVariables>;
+export const CreateEmailDocument = gql`
+    mutation CreateEmail($input: CreateEmailInput!) {
+  payload: createEmail(input: $input) {
+    email {
+      ...EmailFragment
+    }
+  }
+}
+    ${EmailFragmentFragmentDoc}`;
+export type CreateEmailMutationFn = Apollo.MutationFunction<CreateEmailMutation, CreateEmailMutationVariables>;
+
+/**
+ * __useCreateEmailMutation__
+ *
+ * To run a mutation, you first call `useCreateEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEmailMutation, { data, loading, error }] = useCreateEmailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateEmailMutation(baseOptions?: Apollo.MutationHookOptions<CreateEmailMutation, CreateEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEmailMutation, CreateEmailMutationVariables>(CreateEmailDocument, options);
+      }
+export type CreateEmailMutationHookResult = ReturnType<typeof useCreateEmailMutation>;
+export type CreateEmailMutationResult = Apollo.MutationResult<CreateEmailMutation>;
+export type CreateEmailMutationOptions = Apollo.BaseMutationOptions<CreateEmailMutation, CreateEmailMutationVariables>;
 export const CreateSessionDocument = gql`
     mutation CreateSession($input: CreateSessionInput!) {
   payload: createSession(input: $input) {
@@ -538,6 +799,41 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const DeleteEmailDocument = gql`
+    mutation DeleteEmail($input: DeleteEmailInput!) {
+  payload: deleteEmail(input: $input) {
+    email {
+      ...EmailFragment
+    }
+  }
+}
+    ${EmailFragmentFragmentDoc}`;
+export type DeleteEmailMutationFn = Apollo.MutationFunction<DeleteEmailMutation, DeleteEmailMutationVariables>;
+
+/**
+ * __useDeleteEmailMutation__
+ *
+ * To run a mutation, you first call `useDeleteEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEmailMutation, { data, loading, error }] = useDeleteEmailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteEmailMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEmailMutation, DeleteEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteEmailMutation, DeleteEmailMutationVariables>(DeleteEmailDocument, options);
+      }
+export type DeleteEmailMutationHookResult = ReturnType<typeof useDeleteEmailMutation>;
+export type DeleteEmailMutationResult = Apollo.MutationResult<DeleteEmailMutation>;
+export type DeleteEmailMutationOptions = Apollo.BaseMutationOptions<DeleteEmailMutation, DeleteEmailMutationVariables>;
 export const DeleteSessionDocument = gql`
     mutation DeleteSession {
   payload: deleteSession {
@@ -837,6 +1133,41 @@ export function useSendPasswordResetEmailMutation(baseOptions?: Apollo.MutationH
 export type SendPasswordResetEmailMutationHookResult = ReturnType<typeof useSendPasswordResetEmailMutation>;
 export type SendPasswordResetEmailMutationResult = Apollo.MutationResult<SendPasswordResetEmailMutation>;
 export type SendPasswordResetEmailMutationOptions = Apollo.BaseMutationOptions<SendPasswordResetEmailMutation, SendPasswordResetEmailMutationVariables>;
+export const SetPrimaryEmailDocument = gql`
+    mutation SetPrimaryEmail($input: SetPrimaryEmailInput!) {
+  payload: setPrimaryEmail(input: $input) {
+    email {
+      ...EmailFragment
+    }
+  }
+}
+    ${EmailFragmentFragmentDoc}`;
+export type SetPrimaryEmailMutationFn = Apollo.MutationFunction<SetPrimaryEmailMutation, SetPrimaryEmailMutationVariables>;
+
+/**
+ * __useSetPrimaryEmailMutation__
+ *
+ * To run a mutation, you first call `useSetPrimaryEmailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetPrimaryEmailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setPrimaryEmailMutation, { data, loading, error }] = useSetPrimaryEmailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSetPrimaryEmailMutation(baseOptions?: Apollo.MutationHookOptions<SetPrimaryEmailMutation, SetPrimaryEmailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetPrimaryEmailMutation, SetPrimaryEmailMutationVariables>(SetPrimaryEmailDocument, options);
+      }
+export type SetPrimaryEmailMutationHookResult = ReturnType<typeof useSetPrimaryEmailMutation>;
+export type SetPrimaryEmailMutationResult = Apollo.MutationResult<SetPrimaryEmailMutation>;
+export type SetPrimaryEmailMutationOptions = Apollo.BaseMutationOptions<SetPrimaryEmailMutation, SetPrimaryEmailMutationVariables>;
 export const UpdateActivationEmailDocument = gql`
     mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {
   updateActivationEmail(input: $input) {
@@ -870,6 +1201,111 @@ export function useUpdateActivationEmailMutation(baseOptions?: Apollo.MutationHo
 export type UpdateActivationEmailMutationHookResult = ReturnType<typeof useUpdateActivationEmailMutation>;
 export type UpdateActivationEmailMutationResult = Apollo.MutationResult<UpdateActivationEmailMutation>;
 export type UpdateActivationEmailMutationOptions = Apollo.BaseMutationOptions<UpdateActivationEmailMutation, UpdateActivationEmailMutationVariables>;
+export const UpdatePasswordDocument = gql`
+    mutation updatePassword($input: UpdatePasswordInput!) {
+  payload: updatePassword(input: $input) {
+    user {
+      ...UserFragment
+    }
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export type UpdatePasswordMutationFn = Apollo.MutationFunction<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+
+/**
+ * __useUpdatePasswordMutation__
+ *
+ * To run a mutation, you first call `useUpdatePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePasswordMutation, { data, loading, error }] = useUpdatePasswordMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePasswordMutation, UpdatePasswordMutationVariables>(UpdatePasswordDocument, options);
+      }
+export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
+export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
+export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+export const UpdateUserDocument = gql`
+    mutation UpdateUser($input: UpdateUserInput!) {
+  payload: updateUser(input: $input) {
+    user {
+      ...UserDetailFragment
+    }
+  }
+}
+    ${UserDetailFragmentFragmentDoc}`;
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
+
+/**
+ * __useUpdateUserMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options);
+      }
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const UpdateUsernameDocument = gql`
+    mutation UpdateUsername($input: UpdateUsernameInput!) {
+  payload: updateUsername(input: $input) {
+    user {
+      ...UserFragment
+    }
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export type UpdateUsernameMutationFn = Apollo.MutationFunction<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
+
+/**
+ * __useUpdateUsernameMutation__
+ *
+ * To run a mutation, you first call `useUpdateUsernameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUsernameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUsernameMutation, { data, loading, error }] = useUpdateUsernameMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUsernameMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUsernameMutation, UpdateUsernameMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUsernameMutation, UpdateUsernameMutationVariables>(UpdateUsernameDocument, options);
+      }
+export type UpdateUsernameMutationHookResult = ReturnType<typeof useUpdateUsernameMutation>;
+export type UpdateUsernameMutationResult = Apollo.MutationResult<UpdateUsernameMutation>;
+export type UpdateUsernameMutationOptions = Apollo.BaseMutationOptions<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
 export const UserDocument = gql`
     query User($username: String!) {
   user(username: $username) {
@@ -905,6 +1341,41 @@ export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQ
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export const UserDetailDocument = gql`
+    query UserDetail($username: String!) {
+  user(username: $username) {
+    ...UserDetailFragment
+  }
+}
+    ${UserDetailFragmentFragmentDoc}`;
+
+/**
+ * __useUserDetailQuery__
+ *
+ * To run a query within a React component, call `useUserDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserDetailQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useUserDetailQuery(baseOptions: Apollo.QueryHookOptions<UserDetailQuery, UserDetailQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserDetailQuery, UserDetailQueryVariables>(UserDetailDocument, options);
+      }
+export function useUserDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserDetailQuery, UserDetailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserDetailQuery, UserDetailQueryVariables>(UserDetailDocument, options);
+        }
+export type UserDetailQueryHookResult = ReturnType<typeof useUserDetailQuery>;
+export type UserDetailLazyQueryHookResult = ReturnType<typeof useUserDetailLazyQuery>;
+export type UserDetailQueryResult = Apollo.QueryResult<UserDetailQuery, UserDetailQueryVariables>;
 export const ViewerDocument = gql`
     query Viewer {
   viewer {
@@ -939,14 +1410,50 @@ export function useViewerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Vie
 export type ViewerQueryHookResult = ReturnType<typeof useViewerQuery>;
 export type ViewerLazyQueryHookResult = ReturnType<typeof useViewerLazyQuery>;
 export type ViewerQueryResult = Apollo.QueryResult<ViewerQuery, ViewerQueryVariables>;
+export const ViewerDetailDocument = gql`
+    query ViewerDetail {
+  viewer {
+    ...UserDetailFragment
+  }
+}
+    ${UserDetailFragmentFragmentDoc}`;
+
+/**
+ * __useViewerDetailQuery__
+ *
+ * To run a query within a React component, call `useViewerDetailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useViewerDetailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useViewerDetailQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useViewerDetailQuery(baseOptions?: Apollo.QueryHookOptions<ViewerDetailQuery, ViewerDetailQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ViewerDetailQuery, ViewerDetailQueryVariables>(ViewerDetailDocument, options);
+      }
+export function useViewerDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ViewerDetailQuery, ViewerDetailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ViewerDetailQuery, ViewerDetailQueryVariables>(ViewerDetailDocument, options);
+        }
+export type ViewerDetailQueryHookResult = ReturnType<typeof useViewerDetailQuery>;
+export type ViewerDetailLazyQueryHookResult = ReturnType<typeof useViewerDetailLazyQuery>;
+export type ViewerDetailQueryResult = Apollo.QueryResult<ViewerDetailQuery, ViewerDetailQueryVariables>;
 export const ViewerEmailsDocument = gql`
     query ViewerEmails {
   viewer {
+    id
     emails {
       edges {
         node {
           ...EmailFragment
         }
+        cursor
       }
       pageInfo {
         ...PageInfoFragment
@@ -957,6 +1464,7 @@ export const ViewerEmailsDocument = gql`
         node {
           ...EmailFragment
         }
+        cursor
       }
       pageInfo {
         ...PageInfoFragment

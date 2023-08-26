@@ -8,6 +8,10 @@ import java.util.List;
 
 public class NodeConnection<ID, T extends Node<ID>> extends CustomConnection<T, NodePage<ID>> {
 
+    public NodeConnection() {
+        super(List.of(), new NodePage<>(0));
+    }
+
     public NodeConnection(List<T> data, NodePage<ID> page) {
         super(data, page);
     }

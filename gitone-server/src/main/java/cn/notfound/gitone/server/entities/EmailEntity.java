@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 
 @Data
-public class EmailEntity implements BaseEntity<Integer> {
+public class EmailEntity implements TimestampNode<Integer> {
 
     public static final String TYPE = "Email";
 

@@ -5,6 +5,7 @@ import {
   InMemoryCache,
   from,
 } from "@apollo/client";
+import { relayStylePagination } from "@apollo/client/utilities";
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
@@ -37,7 +38,16 @@ const httpLink = new HttpLink({
   uri: "/graphql",
 });
 
-const cache = new InMemoryCache({});
+const cache = new InMemoryCache({
+  typePolicies: {
+    User: {
+      fields: {
+        emails: relayStylePagination(),
+        unconfirmedEmails: relayStylePagination(),
+      },
+    },
+  },
+});
 
 const client = new ApolloClient({
   link: from([authMiddleware, afterwareLink.concat(httpLink)]),

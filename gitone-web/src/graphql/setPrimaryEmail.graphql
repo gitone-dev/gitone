@@ -1,0 +1,7 @@
+mutation SetPrimaryEmail($input: SetPrimaryEmailInput!) {
+    payload: setPrimaryEmail(input: $input) {
+        email {
+            ...EmailFragment
+        }
+    }
+}

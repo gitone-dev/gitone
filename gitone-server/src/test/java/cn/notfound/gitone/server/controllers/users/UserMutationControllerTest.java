@@ -8,6 +8,7 @@ import cn.notfound.gitone.server.factories.BaseFactory;
 import cn.notfound.gitone.server.factories.UserFactory;
 import cn.notfound.gitone.server.faker.Faker;
 import cn.notfound.gitone.server.results.SessionResult;
+import cn.notfound.gitone.server.results.UserResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,5 +186,84 @@ class UserMutationControllerTest extends BaseFactory {
 
         mutate("resetPassword", resetPasswordInput)
                 .errors().expect(e -> e.getErrorType().equals(ErrorType.BAD_REQUEST));
+    }
+
+    @Test
+    void updateUser() {
+        SessionResult session = userFactory.viewer();
+
+        UserResult userResult = query("viewer", session).execute()
+                .path("viewer").entity(UserResult.class).get();
+
+        UpdateUserInput updateUserInput = new UpdateUserInput();
+        updateUserInput.setName(Faker.username());
+        updateUserInput.setBio(Faker.username());
+        updateUserInput.setLocation(Faker.username());
+        updateUserInput.setWebsiteUrl(Faker.username());
+        Assertions.assertNotEquals(updateUserInput.getName(), userResult.getName());
+
+        mutate("updateUser", updateUserInput)
+                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
+
+        mutate("updateUser", session, updateUserInput)
+                .path("payload.user.name").entity(String.class).isEqualTo(updateUserInput.getName())
+                .path("payload.user.bio").entity(String.class).isEqualTo(updateUserInput.getBio())
+                .path("payload.user.location").entity(String.class).isEqualTo(updateUserInput.getLocation())
+                .path("payload.user.websiteUrl").entity(String.class).isEqualTo(updateUserInput.getWebsiteUrl());
+
+        query("namespace")
+                .variable("fullPath", userResult.getUsername())
+                .execute()
+                .path("namespace.name").entity(String.class).isEqualTo(updateUserInput.getName())
+                .path("namespace.fullName").entity(String.class).isEqualTo(updateUserInput.getName());
+    }
+
+    @Test
+    void updateUsername() {
+        SessionResult session = userFactory.viewer();
+
+        UserResult userResult = query("viewer", session).execute()
+                .path("viewer").entity(UserResult.class).get();
+
+        UpdateUsernameInput updateUsernameInput = new UpdateUsernameInput();
+        updateUsernameInput.setUsername(Faker.username());
+        Assertions.assertNotEquals(updateUsernameInput.getUsername(), userResult.getUsername());
+
+        mutate("updateUsername", updateUsernameInput)
+                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
+
+        mutate("updateUsername", session, updateUsernameInput)
+                .path("payload.user.username").entity(String.class).isEqualTo(updateUsernameInput.getUsername());
+
+        query("namespace")
+                .variable("fullPath", updateUsernameInput.getUsername())
+                .execute()
+                .path("namespace.path").entity(String.class).isEqualTo(updateUsernameInput.getUsername())
+                .path("namespace.fullPath").entity(String.class).isEqualTo(updateUsernameInput.getUsername());
+    }
+
+    @Test
+    void updatePassword() {
+        SessionResult session = userFactory.viewer();
+
+        UpdatePasswordInput updatePasswordInput = new UpdatePasswordInput();
+        updatePasswordInput.setOldPassword(session.getPassword());
+        updatePasswordInput.setPassword(session.getPassword() + "new");
+        updatePasswordInput.setPasswordConfirmation(session.getPassword() + "new");
+
+        mutate("updatePassword", updatePasswordInput)
+                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
+        mutate("updatePassword", session, updatePasswordInput).errors().verify();
+        // FIXME? 旧的 TOKEN 未失效
+        query("viewer", session).execute().errors().verify();
+
+        CreateSessionInput createSessionInput = new CreateSessionInput();
+        createSessionInput.setUsername(session.getUsername());
+        createSessionInput.setPassword(session.getPassword());
+        mutate("createSession",createSessionInput)
+                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
+
+        createSessionInput.setPassword(updatePasswordInput.getPassword());
+        mutate("createSession",createSessionInput).errors().verify();
     }
 }

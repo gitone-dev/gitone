@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 @AllArgsConstructor
 @Controller
 public class EmailQueryController {
+
     private EmailDao emailDao;
 
     @QueryMapping

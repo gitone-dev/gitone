@@ -1,4 +1,4 @@
-import New from "./new/Index";
+import New from "./new";
 
 const Session = {
   New,

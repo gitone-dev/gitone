@@ -27,6 +27,7 @@ public class UserMailJob {
         switch (input.type) {
             case CREATE_USER -> userMailSender.createUser(input.getEmail(), input.getToken());
             case RESET_PASSWORD -> userMailSender.resetPassword(input.getEmail(), input.getToken());
+            case CREATE_EMAIL -> userMailSender.createEmail(input.getEmail(), input.getToken());
             default -> throw new IllegalArgumentException("job type 不合规");
         }
     }
@@ -34,6 +35,7 @@ public class UserMailJob {
     public enum Type {
         CREATE_USER,
         RESET_PASSWORD,
+        CREATE_EMAIL,
     }
 
     @Data

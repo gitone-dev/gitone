@@ -1,8 +1,8 @@
 package cn.notfound.gitone.server.mailers;
 
 import cn.notfound.gitone.server.config.CustomProperties;
-import cn.notfound.gitone.server.jobs.UserMailJob;
 import cn.notfound.gitone.server.mailers.types.ActivateUserUserModel;
+import cn.notfound.gitone.server.mailers.types.CreateEmailModel;
 import cn.notfound.gitone.server.mailers.types.ResetPasswordModel;
 import freemarker.template.Configuration;
 import jakarta.mail.internet.MimeMessage;
@@ -46,6 +46,22 @@ public class UserMailSender {
         model.setBaseUrl(customProperties.getBaseUrl());
         model.setToken(emailToken);
         configuration.getTemplate("mail/resetPassword.ftlh").process(model, stringWriter);
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setSubject(model.getSubject());
+        helper.setTo(email);
+        helper.setText(stringWriter.toString(), true);
+        mailSender.send(message);
+    }
+
+    public void createEmail(String email, String token) throws Exception {
+        StringWriter stringWriter = new StringWriter();
+        CreateEmailModel model = new CreateEmailModel();
+        model.setSiteName(customProperties.getSiteName());
+        model.setBaseUrl(customProperties.getBaseUrl());
+        model.setToken(token);
+        configuration.getTemplate("mail/createEmail.ftlh").process(model, stringWriter);
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);

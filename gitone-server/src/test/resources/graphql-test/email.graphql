@@ -1,0 +1,7 @@
+fragment EmailFragment on Email {
+    id
+    createdAt
+    updatedAt
+    email
+    primary
+}

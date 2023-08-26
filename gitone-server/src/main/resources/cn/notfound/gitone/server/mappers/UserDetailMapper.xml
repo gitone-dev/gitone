@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.notfound.gitone.server.mappers.UserDetailMapper">
+    <resultMap id="userDetailMap" type="cn.notfound.gitone.server.entities.UserDetailEntity">
+        <id property="id"  column="id" jdbcType="INTEGER" />
+        <result property="bio" column="bio" jdbcType="VARCHAR" />
+        <result property="location" column="location" jdbcType="VARCHAR" />
+        <result property="websiteUrl" column="website_url" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="userDetailColumns">
+        id,
+        bio,
+        location,
+        website_url
+    </sql>
+    <select id="find" parameterType="java.lang.Integer" resultMap="userDetailMap">
+        SELECT <include refid="userDetailColumns" />
+        FROM user_details
+        WHERE id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="findByIds" parameterType="java.util.Collection" resultMap="userDetailMap">
+        SELECT <include refid="userDetailColumns" />
+        FROM user_details
+        WHERE id IN
+        <foreach collection="ids" open="(" item="id" separator="," close=")">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <insert id="create" parameterType="cn.notfound.gitone.server.entities.UserDetailEntity" keyProperty="id" useGeneratedKeys="false" >
+        INSERT INTO user_details (
+            id,
+            bio,
+            location,
+            website_url
+        ) VALUES (
+            #{id,jdbcType=INTEGER},
+            #{bio,jdbcType=VARCHAR},
+            #{location,jdbcType=VARCHAR},
+            #{websiteUrl,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="update" parameterType="cn.notfound.gitone.server.entities.UserDetailEntity">
+        UPDATE user_details SET
+            bio = #{bio,jdbcType=VARCHAR},
+            location = #{location,jdbcType=VARCHAR},
+            website_url = #{websiteUrl,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+    <delete id="delete" parameterType="cn.notfound.gitone.server.entities.EmailEntity">
+        DELETE FROM user_details
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+</mapper>

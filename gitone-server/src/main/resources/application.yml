@@ -8,6 +8,10 @@ spring:
     schema:
       printer:
         enabled: true
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
   mail:
     host: 127.0.0.1
     port: 1025
@@ -20,7 +24,8 @@ cn:
   notfound:
     gitone:
       site-name: GitOne
-      base-url: http://127.0.0.1:3000
+      base-url: http://127.0.0.1:5173
+      avatars: /srv/gitone/avatars
 logging:
   level:
     cn:

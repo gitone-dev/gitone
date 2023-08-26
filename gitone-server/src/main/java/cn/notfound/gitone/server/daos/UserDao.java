@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Repository
-public class UserDao extends BaseDao<Integer, UserEntity, UserMapper> {
+public class UserDao extends TimestampDao<Integer, UserEntity, UserMapper> {
 
     private final UserNamespaceDao userNamespaceDao;
 

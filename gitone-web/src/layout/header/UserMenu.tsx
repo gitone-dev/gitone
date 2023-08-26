@@ -46,7 +46,7 @@ function UserMenu(props: Props) {
   return (
     <>
       <IconButton color="inherit" onClick={onOpen}>
-        <Avatar />
+        <Avatar src={viewer.avatarUrl || ""} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}

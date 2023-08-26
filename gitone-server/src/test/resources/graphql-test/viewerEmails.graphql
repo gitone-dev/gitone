@@ -15,6 +15,7 @@ fragment PageInfoFragment on PageInfo {
 
 query Viewer {
     viewer {
+        id
         emails {
             edges {
                 node {

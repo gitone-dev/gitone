@@ -1,10 +1,12 @@
 query ViewerEmails {
     viewer {
+        id
         emails {
             edges {
                 node {
                     ...EmailFragment
                 }
+                cursor
             }
             pageInfo {
                 ...PageInfoFragment
@@ -15,6 +17,7 @@ query ViewerEmails {
                 node {
                     ...EmailFragment
                 }
+                cursor
             }
             pageInfo {
                 ...PageInfoFragment

@@ -1,0 +1,7 @@
+mutation CreateEmail($input: CreateEmailInput!) {
+    payload: createEmail(input: $input) {
+        email {
+            ...EmailFragment
+        }
+    }
+}

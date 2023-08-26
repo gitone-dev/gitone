@@ -14,8 +14,11 @@ const router = createBrowserRouter([
   { path: "/users/activate/:token", element: <Users.Activate /> },
   { path: "/users/forget-password", element: <Users.ForgetPassword /> },
   { path: "/users/reset-password/:token", element: <Users.ResetPassword /> },
+  { path: "/users/confirm-email/:token", element: <Users.ConfirmEmail /> },
   { path: "/profile", element: <Profile.Index /> },
   { path: "/profile/account", element: <Profile.Account /> },
+  { path: "/profile/emails", element: <Profile.Emails /> },
+  { path: "/profile/password", element: <Profile.Password /> },
   { path: "*", element: <NotFoundPage /> },
 ]);
 

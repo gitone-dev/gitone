@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
-public class UserEntity implements BaseEntity<Integer> {
+public class UserEntity implements TimestampNode<Integer> {
 
     public static final String TYPE = "User";
 

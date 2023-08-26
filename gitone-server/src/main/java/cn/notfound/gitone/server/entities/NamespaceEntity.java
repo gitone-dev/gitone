@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.OffsetDateTime;
 
 @Data
-public class NamespaceEntity implements BaseEntity<Integer> {
+public class NamespaceEntity implements TimestampNode<Integer> {
 
     public static final String TYPE = "Namespace";
 

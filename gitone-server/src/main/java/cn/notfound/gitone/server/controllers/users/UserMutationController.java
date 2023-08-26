@@ -73,4 +73,25 @@ public class UserMutationController extends BaseController {
         userService.resetPassword(input);
         return new ResetPasswordPayload("密码已修改");
     }
+
+    @MutationMapping
+    @Secured({ Role.ROLE_USER })
+    public UpdateNamePayload updateUser(@Valid @Argument UpdateUserInput input) {
+        UserEntity userEntity = userService.update(input);
+        return new UpdateNamePayload(userEntity);
+    }
+
+    @MutationMapping
+    @Secured({ Role.ROLE_USER })
+    public UpdateUsernamePayload updateUsername(@Valid @Argument UpdateUsernameInput input) {
+        UserEntity userEntity = userService.updateUsername(input);
+        return new UpdateUsernamePayload(userEntity);
+    }
+
+    @MutationMapping
+    @Secured({ Role.ROLE_USER })
+    public UpdatePasswordPayload updatePassword(@Valid @Argument UpdatePasswordInput input) {
+        UserEntity userEntity = userService.updatePassword(input);
+        return new UpdatePasswordPayload(userEntity);
+    }
 }

@@ -58,6 +58,8 @@ public class UserFactory extends BaseFactory {
         CreateUserInput createUserInput = createUserInput();
         create(createUserInput);
         activate(createUserInput.getEmail());
-        return createSession(createUserInput.getUsername(), createUserInput.getPassword());
+        SessionResult session = createSession(createUserInput.getUsername(), createUserInput.getPassword());
+        session.setEmail(createUserInput.getEmail());
+        return session;
     }
 }

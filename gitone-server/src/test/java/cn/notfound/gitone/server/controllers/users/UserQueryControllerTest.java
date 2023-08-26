@@ -29,7 +29,7 @@ class UserQueryControllerTest extends BaseFactory {
                 .path("viewer.username").entity(String.class).isEqualTo(session.getUsername());
         query("viewerEmails", session)
                 .execute()
-                .path("viewer.emails.edges[0].node.email").hasValue()
+                .path("viewer.emails.edges").entityList(Object.class).hasSize(1)
                 .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(0);
     }
 
@@ -40,5 +40,11 @@ class UserQueryControllerTest extends BaseFactory {
                 .variable("username", session.getUsername())
                 .execute()
                 .path("user.username").entity(String.class).isEqualTo(session.getUsername());
+        query("userEmails")
+                .variable("username", session.getUsername())
+                .execute()
+                .path("user.emails.edges").entityList(Object.class).hasSize(0)
+                .path("user.unconfirmedEmails.edges").entityList(Object.class).hasSize(0);
+
     }
 }

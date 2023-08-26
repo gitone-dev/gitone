@@ -1,0 +1,7 @@
+mutation DeleteEmail($input: DeleteEmailInput!) {
+    payload: deleteEmail(input: $input) {
+        email {
+            ...EmailFragment
+        }
+    }
+}

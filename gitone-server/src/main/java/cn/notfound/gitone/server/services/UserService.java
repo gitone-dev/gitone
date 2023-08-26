@@ -2,7 +2,9 @@ package cn.notfound.gitone.server.services;
 
 import cn.notfound.gitone.server.controllers.users.inputs.*;
 import cn.notfound.gitone.server.daos.UserDao;
+import cn.notfound.gitone.server.daos.UserDetailDao;
 import cn.notfound.gitone.server.entities.EmailEntity;
+import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
 import cn.notfound.gitone.server.jobs.UserMailJob;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,11 +19,13 @@ import java.time.OffsetDateTime;
 
 @AllArgsConstructor
 @Service
-public class UserService {
+public class UserService extends BaseService {
 
     private PasswordEncoder passwordEncoder;
 
     private UserDao userDao;
+
+    private UserDetailDao userDetailDao;
 
     private EmailService emailService;
 
@@ -30,12 +34,19 @@ public class UserService {
     public UserEntity create(CreateUserInput input) {
         UserEntity userEntity = input.entity(passwordEncoder);
         userEntity = userDao.create(userEntity);
+
+        UserDetailEntity userDetailEntity = new UserDetailEntity();
+        userDetailEntity.setId(userEntity.getId());
+        userDetailDao.create(userDetailEntity);
+
         emailService.createUser(userEntity);
         return userEntity;
     }
 
     public UserEntity delete(DeleteUserInput input) {
         UserEntity userEntity = userDao.find(input.id());
+        emailService.deleteByUserId(userEntity.getId());
+
         userDao.delete(userEntity);
         return userEntity;
     }
@@ -95,7 +106,6 @@ public class UserService {
         UserMailJob.Input jobInput = new UserMailJob.Input();
         jobInput.setType(UserMailJob.Type.RESET_PASSWORD);
         jobInput.setUserId(userEntity.getId());
-        jobInput.setUsername(userEntity.getUsername());
         jobInput.setEmail(userEntity.getEmail());
         jobInput.setToken(userEntity.getResetPasswordToken());
         userMailJob.enqueue(jobInput);
@@ -113,5 +123,37 @@ public class UserService {
         userEntity.setResetPasswordSentAt(null);
         userEntity.setPassword(passwordEncoder.encode(input.getPassword()));
         userDao.update(userEntity);
+    }
+
+    public UserEntity update(UpdateUserInput input) {
+        UserEntity userEntity = userDao.find(viewerId());
+
+        UserDetailEntity userDetailEntity = new UserDetailEntity();
+        userDetailEntity.setId(userEntity.getId());
+        userDetailEntity.setBio(input.getBio());
+        userDetailEntity.setLocation(input.getLocation());
+        userDetailEntity.setWebsiteUrl(input.getWebsiteUrl());
+        userDetailDao.update(userDetailEntity);
+
+        if (userEntity.getName().equals(input.getName())) {
+            return userDao.update(userEntity);
+        } else {
+            userEntity.setName(input.getName());
+            return userDao.updateName(userEntity);
+        }
+    }
+
+    public UserEntity updateUsername(UpdateUsernameInput input) {
+        UserEntity userEntity = userDao.find(viewerId());
+        userEntity.setUsername(input.getUsername());
+        return userDao.updateUsername(userEntity);
+    }
+
+    public UserEntity updatePassword(UpdatePasswordInput input) {
+        UserEntity userEntity = userDao.find(viewerId());
+        input.validate(passwordEncoder, userEntity.getPassword());
+
+        userEntity.setPassword(passwordEncoder.encode(input.getPassword()));
+        return userDao.update(userEntity);
     }
 }

@@ -53,6 +53,15 @@ type Mutation {
 
     sendPasswordResetEmail(input: SendPasswordResetEmailInput!): SendPasswordResetEmailPayload
     resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
+
+    updateUser(input: UpdateUserInput!): UpdateUserPayload
+    updateUsername(input: UpdateUsernameInput!): UpdateUsernamePayload
+    updatePassword(input: UpdatePasswordInput!): UpdatePasswordPayload
+
+    createEmail(input: CreateEmailInput!): CreateEmailPayload
+    confirmEmail(input: ConfirmEmailInput!): ConfirmEmailPayload
+    setPrimaryEmail(input: SetPrimaryEmailInput!): SetPrimaryEmailPayload
+    deleteEmail(input: DeleteEmailInput!): DeleteEmailPayload
 }
 
 # session
@@ -102,6 +111,10 @@ type User implements Node {
     username: String
     active: Boolean
     role: Role
+    avatarUrl: String
+    bio: String
+    location: String
+    websiteUrl: String
 
     namespace: Namespace
 
@@ -174,6 +187,35 @@ type ResetPasswordPayload {
     message: String
 }
 
+input UpdateUserInput {
+    name: String!
+    bio: String!
+    location: String!
+    websiteUrl: String!
+}
+
+type UpdateUserPayload {
+    user: User
+}
+
+input UpdateUsernameInput {
+    username: String!
+}
+
+type UpdateUsernamePayload {
+    user: User
+}
+
+input UpdatePasswordInput {
+    oldPassword: String!
+    password: String!
+    passwordConfirmation: String!
+}
+
+type UpdatePasswordPayload {
+    user: User
+}
+
 # email
 
 type Email implements Node {
@@ -192,4 +234,35 @@ type EmailEdge {
 type EmailConnection {
     edges: [EmailEdge!]
     pageInfo: PageInfo
+}
+input CreateEmailInput {
+    email: String!
+}
+
+type CreateEmailPayload {
+    email: Email
+}
+
+input ConfirmEmailInput {
+    token: String!
+}
+
+type ConfirmEmailPayload {
+    email: Email
+}
+
+input SetPrimaryEmailInput {
+    email: String!
+}
+
+type SetPrimaryEmailPayload {
+    email: Email
+}
+
+input DeleteEmailInput {
+    email: String!
+}
+
+type DeleteEmailPayload {
+    email: Email
 }

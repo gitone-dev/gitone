@@ -1,0 +1,15 @@
+fragment EmailFragment on Email {
+    id
+    createdAt
+    updatedAt
+    email
+    primary
+}
+
+mutation ConfirmEmail($input: ConfirmEmailInput!) {
+    payload: confirmEmail(input: $input) {
+        email {
+            ...EmailFragment
+        }
+    }
+}

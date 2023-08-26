@@ -6,7 +6,7 @@ import org.springframework.util.Assert;
 @Data
 public class ResetPasswordModel {
 
-    private String title = "注册";
+    private String title = "重置密码";
 
     private String siteName;
 

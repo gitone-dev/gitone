@@ -25,4 +25,10 @@ class UserMailSenderTest {
         assertDoesNotThrow(() ->
                 userMailSender.resetPassword("test@example.com", "EMAIL_TOKEN"));
     }
+
+    @Test
+    void createEmail() {
+        assertDoesNotThrow(() ->
+                userMailSender.createEmail("test@example.com", "EMAIL_TOKEN"));
+    }
 }

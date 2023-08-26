@@ -96,8 +96,7 @@ function Form() {
         size="small"
         type="email"
         {...register("email", {
-          pattern: pattern.email.pattern,
-          required: true,
+          ...pattern.email.rules,
           validate: validateEmail,
         })}
       />
@@ -109,7 +108,7 @@ function Form() {
         margin="dense"
         required
         size="small"
-        {...register("name", { pattern: pattern.name.pattern, required: true })}
+        {...register("name", { ...pattern.name.rules })}
       />
       <TextField
         error={Boolean(errors.username)}
@@ -120,8 +119,7 @@ function Form() {
         required
         size="small"
         {...register("username", {
-          pattern: pattern.username.pattern,
-          required: true,
+          ...pattern.username.rules,
           validate: validateUsername,
         })}
       />
@@ -134,10 +132,7 @@ function Form() {
         required
         type="password"
         size="small"
-        {...register("password", {
-          pattern: pattern.password.pattern,
-          required: true,
-        })}
+        {...register("password", { ...pattern.password.rules })}
       />
       <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
         <Button

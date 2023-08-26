@@ -4,6 +4,7 @@ fragment UserFragment on User {
     updatedAt
     name
     username
+    avatarUrl
 }
 
 query User($username: String!) {

@@ -1,4 +1,6 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from '@mui/icons-material/Lock';
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { Breadcrumbs, Divider, Link, Typography } from "@mui/material";
 import Box, { BoxProps } from "@mui/material/Box";
@@ -24,6 +26,18 @@ const items = [
     icon: <ManageAccountsIcon />,
     text: "账号管理",
     to: "/profile/account",
+  },
+  {
+    key: "/profile/emails",
+    icon: <EmailIcon />,
+    text: "邮箱管理",
+    to: "/profile/emails",
+  },
+  {
+    key: "/profile/password",
+    icon: <LockIcon />,
+    text: "密码管理",
+    to: "/profile/password",
   },
 ];
 

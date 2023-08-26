@@ -93,8 +93,7 @@ function UpdateActivationEmailDialog(props: Props) {
           size="small"
           type="email"
           {...register("email", {
-            pattern: pattern.email.pattern,
-            required: true,
+            ...pattern.email.rules,
             validate: validateEmail,
           })}
         />

@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface UserMapper extends BaseMapper<Integer, UserEntity> {
+public interface UserMapper extends NodeMapper<Integer, UserEntity> {
 
     UserEntity findByEmail(String email);
 
