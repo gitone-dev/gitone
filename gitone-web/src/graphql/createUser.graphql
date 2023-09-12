@@ -1,7 +1,7 @@
 mutation CreateUser($input: CreateUserInput!) {
-    payload: createUser(input: $input) {
-        user {
-            ...UserFragment
-        }
+  payload: createUser(input: $input) {
+    user {
+      ...UserFragment
     }
+  }
 }

@@ -1,12 +1,26 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
+import Layout from "../layout";
 import NotFoundPage from "../pages/NotFoundPage";
+import Dashboard from "../pages/dashboard";
+import Explore from "../pages/explore";
+import Groups from "../pages/groups";
+import Namespace from "../pages/namespace";
 import Profile from "../pages/profile";
 import Session from "../pages/session";
 import Users from "../pages/users";
+import { paths } from "../utils/router";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
+  {
+    path: "/explore",
+    element: <Layout.Explore />,
+    children: [
+      { index: true, element: <Explore.Groups /> },
+      { path: "/explore/groups", element: <Explore.Groups /> },
+    ],
+  },
   { path: "/session/new", element: <Session.New /> },
   { path: "/users/new", element: <Users.New /> },
   { path: "/users/sent", element: <Users.Sent /> },
@@ -15,10 +29,51 @@ const router = createBrowserRouter([
   { path: "/users/forget-password", element: <Users.ForgetPassword /> },
   { path: "/users/reset-password/:token", element: <Users.ResetPassword /> },
   { path: "/users/confirm-email/:token", element: <Users.ConfirmEmail /> },
-  { path: "/profile", element: <Profile.Index /> },
-  { path: "/profile/account", element: <Profile.Account /> },
-  { path: "/profile/emails", element: <Profile.Emails /> },
-  { path: "/profile/password", element: <Profile.Password /> },
+  {
+    path: "/users/:path0",
+    element: <Layout.User />,
+    children: [
+      {
+        path: "groups",
+        element: <Users.Groups />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <Layout.Dashboard />,
+    children: [
+      { index: true, element: <Dashboard.Groups /> },
+      { path: "groups", element: <Dashboard.Groups /> },
+    ],
+  },
+  {
+    path: "/groups",
+    element: <Layout.Dashboard />,
+    children: [
+      { index: true, element: <Groups.New /> },
+      { path: "new", element: <Groups.New /> },
+    ],
+  },
+  {
+    path: "/profile",
+    element: <Layout.Profile />,
+    children: [
+      { index: true, element: <Profile.Index /> },
+      { path: "account", element: <Profile.Account /> },
+      { path: "emails", element: <Profile.Emails /> },
+      { path: "password", element: <Profile.Password /> },
+    ],
+  },
+  ...paths.map((path) => ({
+    path: path,
+    element: <Layout.Namespace />,
+    children: [
+      { index: true, element: <Namespace.Show /> },
+      { path: "-/settings", element: <Namespace.Settings /> },
+      { path: "-/members", element: <Namespace.Members /> },
+    ],
+  })),
   { path: "*", element: <NotFoundPage /> },
 ]);
 

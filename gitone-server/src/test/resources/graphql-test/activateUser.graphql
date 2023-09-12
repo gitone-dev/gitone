@@ -1,5 +1,5 @@
 mutation ActivateUser($input: ActivateUserInput!) {
-    payload: activateUser(input: $input) {
-        message
-    }
+  payload: activateUser(input: $input) {
+    message
+  }
 }

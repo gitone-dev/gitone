@@ -1,5 +1,6 @@
 package cn.notfound.gitone.server.services;
 
+import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.controllers.users.inputs.*;
 import cn.notfound.gitone.server.daos.UserDao;
 import cn.notfound.gitone.server.daos.UserDetailDao;
@@ -19,7 +20,7 @@ import java.time.OffsetDateTime;
 
 @AllArgsConstructor
 @Service
-public class UserService extends BaseService {
+public class UserService extends ViewerContext {
 
     private PasswordEncoder passwordEncoder;
 

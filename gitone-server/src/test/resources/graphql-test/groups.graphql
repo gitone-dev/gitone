@@ -1,0 +1,37 @@
+fragment GroupFragment on Group {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+fragment PageInfoFragment on PageInfo {
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
+}
+
+query Groups(
+  $first: Int!
+  $after: String
+  $filterBy: GroupFilter
+  $orderBy: GroupOrder
+) {
+  groups(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...GroupFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

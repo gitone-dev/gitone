@@ -15,4 +15,8 @@ public class Faker {
     public static String email() {
         return String.format("%s@example", username());
     }
+
+    public static String path() {
+        return username();
+    }
 }

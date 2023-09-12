@@ -1,0 +1,27 @@
+query GroupMembers(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: MemberFilter
+  $orderBy: MemberOrder
+) {
+  group(fullPath: $fullPath) {
+    id
+    members(
+      first: $first
+      after: $after
+      filterBy: $filterBy
+      orderBy: $orderBy
+    ) {
+      edges {
+        node {
+          ...MemberFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+}

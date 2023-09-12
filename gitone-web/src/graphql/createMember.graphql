@@ -1,0 +1,7 @@
+mutation CreateMember($input: CreateMemberInput!) {
+  payload: createMember(input: $input) {
+    member {
+      ...MemberFragment
+    }
+  }
+}

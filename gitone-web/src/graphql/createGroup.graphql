@@ -1,0 +1,7 @@
+mutation CreateGroup($input: CreateGroupInput!) {
+  payload: createGroup(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}

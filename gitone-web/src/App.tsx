@@ -1,17 +1,17 @@
-import { usePingQuery } from "./generated/types";
+import { Navigate } from "react-router-dom";
+import { useViewerQuery } from "./generated/types";
 import Layout from "./layout";
-import ErrorPage from "./pages/ErrorPage";
 import LoadingPage from "./pages/LoadingPage";
 
 function App() {
-  const { data, loading, error } = usePingQuery();
+  const { data, loading } = useViewerQuery();
 
   if (loading) {
     return <LoadingPage />;
-  } else if (error) {
-    return <ErrorPage message={error.message} />;
+  } else if (data?.viewer) {
+    return <Navigate to="/dashboard" />;
   } else {
-    return <Layout.Simple>{data?.ping}</Layout.Simple>;
+    return <Layout.Simple>Hello GitOne!</Layout.Simple>;
   }
 }
 

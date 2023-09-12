@@ -1,0 +1,25 @@
+fragment UserFragment on User {
+  id
+  createdAt
+  updatedAt
+  name
+  username
+}
+
+fragment MemberFragment on Member {
+  id
+  createdAt
+  updatedAt
+  access
+  user {
+    ...UserFragment
+  }
+}
+
+mutation CreateMember($input: CreateMemberInput!) {
+  payload: createMember(input: $input) {
+    member {
+      ...MemberFragment
+    }
+  }
+}

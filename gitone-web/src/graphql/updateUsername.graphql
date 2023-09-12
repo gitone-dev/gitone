@@ -1,7 +1,7 @@
 mutation UpdateUsername($input: UpdateUsernameInput!) {
-    payload: updateUsername(input: $input) {
-        user {
-            ...UserFragment
-        }
+  payload: updateUsername(input: $input) {
+    user {
+      ...UserFragment
     }
+  }
 }

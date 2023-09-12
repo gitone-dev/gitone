@@ -1,6 +1,6 @@
 package cn.notfound.gitone.server.controllers.users;
 
-import cn.notfound.gitone.server.controllers.BaseController;
+import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.controllers.users.inputs.*;
 import cn.notfound.gitone.server.controllers.users.payloads.*;
 import cn.notfound.gitone.server.entities.Role;
@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 
 @AllArgsConstructor
 @Controller
-public class UserMutationController extends BaseController {
+public class UserMutationController extends ViewerContext {
 
     private HttpServletRequest request;
 

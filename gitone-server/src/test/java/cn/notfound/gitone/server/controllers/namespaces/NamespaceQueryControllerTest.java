@@ -1,8 +1,13 @@
 package cn.notfound.gitone.server.controllers.namespaces;
 
 import cn.notfound.gitone.server.controllers.users.inputs.CreateUserInput;
+import cn.notfound.gitone.server.entities.Access;
 import cn.notfound.gitone.server.factories.BaseFactory;
+import cn.notfound.gitone.server.factories.GroupFactory;
 import cn.notfound.gitone.server.factories.UserFactory;
+import cn.notfound.gitone.server.policies.Action;
+import cn.notfound.gitone.server.results.GroupResult;
+import cn.notfound.gitone.server.results.SessionResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
@@ -16,10 +21,17 @@ class NamespaceQueryControllerTest extends BaseFactory {
 
     private final UserFactory userFactory;
 
+    private final GroupFactory groupFactory;
+
     @Autowired
-    public NamespaceQueryControllerTest(WebGraphQlTester graphQlTester, UserFactory userFactory) {
+    public NamespaceQueryControllerTest(
+            WebGraphQlTester graphQlTester,
+            UserFactory userFactory,
+            GroupFactory groupFactory) {
+
         super(graphQlTester);
         this.userFactory = userFactory;
+        this.groupFactory = groupFactory;
     }
 
     @Test
@@ -42,17 +54,45 @@ class NamespaceQueryControllerTest extends BaseFactory {
 
     @Test
     void namespace() {
-        CreateUserInput createUserInput = userFactory.createUserInput();
-
         query("namespace")
-                .variable("fullPath", createUserInput.getUsername())
+                .variable("fullPath", "notfound/notfound")
                 .execute()
                 .errors().expect(e -> e.getErrorType().equals(ErrorType.NOT_FOUND));
 
-        userFactory.create(createUserInput);
+        SessionResult session = userFactory.viewer();
+        GroupResult group = groupFactory.create(session);
+
         query("namespace")
-                .variable("fullPath", createUserInput.getUsername())
+                .variable("fullPath", group.getFullPath())
                 .execute()
-                .path("namespace.fullPath").entity(String.class).isEqualTo(createUserInput.getUsername());
+                .path("namespace.id").entity(String.class).isNotEqualTo("")
+                .path("namespace.name").valueIsNull()
+                .path("namespace.path").valueIsNull()
+                .path("namespace.fullName").valueIsNull()
+                .path("namespace.fullPath").entity(String.class).isEqualTo(group.getFullPath())
+                .path("namespace.description").entity(String.class).isEqualTo("");
+        query("namespace", session)
+                .variable("fullPath", group.getFullPath())
+                .execute()
+                .path("namespace.fullName").entity(String.class).isEqualTo(group.getFullName())
+                .path("namespace.fullPath").entity(String.class).isEqualTo(group.getFullPath());
+    }
+
+    @Test
+    void namespacePolicy() {
+        SessionResult session = userFactory.viewer();
+
+        query("namespacePolicy")
+                .variable("fullPath", session.getUsername())
+                .execute()
+                .path("namespacePolicy.access").entity(Access.class).isEqualTo(Access.REPORTER)
+                .path("namespacePolicy.actions").entityList(Action.class).hasSize(1)
+                .contains(Action.READ);
+        query("namespacePolicy", session)
+                .variable("fullPath", session.getUsername())
+                .execute()
+                .path("namespacePolicy.access").entity(Access.class).isEqualTo(Access.REPORTER)
+                .path("namespacePolicy.actions").entityList(Action.class).hasSize(1)
+                .contains(Action.READ);
     }
 }

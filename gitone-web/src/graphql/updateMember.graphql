@@ -1,0 +1,7 @@
+mutation UpdateMember($input: UpdateMemberInput!) {
+  payload: updateMember(input: $input) {
+    member {
+      ...MemberFragment
+    }
+  }
+}

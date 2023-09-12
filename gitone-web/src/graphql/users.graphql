@@ -1,0 +1,13 @@
+query Users($after: String, $filterBy: UserFilter, $orderBy: UserOrder) {
+  users(after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...UserFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

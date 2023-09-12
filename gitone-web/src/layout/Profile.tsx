@@ -1,18 +1,16 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EmailIcon from "@mui/icons-material/Email";
-import LockIcon from '@mui/icons-material/Lock';
+import LockIcon from "@mui/icons-material/Lock";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { Breadcrumbs, Divider, Link, Typography } from "@mui/material";
-import Box, { BoxProps } from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
+import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useViewerQuery } from "../generated/types";
 import ErrorPage from "../pages/ErrorPage";
 import LoadingPage from "../pages/LoadingPage";
-import ListItemLink from "../shared/ListItemLink";
+import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
+import Sidebar from "./Sidebar";
 
 const items = [
   {
@@ -41,8 +39,26 @@ const items = [
   },
 ];
 
-function Profile(props: BoxProps) {
-  const { pathname } = useLocation();
+const breadcrumbItems: BreadcrumbItems = {
+  "/profile": [
+    { to: "/profile", text: "用户设置" },
+    { to: "/profile", text: "个人资料" },
+  ],
+  "/profile/account": [
+    { to: "/profile", text: "用户设置" },
+    { to: "/profile/account", text: "账号管理" },
+  ],
+  "/profile/emails": [
+    { to: "/profile", text: "用户设置" },
+    { to: "/profile/emails", text: "邮箱管理" },
+  ],
+  "/profile/password": [
+    { to: "/profile", text: "用户设置" },
+    { to: "/profile/password", text: "密码管理" },
+  ],
+};
+
+function Profile() {
   const { loading, error } = useViewerQuery();
 
   if (loading) {
@@ -53,46 +69,13 @@ function Profile(props: BoxProps) {
 
   return (
     <Page sx={{ display: "flex" }}>
-      <Drawer
-        variant="permanent"
-        sx={{
-          flexShrink: 0,
-          width: 200,
-        }}
-        PaperProps={{
-          sx: {
-            boxShadow: 3,
-            boxSizing: "border-box",
-            width: 200,
-          },
-        }}
-      >
+      <Sidebar items={items} />
+      <Box sx={{ mx: 2, my: 1, width: "100%" }}>
         <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
-          <List>
-            {items.map((item) => (
-              <ListItemLink {...item} />
-            ))}
-          </List>
+        <Breadcrumbs items={breadcrumbItems} />
+        <Box>
+          <Outlet />
         </Box>
-      </Drawer>
-      <Box sx={{ margin: 2, width: "100%" }}>
-        <Toolbar />
-        <Breadcrumbs>
-          <Link
-            color="inherit"
-            component={RouterLink}
-            to="/profile"
-            underline="hover"
-          >
-            用户设置
-          </Link>
-          <Typography color="text.primary">
-            {items.find((item) => item.to === pathname)?.text}
-          </Typography>
-        </Breadcrumbs>
-        <Divider sx={{ my: 2 }} />
-        <Box {...props} />
       </Box>
     </Page>
   );

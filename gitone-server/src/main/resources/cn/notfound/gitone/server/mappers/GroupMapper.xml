@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.notfound.gitone.server.mappers.GroupMapper">
+    <resultMap id="groupMap" type="cn.notfound.gitone.server.entities.GroupEntity"
+               extends="cn.notfound.gitone.server.mappers.NamespaceMapper.namespaceMap">
+    </resultMap>
+    <sql id="groupColumns">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.namespaceColumns" />
+    </sql>
+    <sql id="filter">
+        <if test="filter.memberUserId ">
+            AND m.user_id = #{filter.memberUserId,jdbcType=INTEGER}
+        </if>
+        <if test="filter.parentId != null">
+            AND ns.parent_id = #{filter.parentId,jdbcType=INTEGER}
+        </if>
+        <if test="filter.visibility != null">
+            AND ns.visibility = #{filter.visibility,jdbcType=INTEGER}
+        </if>
+        <if test="filter.query != null">
+            AND ns.path like '%' || #{filter.query,jdbcType=VARCHAR} || '%'
+        </if>
+    </sql>
+    <sql id="direction">${page.direction(before)}</sql>
+    <sql id="cursorOp">
+        <choose>
+            <when test="cursor.createdAt != null">
+                AND (
+                    ns.created_at = #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND ns.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR ns.created_at <include refid="direction" /> #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.updatedAt != null">
+                AND (
+                    ns.updated_at = #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND ns.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR ns.updated_at <include refid="direction" /> #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.path != null">
+                AND (
+                    ns.path = #{cursor.path,jdbcType=VARCHAR} AND ns.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR ns.path <include refid="direction" /> #{cursor.path,jdbcType=VARCHAR}
+                )
+            </when>
+        </choose>
+    </sql>
+    <sql id="page">
+        <if test="page.before != null">
+            <bind name="before" value="true"/>
+            <bind name="cursor" value="page.before"/>
+            <include refid="cursorOp" />
+        </if>
+        <if test="page.after != null">
+            <bind name="before" value="false"/>
+            <bind name="cursor" value="page.after"/>
+            <include refid="cursorOp" />
+        </if>
+    </sql>
+    <select id="find" parameterType="java.lang.Integer" resultMap="groupMap">
+        SELECT <include refid="groupColumns" />
+        FROM namespaces AS ns
+        WHERE ns.id = #{id,jdbcType=INTEGER} AND ns.type = 2
+    </select>
+    <select id="findByIds" parameterType="java.util.Collection" resultMap="groupMap">
+        SELECT <include refid="groupColumns" />
+        FROM namespaces AS ns
+        WHERE ns.id IN
+        <foreach collection="ids" open="(" item="id" separator="," close=")">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+        AND ns.type = 2
+    </select>
+    <select id="findByFullPath" parameterType="java.lang.String" resultMap="groupMap">
+        SELECT <include refid="groupColumns" />
+        FROM namespaces AS ns
+        WHERE ns.full_path = #{fullPath,jdbcType=VARCHAR} AND ns.type = 2
+    </select>
+    <select id="findByParentIdAndPath" parameterType="java.util.Map" resultMap="groupMap">
+        SELECT <include refid="groupColumns" />
+        FROM namespaces AS ns
+        WHERE ns.parent_id = #{parentId,jdbcType=INTEGER} AND ns.path = #{path,jdbcType=VARCHAR} AND ns.type = 2
+    </select>
+    <select id="findAll" resultMap="groupMap">
+        SELECT <include refid="groupColumns" />
+        FROM namespaces AS ns
+        <if test="filter.memberUserId != null">
+            inner join members AS m on ns.id = m.namespace_id
+        </if>
+        <where>
+            <include refid="filter" />
+            <include refid="page" />
+            AND ns.type = 2
+        </where>
+        ORDER BY ns.${page.order.field} ${page.orderDirection}, ns.id ASC
+        LIMIT #{page.limit,jdbcType=INTEGER}
+    </select>
+    <insert id="create" parameterType="cn.notfound.gitone.server.entities.GroupEntity" keyProperty="id" useGeneratedKeys="true" >
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.insert" />
+    </insert>
+    <update id="update" parameterType="cn.notfound.gitone.server.entities.GroupEntity">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.update" />
+    </update>
+    <delete id="delete" parameterType="cn.notfound.gitone.server.entities.GroupEntity">
+        DELETE FROM namespaces
+        WHERE id = #{id,jdbcType=INTEGER} AND type = 2
+    </delete>
+</mapper>

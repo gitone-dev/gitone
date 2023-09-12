@@ -1,10 +1,8 @@
 package cn.notfound.gitone.server.controllers.users;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class UserFilter {
 
     private String query;

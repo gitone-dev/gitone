@@ -1,7 +1,7 @@
 fragment EmailFragment on Email {
-    id
-    createdAt
-    updatedAt
-    email
-    primary
+  id
+  createdAt
+  updatedAt
+  email
+  primary
 }

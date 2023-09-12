@@ -24,23 +24,21 @@ function Form() {
   const [existEmailLazyQuery] = useExistEmailLazyQuery();
   const [sendPasswordResetEmailMutation] = useSendPasswordResetEmailMutation();
 
-  const validateEmail = (email: string): Promise<boolean> => {
-    return new Promise<boolean>((resolve) => {
-      existEmailLazyQuery({
-        variables: { email },
-        onCompleted(data) {
-          if (data.existEmail) {
-            clearErrors("email");
-            resolve(true);
-          } else {
-            setError("email", { message: "邮箱未注册" });
-          }
-        },
-        onError(error) {
-          setError("email", { message: error.message });
-        },
-      });
+  const validateEmail = async (email: string): Promise<boolean> => {
+    const { data } = await existEmailLazyQuery({
+      variables: { email },
+      onCompleted(data) {
+        if (data.existEmail) {
+          clearErrors("email");
+        } else {
+          setError("email", { message: "邮箱未注册" });
+        }
+      },
+      onError(error) {
+        setError("email", { message: error.message });
+      },
     });
+    return !data?.existEmail;
   };
 
   const onSubmit = handleSubmit((input: SendPasswordResetEmailInput) => {

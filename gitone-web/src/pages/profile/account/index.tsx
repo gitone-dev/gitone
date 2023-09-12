@@ -7,11 +7,10 @@ import {
   useUpdateUsernameMutation,
   useViewerQuery,
 } from "../../../generated/types";
-import Layout from "../../../layout";
 import ChunkPaper from "../../../shared/ChunkPaper";
+import ErrorBox from "../../../shared/ErrorBox";
+import LoadingBox from "../../../shared/LoadingBox";
 import { user as pattern } from "../../../utils/regex";
-import ErrorPage from "../../ErrorPage";
-import LoadingPage from "../../LoadingPage";
 
 function Account() {
   const { enqueueSnackbar } = useSnackbar();
@@ -37,15 +36,15 @@ function Account() {
   });
 
   if (loading) {
-    return <LoadingPage />;
+    return <LoadingBox />;
   } else if (error) {
-    return <ErrorPage message={error.message} />;
+    return <ErrorBox message={error.message} />;
   } else if (!data?.viewer) {
-    return <ErrorPage message="客户端查询出错" />;
+    return <ErrorBox message="客户端查询条件错误" />;
   }
 
   return (
-    <Layout.Profile>
+    <>
       <ChunkPaper primary="修改用户名" component="form" onSubmit={onSubmit}>
         <TextField
           error={Boolean(errors.username)}
@@ -65,7 +64,7 @@ function Account() {
           保存
         </Button>
       </ChunkPaper>
-    </Layout.Profile>
+    </>
   );
 }
 

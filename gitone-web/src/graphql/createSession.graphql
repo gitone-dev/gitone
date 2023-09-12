@@ -1,7 +1,7 @@
 mutation CreateSession($input: CreateSessionInput!) {
-    payload: createSession(input: $input) {
-        session {
-            ...SessionFragment
-        }
+  payload: createSession(input: $input) {
+    session {
+      ...SessionFragment
     }
+  }
 }

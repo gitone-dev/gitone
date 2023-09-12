@@ -1,7 +1,6 @@
 import { useViewerDetailQuery } from "../../generated/types";
-import Layout from "../../layout";
-import ErrorPage from "../ErrorPage";
-import LoadingPage from "../LoadingPage";
+import ErrorBox from "../../shared/ErrorBox";
+import LoadingBox from "../../shared/LoadingBox";
 import AvatarPaper from "./AvatarPaper";
 import UserDetailPaper from "./UserDetailPaper";
 
@@ -9,18 +8,18 @@ function Index() {
   const { data, loading, error } = useViewerDetailQuery();
 
   if (loading) {
-    return <LoadingPage />;
+    return <LoadingBox />;
   } else if (error) {
-    return <ErrorPage message={error.message} />;
+    return <ErrorBox message={error.message} />;
   } else if (!data?.viewer) {
-    return <ErrorPage message="客户端查询出错" />;
+    return <ErrorBox message="客户端查询条件错误" />;
   }
 
   return (
-    <Layout.Profile>
+    <>
       <AvatarPaper avatarUrl={data.viewer.avatarUrl} />
       <UserDetailPaper viewer={data.viewer} />
-    </Layout.Profile>
+    </>
   );
 }
 

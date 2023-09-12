@@ -1,0 +1,19 @@
+fragment GroupFragment on Group {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+mutation UpdateGroup($input: UpdateGroupInput!) {
+  payload: updateGroup(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}

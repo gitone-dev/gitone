@@ -14,15 +14,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserFactory extends BaseFactory {
 
-    @Autowired
-    private EmailDao emailDao;
+    private final EmailDao emailDao;
+
+    private final UserDao userDao;
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
-    public UserFactory(WebGraphQlTester graphQlTester) {
+    public UserFactory(WebGraphQlTester graphQlTester, EmailDao emailDao, UserDao userDao) {
         super(graphQlTester);
+        this.emailDao = emailDao;
+        this.userDao = userDao;
     }
 
     public CreateUserInput createUserInput() {
@@ -35,8 +35,12 @@ public class UserFactory extends BaseFactory {
         return input;
     }
 
-    public void create(CreateUserInput input) {
-        mutate("createUser", input)
+    public UserResult create() {
+        return create(createUserInput());
+    }
+
+    public UserResult create(CreateUserInput input) {
+        return mutate("createUser", input)
                 .path("payload.user").entity(UserResult.class).get();
     }
 

@@ -1,4 +1,5 @@
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
@@ -38,30 +39,33 @@ function UserDetailPaper(props: Props) {
   });
   return (
     <ChunkPaper primary="修改个人资料" component="form" onSubmit={onSubmit}>
-      <TextField
-        defaultValue={viewer.id}
-        disabled
-        fullWidth
-        label="用户 ID"
-        margin="dense"
-        size="small"
-      />
-      <TextField
-        defaultValue={viewer.name}
-        error={Boolean(errors.name)}
-        fullWidth
-        helperText={errors.name?.message || pattern.name.helper}
-        label="昵称"
-        margin="dense"
-        required
-        size="small"
-        {...register("name", { ...pattern.name.rules })}
-      />
+      <Stack direction="row" spacing={1} alignItems="baseline">
+        <TextField
+          defaultValue={viewer.name}
+          error={Boolean(errors.name)}
+          fullWidth
+          helperText={errors.name?.message || pattern.name.helper}
+          label="昵称"
+          margin="dense"
+          required
+          size="small"
+          {...register("name", { ...pattern.name.rules })}
+        />
+        <TextField
+          defaultValue={viewer.id}
+          disabled
+          fullWidth
+          label="用户 ID"
+          margin="dense"
+          size="small"
+        />
+      </Stack>
       <TextField
         defaultValue={viewer.bio}
         error={Boolean(errors.bio)}
         fullWidth
         helperText={errors.bio?.message || pattern.bio.helper}
+        margin="dense"
         label="个人简介"
         multiline
         minRows={3}

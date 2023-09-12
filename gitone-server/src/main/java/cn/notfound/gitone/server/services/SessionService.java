@@ -1,5 +1,6 @@
 package cn.notfound.gitone.server.services;
 
+import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.controllers.session.inputs.CreateSessionInput;
 import cn.notfound.gitone.server.daos.UserDao;
 import cn.notfound.gitone.server.entities.SessionEntity;
@@ -22,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-public class SessionService extends BaseService {
+public class SessionService extends ViewerContext {
 
     public static final String ACTIVATE_USER_KEY = "GITONE_ACTIVATE_USER_KEY";
 

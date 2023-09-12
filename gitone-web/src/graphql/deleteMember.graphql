@@ -1,0 +1,7 @@
+mutation DeleteMember($input: DeleteMemberInput!) {
+  payload: deleteMember(input: $input) {
+    member {
+      ...MemberFragment
+    }
+  }
+}

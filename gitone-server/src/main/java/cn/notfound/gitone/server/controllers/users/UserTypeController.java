@@ -1,6 +1,6 @@
 package cn.notfound.gitone.server.controllers.users;
 
-import cn.notfound.gitone.server.controllers.BaseController;
+import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.controllers.NodeConnection;
 import cn.notfound.gitone.server.controllers.NodePage;
 import cn.notfound.gitone.server.controllers.Relay;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @SchemaMapping(typeName = UserEntity.TYPE)
-public class UserTypeController extends BaseController {
+public class UserTypeController extends ViewerContext {
 
     @Autowired
     private UserNamespaceDao userNamespaceDao;

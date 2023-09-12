@@ -34,23 +34,21 @@ function UpdateActivationEmailDialog(props: Props) {
   const [existEmailLazyQuery] = useExistEmailLazyQuery();
   const [updateActivationEmailMutation] = useUpdateActivationEmailMutation();
 
-  const validateEmail = (email: string): Promise<boolean> => {
-    return new Promise<boolean>((resolve) => {
-      existEmailLazyQuery({
-        variables: { email },
-        onCompleted(data) {
-          if (data.existEmail) {
-            setError("email", { message: "邮箱已被占用" });
-          } else {
-            clearErrors("email");
-            resolve(true);
-          }
-        },
-        onError(error) {
-          setError("email", { message: error.message });
-        },
-      });
+  const validateEmail = async (email: string): Promise<boolean> => {
+    const { data } = await existEmailLazyQuery({
+      variables: { email },
+      onCompleted(data) {
+        if (data.existEmail) {
+          setError("email", { message: "邮箱已被占用" });
+        } else {
+          clearErrors("email");
+        }
+      },
+      onError(error) {
+        setError("email", { message: error.message });
+      },
     });
+    return !data?.existEmail;
   };
 
   const onSubmit = handleSubmit((input: UpdateActivationEmailInput) => {

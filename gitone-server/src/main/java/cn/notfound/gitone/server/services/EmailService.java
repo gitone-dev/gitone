@@ -1,5 +1,6 @@
 package cn.notfound.gitone.server.services;
 
+import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.daos.EmailDao;
 import cn.notfound.gitone.server.daos.UserDao;
 import cn.notfound.gitone.server.entities.EmailEntity;
@@ -11,7 +12,7 @@ import org.springframework.util.Assert;
 
 @AllArgsConstructor
 @Service
-public class EmailService extends BaseService {
+public class EmailService extends ViewerContext {
 
     private static final int MAX_EMAILS = 10;
 

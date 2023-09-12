@@ -1,0 +1,7 @@
+mutation UpdateGroupPath($input: UpdateGroupPathInput!) {
+  payload: updateGroupPath(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}

@@ -27,42 +27,38 @@ function Form() {
   const [existFullPathQuery] = useExistFullPathLazyQuery();
   const [createUserMutation] = useCreateUserMutation();
 
-  const validateEmail = (email: string): Promise<boolean> => {
-    return new Promise<boolean>((resolve) => {
-      existEmailLazyQuery({
-        variables: { email },
-        onCompleted(data) {
-          if (data.existEmail) {
-            setError("email", { message: "邮箱已被占用" });
-          } else {
-            clearErrors("email");
-            resolve(true);
-          }
-        },
-        onError(error) {
-          setError("email", { message: error.message });
-        },
-      });
+  const validateEmail = async (email: string): Promise<boolean> => {
+    const { data } = await existEmailLazyQuery({
+      variables: { email },
+      onCompleted(data) {
+        if (data.existEmail) {
+          setError("email", { message: "邮箱已被占用" });
+        } else {
+          clearErrors("email");
+        }
+      },
+      onError(error) {
+        setError("email", { message: error.message });
+      },
     });
+    return !data?.existEmail;
   };
 
-  const validateUsername = (username: string): Promise<boolean> => {
-    return new Promise<boolean>((resolve) => {
-      existFullPathQuery({
-        variables: { fullPath: username },
-        onCompleted(data) {
-          if (data.existFullPath) {
-            setError("username", { message: "用户名已被占用" });
-          } else {
-            clearErrors("username");
-            resolve(true);
-          }
-        },
-        onError(error) {
-          setError("username", { message: error.message });
-        },
-      });
+  const validateUsername = async (username: string): Promise<boolean> => {
+    const { data } = await existFullPathQuery({
+      variables: { fullPath: username },
+      onCompleted(data) {
+        if (data.existFullPath) {
+          setError("username", { message: "用户名已被占用" });
+        } else {
+          clearErrors("username");
+        }
+      },
+      onError(error) {
+        setError("username", { message: error.message });
+      },
     });
+    return !data?.existFullPath;
   };
 
   const onSubmit = handleSubmit((input: CreateUserInput) => {

@@ -1,0 +1,5 @@
+query GroupPolicy($fullPath: String!) {
+  groupPolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}

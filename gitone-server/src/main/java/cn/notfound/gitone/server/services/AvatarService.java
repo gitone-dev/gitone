@@ -1,5 +1,6 @@
 package cn.notfound.gitone.server.services;
 
+import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.config.CustomProperties;
 import cn.notfound.gitone.server.controllers.avatars.AvatarController;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.Iterator;
 
 @AllArgsConstructor
 @Service
-public class AvatarService extends BaseService {
+public class AvatarService extends ViewerContext {
 
     private static final int MB = 1024 * 1024;
 

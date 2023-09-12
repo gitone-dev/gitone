@@ -1,0 +1,19 @@
+fragment GroupFragment on Group {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+mutation UpdateGroupVisibility($input: UpdateGroupVisibilityInput!) {
+  payload: updateGroupVisibility(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}

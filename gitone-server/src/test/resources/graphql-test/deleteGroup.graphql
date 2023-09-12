@@ -1,0 +1,19 @@
+fragment GroupFragment on Group {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+mutation DeleteGroup($input: DeleteGroupInput!) {
+  payload: deleteGroup(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}

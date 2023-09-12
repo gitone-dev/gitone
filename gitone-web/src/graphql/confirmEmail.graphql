@@ -1,7 +1,7 @@
 mutation ConfirmEmail($input: ConfirmEmailInput!) {
-    payload: confirmEmail(input: $input) {
-        email {
-            ...EmailFragment
-        }
+  payload: confirmEmail(input: $input) {
+    email {
+      ...EmailFragment
     }
+  }
 }

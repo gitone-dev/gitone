@@ -1,0 +1,33 @@
+fragment UserFragment on User {
+  id
+  createdAt
+  updatedAt
+  name
+  username
+}
+
+fragment PageInfoFragment on PageInfo {
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
+}
+
+query Users(
+  $first: Int!
+  $after: String
+  $filterBy: UserFilter
+  $orderBy: UserOrder
+) {
+  users(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...UserFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

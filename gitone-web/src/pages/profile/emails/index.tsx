@@ -9,22 +9,20 @@ import {
   useSetPrimaryEmailMutation,
   useViewerEmailsQuery,
 } from "../../../generated/types";
-import Layout from "../../../layout";
-import ErrorPage from "../../ErrorPage";
-import LoadingPage from "../../LoadingPage";
-import AddEmailPaper from "./AddEmailPaper";
+import ErrorBox from "../../../shared/ErrorBox";
+import LoadingBox from "../../../shared/LoadingBox";
 import EmailsPaper from "./EmailsPaper";
 import SetPrimaryEmailPaper from "./SetPrimaryEmailPaper";
 
 function Emails() {
   const { enqueueSnackbar } = useSnackbar();
-  const { data: qData, loading, error } = useViewerEmailsQuery();
+  const { data, loading, error } = useViewerEmailsQuery();
   const [createEmailMutation] = useCreateEmailMutation();
   const [setPrimaryEmailMutation] = useSetPrimaryEmailMutation();
   const [deleteEmailMutation] = useDeleteEmailMutation();
 
-  const emails = qData?.viewer.emails;
-  const unconfirmedEmails = qData?.viewer.unconfirmedEmails;
+  const emails = data?.viewer.emails;
+  const unconfirmedEmails = data?.viewer.unconfirmedEmails;
 
   const onCreate = (input: CreateEmailInput) => {
     createEmailMutation({
@@ -32,12 +30,12 @@ function Emails() {
       onCompleted() {
         enqueueSnackbar("激活邮件已发送，请注意查收", { variant: "success" });
       },
-      update(cache, { data }) {
-        const email = data?.payload?.email;
-        if (!email || !qData?.viewer) return;
+      update(cache, { data: result }) {
+        const email = result?.payload?.email;
+        if (!email || !data?.viewer) return;
 
         cache.modify({
-          id: cache.identify(qData.viewer),
+          id: cache.identify(data.viewer),
           fields: {
             unconfirmedEmails(existingRefs = {}, { toReference, readField }) {
               if (
@@ -99,12 +97,12 @@ function Emails() {
       onCompleted() {
         enqueueSnackbar("已删除", { variant: "success" });
       },
-      update(cache, { data }) {
-        const email = data?.payload?.email;
-        if (!email || !qData?.viewer) return;
+      update(cache, { data: result }) {
+        const email = result?.payload?.email;
+        if (!email || !data?.viewer) return;
 
         cache.modify({
-          id: cache.identify(qData.viewer),
+          id: cache.identify(data.viewer),
           fields: {
             emails(existingRefs = {}, { readField }) {
               const edges = existingRefs.edges?.filter(
@@ -128,15 +126,15 @@ function Emails() {
   };
 
   if (loading) {
-    return <LoadingPage />;
+    return <LoadingBox />;
   } else if (error) {
-    return <ErrorPage message={error.message} />;
+    return <ErrorBox message={error.message} />;
   } else if (!emails || !unconfirmedEmails) {
-    return <ErrorPage message="客户端查询出错" />;
+    return <ErrorBox message="客户端查询条件错误" />;
   }
 
   return (
-    <Layout.Profile>
+    <>
       <EmailsPaper
         emails={emails}
         unconfirmedEmails={unconfirmedEmails}
@@ -144,8 +142,7 @@ function Emails() {
         onDelete={onDelete}
       />
       <SetPrimaryEmailPaper emails={emails} onSetPrimary={onSetPrimary} />
-      <AddEmailPaper onCreate={onCreate} />
-    </Layout.Profile>
+    </>
   );
 }
 

@@ -31,22 +31,12 @@
         active,
         role
     </sql>
-    <sql id="direction">
-        <choose>
-            <when test="before">
-                <choose>
-                    <when test="page.order.direction.name == 'DESC'">&gt;</when>
-                    <otherwise>&lt;</otherwise>
-                </choose>
-            </when>
-            <when test="after">
-                <choose>
-                    <when test="page.order.direction.name == 'DESC'">&lt;</when>
-                    <otherwise>&gt;</otherwise>
-                </choose>
-            </when>
-        </choose>
+    <sql id="filter">
+        <if test="filter.query != null">
+            AND username LIKE #{filter.query,jdbcType=VARCHAR} || '%'
+        </if>
     </sql>
+    <sql id="direction">${page.direction(before)}</sql>
     <sql id="cursorOp">
         <choose>
             <when test="cursor.createdAt != null">
@@ -68,6 +58,18 @@
                 )
             </when>
         </choose>
+    </sql>
+    <sql id="page">
+        <if test="page.before != null">
+            <bind name="before" value="true"/>
+            <bind name="cursor" value="page.before"/>
+            <include refid="cursorOp" />
+        </if>
+        <if test="page.after != null">
+            <bind name="before" value="false"/>
+            <bind name="cursor" value="page.after"/>
+            <include refid="cursorOp" />
+        </if>
     </sql>
     <select id="find" parameterType="java.lang.Integer" resultMap="userMap">
         SELECT <include refid="userColumns" />
@@ -101,30 +103,10 @@
         SELECT <include refid="userColumns" />
         FROM users
         <where>
-            <if test="filter">
-                <if test="filter.query != null">
-                    AND username LIKE #{filter.query,jdbcType=VARCHAR} || '%'
-                </if>
-            </if>
-            <if test="page.before != null">
-                <bind name="cursor" value="page.before"/>
-                <bind name="before" value="true"/>
-                <bind name="after" value="false"/>
-                <include refid="cursorOp" />
-            </if>
-            <if test="page.after != null">
-                <bind name="cursor" value="page.after"/>
-                <bind name="before" value="false"/>
-                <bind name="after" value="true"/>
-                <include refid="cursorOp" />
-            </if>
+            <if test="filter"><include refid="filter" /></if>
+            <include refid="page" />
         </where>
-        ORDER BY ${page.order.field}
-        <choose>
-            <when test="page.last != null">${page.order.direction.reverse}</when>
-            <otherwise>${page.order.direction}</otherwise>
-        </choose>
-        , id ASC
+        ORDER BY ${page.order.field} ${page.orderDirection}, id ASC
         LIMIT #{page.limit,jdbcType=INTEGER}
     </select>
     <insert id="create" parameterType="cn.notfound.gitone.server.entities.UserEntity" keyProperty="id" useGeneratedKeys="true" >

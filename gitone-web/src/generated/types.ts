@@ -18,6 +18,24 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+/**  member */
+export enum Access {
+  Maintainer = 'MAINTAINER',
+  NoAccess = 'NO_ACCESS',
+  Owner = 'OWNER',
+  Reporter = 'REPORTER'
+}
+
+export enum Action {
+  CreateMember = 'CREATE_MEMBER',
+  Delete = 'DELETE',
+  DeleteMember = 'DELETE_MEMBER',
+  Read = 'READ',
+  ReadMember = 'READ_MEMBER',
+  Update = 'UPDATE',
+  UpdateMember = 'UPDATE_MEMBER'
+}
+
 export type ActivateUserInput = {
   token: Scalars['String']['input'];
 };
@@ -43,6 +61,29 @@ export type CreateEmailInput = {
 export type CreateEmailPayload = {
   __typename?: 'CreateEmailPayload';
   email?: Maybe<Email>;
+};
+
+export type CreateGroupInput = {
+  description: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  path: Scalars['String']['input'];
+  visibility: Visibility;
+};
+
+export type CreateGroupPayload = {
+  __typename?: 'CreateGroupPayload';
+  group?: Maybe<Group>;
+};
+
+export type CreateMemberInput = {
+  access: Access;
+  namespaceId: Scalars['String']['input'];
+  userId: Scalars['String']['input'];
+};
+
+export type CreateMemberPayload = {
+  __typename?: 'CreateMemberPayload';
+  member?: Maybe<Member>;
 };
 
 export type CreateSessionInput = {
@@ -74,6 +115,24 @@ export type DeleteEmailInput = {
 export type DeleteEmailPayload = {
   __typename?: 'DeleteEmailPayload';
   email?: Maybe<Email>;
+};
+
+export type DeleteGroupInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteGroupPayload = {
+  __typename?: 'DeleteGroupPayload';
+  group?: Maybe<Group>;
+};
+
+export type DeleteMemberInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteMemberPayload = {
+  __typename?: 'DeleteMemberPayload';
+  member?: Maybe<Member>;
 };
 
 export type DeleteSessionPayload = {
@@ -112,16 +171,113 @@ export type EmailEdge = {
   node: Email;
 };
 
+/**  group */
+export type Group = Node & {
+  __typename?: 'Group';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  fullName?: Maybe<Scalars['String']['output']>;
+  fullPath?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  members?: Maybe<MemberConnection>;
+  name?: Maybe<Scalars['String']['output']>;
+  path?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  visibility: Visibility;
+};
+
+
+/**  group */
+export type GroupMembersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<MemberFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<MemberOrder>;
+};
+
+export type GroupConnection = {
+  __typename?: 'GroupConnection';
+  edges?: Maybe<Array<GroupEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type GroupEdge = {
+  __typename?: 'GroupEdge';
+  cursor: Scalars['String']['output'];
+  node: Group;
+};
+
+export type GroupFilter = {
+  query?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
+  visibility?: InputMaybe<Visibility>;
+};
+
+export type GroupOrder = {
+  direction: OrderDirection;
+  field: GroupOrderField;
+};
+
+export enum GroupOrderField {
+  CreatedAt = 'CREATED_AT',
+  Path = 'PATH',
+  UpdatedAt = 'UPDATED_AT'
+}
+
+export type Member = {
+  __typename?: 'Member';
+  access?: Maybe<Access>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  user?: Maybe<User>;
+};
+
+export type MemberConnection = {
+  __typename?: 'MemberConnection';
+  edges?: Maybe<Array<MemberEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type MemberEdge = {
+  __typename?: 'MemberEdge';
+  cursor: Scalars['String']['output'];
+  node: Member;
+};
+
+export type MemberFilter = {
+  access?: InputMaybe<Access>;
+  query?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type MemberOrder = {
+  direction: OrderDirection;
+  field: MemberOrderField;
+};
+
+export enum MemberOrderField {
+  Access = 'ACCESS',
+  CreatedAt = 'CREATED_AT',
+  UpdatedAt = 'UPDATED_AT',
+  Username = 'USERNAME'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser?: Maybe<ActivateUserPayload>;
   confirmEmail?: Maybe<ConfirmEmailPayload>;
   createEmail?: Maybe<CreateEmailPayload>;
+  /**  group */
+  createGroup?: Maybe<CreateGroupPayload>;
+  /**  member */
+  createMember?: Maybe<CreateMemberPayload>;
   /**  session */
   createSession?: Maybe<CreateSessionPayload>;
   /**  user */
   createUser?: Maybe<CreateUserPayload>;
   deleteEmail?: Maybe<DeleteEmailPayload>;
+  deleteGroup?: Maybe<DeleteGroupPayload>;
+  deleteMember?: Maybe<DeleteMemberPayload>;
   deleteSession?: Maybe<DeleteSessionPayload>;
   deleteUser?: Maybe<DeleteUserPayload>;
   resetPassword?: Maybe<ResetPasswordPayload>;
@@ -129,6 +285,10 @@ export type Mutation = {
   sendPasswordResetEmail?: Maybe<SendPasswordResetEmailPayload>;
   setPrimaryEmail?: Maybe<SetPrimaryEmailPayload>;
   updateActivationEmail?: Maybe<UpdateActivationEmailPayload>;
+  updateGroup?: Maybe<UpdateGroupPayload>;
+  updateGroupPath?: Maybe<UpdateGroupPathPayload>;
+  updateGroupVisibility?: Maybe<UpdateGroupVisibilityPayload>;
+  updateMember?: Maybe<UpdateMemberPayload>;
   updatePassword?: Maybe<UpdatePasswordPayload>;
   updateUser?: Maybe<UpdateUserPayload>;
   updateUsername?: Maybe<UpdateUsernamePayload>;
@@ -150,6 +310,16 @@ export type MutationCreateEmailArgs = {
 };
 
 
+export type MutationCreateGroupArgs = {
+  input: CreateGroupInput;
+};
+
+
+export type MutationCreateMemberArgs = {
+  input: CreateMemberInput;
+};
+
+
 export type MutationCreateSessionArgs = {
   input: CreateSessionInput;
 };
@@ -162,6 +332,16 @@ export type MutationCreateUserArgs = {
 
 export type MutationDeleteEmailArgs = {
   input: DeleteEmailInput;
+};
+
+
+export type MutationDeleteGroupArgs = {
+  input: DeleteGroupInput;
+};
+
+
+export type MutationDeleteMemberArgs = {
+  input: DeleteMemberInput;
 };
 
 
@@ -192,6 +372,26 @@ export type MutationSetPrimaryEmailArgs = {
 
 export type MutationUpdateActivationEmailArgs = {
   input: UpdateActivationEmailInput;
+};
+
+
+export type MutationUpdateGroupArgs = {
+  input: UpdateGroupInput;
+};
+
+
+export type MutationUpdateGroupPathArgs = {
+  input: UpdateGroupPathInput;
+};
+
+
+export type MutationUpdateGroupVisibilityArgs = {
+  input: UpdateGroupVisibilityInput;
+};
+
+
+export type MutationUpdateMemberArgs = {
+  input: UpdateMemberInput;
 };
 
 
@@ -240,13 +440,25 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
+export type Policy = Node & {
+  __typename?: 'Policy';
+  access: Access;
+  actions: Array<Action>;
+  id: Scalars['ID']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   existEmail: Scalars['Boolean']['output'];
   existFullPath: Scalars['Boolean']['output'];
+  group: Group;
+  groupPolicy: Policy;
+  groups?: Maybe<GroupConnection>;
   namespace: Namespace;
+  namespacePolicy: Policy;
   ping: Scalars['String']['output'];
   user: User;
+  users?: Maybe<UserConnection>;
   viewer: User;
 };
 
@@ -261,13 +473,44 @@ export type QueryExistFullPathArgs = {
 };
 
 
+export type QueryGroupArgs = {
+  fullPath: Scalars['String']['input'];
+};
+
+
+export type QueryGroupPolicyArgs = {
+  fullPath: Scalars['String']['input'];
+};
+
+
+export type QueryGroupsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<GroupFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<GroupOrder>;
+};
+
+
 export type QueryNamespaceArgs = {
+  fullPath: Scalars['String']['input'];
+};
+
+
+export type QueryNamespacePolicyArgs = {
   fullPath: Scalars['String']['input'];
 };
 
 
 export type QueryUserArgs = {
   username: Scalars['String']['input'];
+};
+
+
+export type QueryUsersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<UserFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<UserOrder>;
 };
 
 export type ResetPasswordInput = {
@@ -331,6 +574,47 @@ export type UpdateActivationEmailPayload = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
+export type UpdateGroupInput = {
+  description: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type UpdateGroupPathInput = {
+  id: Scalars['ID']['input'];
+  path: Scalars['String']['input'];
+};
+
+export type UpdateGroupPathPayload = {
+  __typename?: 'UpdateGroupPathPayload';
+  group?: Maybe<Group>;
+};
+
+export type UpdateGroupPayload = {
+  __typename?: 'UpdateGroupPayload';
+  group?: Maybe<Group>;
+};
+
+export type UpdateGroupVisibilityInput = {
+  id: Scalars['ID']['input'];
+  visibility: Visibility;
+};
+
+export type UpdateGroupVisibilityPayload = {
+  __typename?: 'UpdateGroupVisibilityPayload';
+  group?: Maybe<Group>;
+};
+
+export type UpdateMemberInput = {
+  access: Access;
+  id: Scalars['ID']['input'];
+};
+
+export type UpdateMemberPayload = {
+  __typename?: 'UpdateMemberPayload';
+  member?: Maybe<Member>;
+};
+
 export type UpdatePasswordInput = {
   oldPassword: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -382,6 +666,33 @@ export type User = Node & {
   websiteUrl?: Maybe<Scalars['String']['output']>;
 };
 
+export type UserConnection = {
+  __typename?: 'UserConnection';
+  edges?: Maybe<Array<UserEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type UserEdge = {
+  __typename?: 'UserEdge';
+  cursor: Scalars['String']['output'];
+  node: User;
+};
+
+export type UserFilter = {
+  query?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UserOrder = {
+  direction: OrderDirection;
+  field: UserOrderField;
+};
+
+export enum UserOrderField {
+  CreatedAt = 'CREATED_AT',
+  UpdatedAt = 'UPDATED_AT',
+  Username = 'USERNAME'
+}
+
 export enum Visibility {
   Private = 'PRIVATE',
   Public = 'PUBLIC'
@@ -408,6 +719,20 @@ export type CreateEmailMutationVariables = Exact<{
 
 export type CreateEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
 
+export type CreateGroupMutationVariables = Exact<{
+  input: CreateGroupInput;
+}>;
+
+
+export type CreateGroupMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateGroupPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type CreateMemberMutationVariables = Exact<{
+  input: CreateMemberInput;
+}>;
+
+
+export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null } | null };
+
 export type CreateSessionMutationVariables = Exact<{
   input: CreateSessionInput;
 }>;
@@ -428,6 +753,13 @@ export type DeleteEmailMutationVariables = Exact<{
 
 
 export type DeleteEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
+
+export type DeleteMemberMutationVariables = Exact<{
+  input: DeleteMemberInput;
+}>;
+
+
+export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type DeleteSessionMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -457,6 +789,45 @@ export type ExistFullPathQueryVariables = Exact<{
 
 export type ExistFullPathQuery = { __typename?: 'Query', existFullPath: boolean };
 
+export type GroupFragmentFragment = { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null };
+
+export type GroupQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+}>;
+
+
+export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, groupPolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+
+export type GroupMembersQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<MemberFilter>;
+  orderBy?: InputMaybe<MemberOrder>;
+}>;
+
+
+export type GroupMembersQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
+
+export type GroupPolicyQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+}>;
+
+
+export type GroupPolicyQuery = { __typename?: 'Query', groupPolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+
+export type GroupsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<GroupFilter>;
+  orderBy?: InputMaybe<GroupOrder>;
+}>;
+
+
+export type GroupsQuery = { __typename?: 'Query', groups?: { __typename?: 'GroupConnection', edges?: Array<{ __typename?: 'GroupEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+
+export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null };
+
 export type NamespaceFragmentFragment = { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null };
 
 export type NamespaceQueryVariables = Exact<{
@@ -464,7 +835,7 @@ export type NamespaceQueryVariables = Exact<{
 }>;
 
 
-export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } };
+export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type PageInfoFragmentFragment = { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null };
 
@@ -472,6 +843,8 @@ export type PingQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type PingQuery = { __typename?: 'Query', ping: string };
+
+export type PolicyFragmentFragment = { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> };
 
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
@@ -509,6 +882,34 @@ export type UpdateActivationEmailMutationVariables = Exact<{
 
 
 export type UpdateActivationEmailMutation = { __typename?: 'Mutation', updateActivationEmail?: { __typename?: 'UpdateActivationEmailPayload', message?: string | null } | null };
+
+export type UpdateGroupMutationVariables = Exact<{
+  input: UpdateGroupInput;
+}>;
+
+
+export type UpdateGroupMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type UpdateGroupPathMutationVariables = Exact<{
+  input: UpdateGroupPathInput;
+}>;
+
+
+export type UpdateGroupPathMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupPathPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type UpdateGroupVisibilityMutationVariables = Exact<{
+  input: UpdateGroupVisibilityInput;
+}>;
+
+
+export type UpdateGroupVisibilityMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupVisibilityPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type UpdateMemberMutationVariables = Exact<{
+  input: UpdateMemberInput;
+}>;
+
+
+export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type UpdatePasswordMutationVariables = Exact<{
   input: UpdatePasswordInput;
@@ -549,6 +950,15 @@ export type UserDetailQueryVariables = Exact<{
 
 export type UserDetailQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null } };
 
+export type UsersQueryVariables = Exact<{
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<UserFilter>;
+  orderBy?: InputMaybe<UserOrder>;
+}>;
+
+
+export type UsersQuery = { __typename?: 'Query', users?: { __typename?: 'UserConnection', edges?: Array<{ __typename?: 'UserEdge', cursor: string, node: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+
 export type ViewerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -573,6 +983,40 @@ export const EmailFragmentFragmentDoc = gql`
   primary
 }
     `;
+export const GroupFragmentFragmentDoc = gql`
+    fragment GroupFragment on Group {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+    `;
+export const UserFragmentFragmentDoc = gql`
+    fragment UserFragment on User {
+  id
+  createdAt
+  updatedAt
+  name
+  username
+  avatarUrl
+}
+    `;
+export const MemberFragmentFragmentDoc = gql`
+    fragment MemberFragment on Member {
+  id
+  createdAt
+  updatedAt
+  access
+  user {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
 export const NamespaceFragmentFragmentDoc = gql`
     fragment NamespaceFragment on Namespace {
   id
@@ -594,6 +1038,13 @@ export const PageInfoFragmentFragmentDoc = gql`
   endCursor
 }
     `;
+export const PolicyFragmentFragmentDoc = gql`
+    fragment PolicyFragment on Policy {
+  id
+  access
+  actions
+}
+    `;
 export const SessionFragmentFragmentDoc = gql`
     fragment SessionFragment on Session {
   email
@@ -601,16 +1052,6 @@ export const SessionFragmentFragmentDoc = gql`
   active
   header
   token
-}
-    `;
-export const UserFragmentFragmentDoc = gql`
-    fragment UserFragment on User {
-  id
-  createdAt
-  updatedAt
-  name
-  username
-  avatarUrl
 }
     `;
 export const UserDetailFragmentFragmentDoc = gql`
@@ -729,6 +1170,76 @@ export function useCreateEmailMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateEmailMutationHookResult = ReturnType<typeof useCreateEmailMutation>;
 export type CreateEmailMutationResult = Apollo.MutationResult<CreateEmailMutation>;
 export type CreateEmailMutationOptions = Apollo.BaseMutationOptions<CreateEmailMutation, CreateEmailMutationVariables>;
+export const CreateGroupDocument = gql`
+    mutation CreateGroup($input: CreateGroupInput!) {
+  payload: createGroup(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}
+    ${GroupFragmentFragmentDoc}`;
+export type CreateGroupMutationFn = Apollo.MutationFunction<CreateGroupMutation, CreateGroupMutationVariables>;
+
+/**
+ * __useCreateGroupMutation__
+ *
+ * To run a mutation, you first call `useCreateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createGroupMutation, { data, loading, error }] = useCreateGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<CreateGroupMutation, CreateGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateGroupMutation, CreateGroupMutationVariables>(CreateGroupDocument, options);
+      }
+export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
+export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
+export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
+export const CreateMemberDocument = gql`
+    mutation CreateMember($input: CreateMemberInput!) {
+  payload: createMember(input: $input) {
+    member {
+      ...MemberFragment
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}`;
+export type CreateMemberMutationFn = Apollo.MutationFunction<CreateMemberMutation, CreateMemberMutationVariables>;
+
+/**
+ * __useCreateMemberMutation__
+ *
+ * To run a mutation, you first call `useCreateMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMemberMutation, { data, loading, error }] = useCreateMemberMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateMemberMutation(baseOptions?: Apollo.MutationHookOptions<CreateMemberMutation, CreateMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateMemberMutation, CreateMemberMutationVariables>(CreateMemberDocument, options);
+      }
+export type CreateMemberMutationHookResult = ReturnType<typeof useCreateMemberMutation>;
+export type CreateMemberMutationResult = Apollo.MutationResult<CreateMemberMutation>;
+export type CreateMemberMutationOptions = Apollo.BaseMutationOptions<CreateMemberMutation, CreateMemberMutationVariables>;
 export const CreateSessionDocument = gql`
     mutation CreateSession($input: CreateSessionInput!) {
   payload: createSession(input: $input) {
@@ -834,6 +1345,41 @@ export function useDeleteEmailMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteEmailMutationHookResult = ReturnType<typeof useDeleteEmailMutation>;
 export type DeleteEmailMutationResult = Apollo.MutationResult<DeleteEmailMutation>;
 export type DeleteEmailMutationOptions = Apollo.BaseMutationOptions<DeleteEmailMutation, DeleteEmailMutationVariables>;
+export const DeleteMemberDocument = gql`
+    mutation DeleteMember($input: DeleteMemberInput!) {
+  payload: deleteMember(input: $input) {
+    member {
+      ...MemberFragment
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}`;
+export type DeleteMemberMutationFn = Apollo.MutationFunction<DeleteMemberMutation, DeleteMemberMutationVariables>;
+
+/**
+ * __useDeleteMemberMutation__
+ *
+ * To run a mutation, you first call `useDeleteMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteMemberMutation, { data, loading, error }] = useDeleteMemberMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteMemberMutation(baseOptions?: Apollo.MutationHookOptions<DeleteMemberMutation, DeleteMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteMemberMutation, DeleteMemberMutationVariables>(DeleteMemberDocument, options);
+      }
+export type DeleteMemberMutationHookResult = ReturnType<typeof useDeleteMemberMutation>;
+export type DeleteMemberMutationResult = Apollo.MutationResult<DeleteMemberMutation>;
+export type DeleteMemberMutationOptions = Apollo.BaseMutationOptions<DeleteMemberMutation, DeleteMemberMutationVariables>;
 export const DeleteSessionDocument = gql`
     mutation DeleteSession {
   payload: deleteSession {
@@ -967,13 +1513,189 @@ export function useExistFullPathLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type ExistFullPathQueryHookResult = ReturnType<typeof useExistFullPathQuery>;
 export type ExistFullPathLazyQueryHookResult = ReturnType<typeof useExistFullPathLazyQuery>;
 export type ExistFullPathQueryResult = Apollo.QueryResult<ExistFullPathQuery, ExistFullPathQueryVariables>;
+export const GroupDocument = gql`
+    query Group($fullPath: String!) {
+  group(fullPath: $fullPath) {
+    ...GroupFragment
+  }
+  groupPolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}
+    ${GroupFragmentFragmentDoc}
+${PolicyFragmentFragmentDoc}`;
+
+/**
+ * __useGroupQuery__
+ *
+ * To run a query within a React component, call `useGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *   },
+ * });
+ */
+export function useGroupQuery(baseOptions: Apollo.QueryHookOptions<GroupQuery, GroupQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GroupQuery, GroupQueryVariables>(GroupDocument, options);
+      }
+export function useGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupQuery, GroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GroupQuery, GroupQueryVariables>(GroupDocument, options);
+        }
+export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
+export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
+export type GroupQueryResult = Apollo.QueryResult<GroupQuery, GroupQueryVariables>;
+export const GroupMembersDocument = gql`
+    query GroupMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {
+  group(fullPath: $fullPath) {
+    id
+    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+      edges {
+        node {
+          ...MemberFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useGroupMembersQuery__
+ *
+ * To run a query within a React component, call `useGroupMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupMembersQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useGroupMembersQuery(baseOptions: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, options);
+      }
+export function useGroupMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, options);
+        }
+export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery>;
+export type GroupMembersLazyQueryHookResult = ReturnType<typeof useGroupMembersLazyQuery>;
+export type GroupMembersQueryResult = Apollo.QueryResult<GroupMembersQuery, GroupMembersQueryVariables>;
+export const GroupPolicyDocument = gql`
+    query GroupPolicy($fullPath: String!) {
+  groupPolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}
+    ${PolicyFragmentFragmentDoc}`;
+
+/**
+ * __useGroupPolicyQuery__
+ *
+ * To run a query within a React component, call `useGroupPolicyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupPolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupPolicyQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *   },
+ * });
+ */
+export function useGroupPolicyQuery(baseOptions: Apollo.QueryHookOptions<GroupPolicyQuery, GroupPolicyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GroupPolicyQuery, GroupPolicyQueryVariables>(GroupPolicyDocument, options);
+      }
+export function useGroupPolicyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupPolicyQuery, GroupPolicyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GroupPolicyQuery, GroupPolicyQueryVariables>(GroupPolicyDocument, options);
+        }
+export type GroupPolicyQueryHookResult = ReturnType<typeof useGroupPolicyQuery>;
+export type GroupPolicyLazyQueryHookResult = ReturnType<typeof useGroupPolicyLazyQuery>;
+export type GroupPolicyQueryResult = Apollo.QueryResult<GroupPolicyQuery, GroupPolicyQueryVariables>;
+export const GroupsDocument = gql`
+    query Groups($first: Int!, $after: String, $filterBy: GroupFilter, $orderBy: GroupOrder) {
+  groups(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...GroupFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}
+    ${GroupFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useGroupsQuery__
+ *
+ * To run a query within a React component, call `useGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useGroupsQuery(baseOptions: Apollo.QueryHookOptions<GroupsQuery, GroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GroupsQuery, GroupsQueryVariables>(GroupsDocument, options);
+      }
+export function useGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupsQuery, GroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GroupsQuery, GroupsQueryVariables>(GroupsDocument, options);
+        }
+export type GroupsQueryHookResult = ReturnType<typeof useGroupsQuery>;
+export type GroupsLazyQueryHookResult = ReturnType<typeof useGroupsLazyQuery>;
+export type GroupsQueryResult = Apollo.QueryResult<GroupsQuery, GroupsQueryVariables>;
 export const NamespaceDocument = gql`
     query Namespace($fullPath: String!) {
   namespace(fullPath: $fullPath) {
     ...NamespaceFragment
   }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
 }
-    ${NamespaceFragmentFragmentDoc}`;
+    ${NamespaceFragmentFragmentDoc}
+${PolicyFragmentFragmentDoc}`;
 
 /**
  * __useNamespaceQuery__
@@ -1201,6 +1923,146 @@ export function useUpdateActivationEmailMutation(baseOptions?: Apollo.MutationHo
 export type UpdateActivationEmailMutationHookResult = ReturnType<typeof useUpdateActivationEmailMutation>;
 export type UpdateActivationEmailMutationResult = Apollo.MutationResult<UpdateActivationEmailMutation>;
 export type UpdateActivationEmailMutationOptions = Apollo.BaseMutationOptions<UpdateActivationEmailMutation, UpdateActivationEmailMutationVariables>;
+export const UpdateGroupDocument = gql`
+    mutation UpdateGroup($input: UpdateGroupInput!) {
+  payload: updateGroup(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}
+    ${GroupFragmentFragmentDoc}`;
+export type UpdateGroupMutationFn = Apollo.MutationFunction<UpdateGroupMutation, UpdateGroupMutationVariables>;
+
+/**
+ * __useUpdateGroupMutation__
+ *
+ * To run a mutation, you first call `useUpdateGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGroupMutation, { data, loading, error }] = useUpdateGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGroupMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGroupMutation, UpdateGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGroupMutation, UpdateGroupMutationVariables>(UpdateGroupDocument, options);
+      }
+export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
+export type UpdateGroupMutationResult = Apollo.MutationResult<UpdateGroupMutation>;
+export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<UpdateGroupMutation, UpdateGroupMutationVariables>;
+export const UpdateGroupPathDocument = gql`
+    mutation UpdateGroupPath($input: UpdateGroupPathInput!) {
+  payload: updateGroupPath(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}
+    ${GroupFragmentFragmentDoc}`;
+export type UpdateGroupPathMutationFn = Apollo.MutationFunction<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>;
+
+/**
+ * __useUpdateGroupPathMutation__
+ *
+ * To run a mutation, you first call `useUpdateGroupPathMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGroupPathMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGroupPathMutation, { data, loading, error }] = useUpdateGroupPathMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGroupPathMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>(UpdateGroupPathDocument, options);
+      }
+export type UpdateGroupPathMutationHookResult = ReturnType<typeof useUpdateGroupPathMutation>;
+export type UpdateGroupPathMutationResult = Apollo.MutationResult<UpdateGroupPathMutation>;
+export type UpdateGroupPathMutationOptions = Apollo.BaseMutationOptions<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>;
+export const UpdateGroupVisibilityDocument = gql`
+    mutation UpdateGroupVisibility($input: UpdateGroupVisibilityInput!) {
+  payload: updateGroupVisibility(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}
+    ${GroupFragmentFragmentDoc}`;
+export type UpdateGroupVisibilityMutationFn = Apollo.MutationFunction<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>;
+
+/**
+ * __useUpdateGroupVisibilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateGroupVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGroupVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGroupVisibilityMutation, { data, loading, error }] = useUpdateGroupVisibilityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGroupVisibilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>(UpdateGroupVisibilityDocument, options);
+      }
+export type UpdateGroupVisibilityMutationHookResult = ReturnType<typeof useUpdateGroupVisibilityMutation>;
+export type UpdateGroupVisibilityMutationResult = Apollo.MutationResult<UpdateGroupVisibilityMutation>;
+export type UpdateGroupVisibilityMutationOptions = Apollo.BaseMutationOptions<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>;
+export const UpdateMemberDocument = gql`
+    mutation UpdateMember($input: UpdateMemberInput!) {
+  payload: updateMember(input: $input) {
+    member {
+      ...MemberFragment
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}`;
+export type UpdateMemberMutationFn = Apollo.MutationFunction<UpdateMemberMutation, UpdateMemberMutationVariables>;
+
+/**
+ * __useUpdateMemberMutation__
+ *
+ * To run a mutation, you first call `useUpdateMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateMemberMutation, { data, loading, error }] = useUpdateMemberMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateMemberMutation(baseOptions?: Apollo.MutationHookOptions<UpdateMemberMutation, UpdateMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateMemberMutation, UpdateMemberMutationVariables>(UpdateMemberDocument, options);
+      }
+export type UpdateMemberMutationHookResult = ReturnType<typeof useUpdateMemberMutation>;
+export type UpdateMemberMutationResult = Apollo.MutationResult<UpdateMemberMutation>;
+export type UpdateMemberMutationOptions = Apollo.BaseMutationOptions<UpdateMemberMutation, UpdateMemberMutationVariables>;
 export const UpdatePasswordDocument = gql`
     mutation updatePassword($input: UpdatePasswordInput!) {
   payload: updatePassword(input: $input) {
@@ -1376,6 +2238,52 @@ export function useUserDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type UserDetailQueryHookResult = ReturnType<typeof useUserDetailQuery>;
 export type UserDetailLazyQueryHookResult = ReturnType<typeof useUserDetailLazyQuery>;
 export type UserDetailQueryResult = Apollo.QueryResult<UserDetailQuery, UserDetailQueryVariables>;
+export const UsersDocument = gql`
+    query Users($after: String, $filterBy: UserFilter, $orderBy: UserOrder) {
+  users(after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...UserFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}
+    ${UserFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+      }
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const ViewerDocument = gql`
     query Viewer {
   viewer {

@@ -1,15 +1,15 @@
 fragment EmailFragment on Email {
-    id
-    createdAt
-    updatedAt
-    email
-    primary
+  id
+  createdAt
+  updatedAt
+  email
+  primary
 }
 
 mutation SetPrimaryEmail($input: SetPrimaryEmailInput!) {
-    payload: setPrimaryEmail(input: $input) {
-        email {
-            ...EmailFragment
-        }
+  payload: setPrimaryEmail(input: $input) {
+    email {
+      ...EmailFragment
     }
+  }
 }

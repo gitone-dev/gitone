@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.notfound.gitone.server.mappers.MemberMapper">
+    <resultMap id="memberMap" type="cn.notfound.gitone.server.entities.MemberEntity">
+        <id property="id" column="id" jdbcType="INTEGER" />
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="namespaceId" column="namespace_id" jdbcType="INTEGER" />
+        <result property="userId" column="user_id" jdbcType="INTEGER" />
+        <result property="access" column="access" jdbcType="INTEGER" />
+        <result property="createdById" column="created_by_id" jdbcType="INTEGER" />
+    </resultMap>
+    <resultMap id="memberUserMap" type="cn.notfound.gitone.server.entities.MemberEntity" extends="memberMap">
+        <result property="username" column="username" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="memberColumns">
+        m.id,
+        m.created_at,
+        m.updated_at,
+        m.namespace_id,
+        m.user_id,
+        m.access,
+        m.created_by_id
+    </sql>
+    <sql id="memberUserColumns">
+        <include refid="memberColumns" />,
+        u.username
+    </sql>
+    <sql id="filter">
+        <if test="filter.namespaceId != null">
+            AND m.namespace_id = #{filter.namespaceId,jdbcType=INTEGER}
+        </if>
+        <if test="filter.access != null">
+            AND m.access = #{filter.access,jdbcType=INTEGER}
+        </if>
+        <if test="filter.query != null">
+            AND u.username like '%' || #{filter.query,jdbcType=VARCHAR} || '%'
+        </if>
+    </sql>
+    <sql id="direction">${page.direction(before)}</sql>
+    <sql id="cursorOp">
+        <choose>
+            <when test="cursor.createdAt != null">
+                AND (
+                    m.created_at = #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND m.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR m.created_at <include refid="direction" /> #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.updatedAt != null">
+                AND (
+                    m.updated_at = #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND m.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR m.updated_at <include refid="direction" /> #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.access != null">
+                AND (
+                    m.access = #{cursor.access,jdbcType=INTEGER} AND m.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR m.access <include refid="direction" /> #{cursor.access,jdbcType=INTEGER}
+                )
+            </when>
+            <when test="cursor.username != null">
+                AND (
+                    u.username = #{cursor.username,jdbcType=INTEGER} AND m.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR u.username <include refid="direction" /> #{cursor.username,jdbcType=INTEGER}
+                )
+            </when>
+        </choose>
+    </sql>
+    <sql id="page">
+        <if test="page.before != null">
+            <bind name="before" value="true"/>
+            <bind name="cursor" value="page.before"/>
+            <include refid="cursorOp" />
+        </if>
+        <if test="page.after != null">
+            <bind name="before" value="false"/>
+            <bind name="cursor" value="page.after"/>
+            <include refid="cursorOp" />
+        </if>
+    </sql>
+    <select id="find" parameterType="java.lang.Integer" resultMap="memberMap">
+        SELECT <include refid="memberColumns" />
+        FROM members AS m
+        WHERE m.id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="findByIds" parameterType="java.util.Collection" resultMap="memberMap">
+        SELECT <include refid="memberColumns" />
+        FROM members AS m
+        WHERE m.id IN
+        <foreach collection="ids" open="(" item="id" separator="," close=")">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="findAll" resultMap="memberUserMap">
+        SELECT
+        <choose>
+            <when test="filter.query != null or page.order.field.joinUsers">
+                <include refid="memberUserColumns" />
+                FROM members AS m
+                inner join users AS u on m.user_id = u.id
+            </when>
+            <otherwise>
+                <include refid="memberColumns" />
+                FROM members AS m
+            </otherwise>
+        </choose>
+        <where>
+            <include refid="filter" />
+            <include refid="page" />
+        </where>
+        <choose>
+            <when test="page.order.field.joinUsers">
+                ORDER BY u.${page.order.field} ${page.orderDirection}, m.id ASC
+            </when>
+            <otherwise>
+                ORDER BY m.${page.order.field} ${page.orderDirection}, m.id ASC
+            </otherwise>
+        </choose>
+        LIMIT #{page.limit,jdbcType=INTEGER}
+    </select>
+    <select id="findByNamespaceIdAndUserId" resultMap="memberMap">
+        SELECT <include refid="memberColumns" />
+        FROM members AS m
+        WHERE m.namespace_id = #{namespaceId,jdbcType=INTEGER} AND m.user_id = #{userId,jdbcType=INTEGER}
+    </select>
+    <insert id="create" parameterType="cn.notfound.gitone.server.entities.MemberEntity" keyProperty="id" useGeneratedKeys="true" >
+        INSERT INTO members (
+            created_at,
+            updated_at,
+            namespace_id,
+            user_id,
+            access,
+            created_by_id
+        ) VALUES (
+            #{createdAt,jdbcType=TIMESTAMP},
+            #{updatedAt,jdbcType=TIMESTAMP},
+            #{namespaceId,jdbcType=INTEGER},
+            #{userId,jdbcType=INTEGER},
+            #{access,jdbcType=INTEGER},
+            #{createdById,jdbcType=INTEGER}
+        )
+    </insert>
+    <update id="update" parameterType="cn.notfound.gitone.server.entities.MemberEntity">
+        UPDATE members SET
+            created_at = #{createdAt,jdbcType=TIMESTAMP},
+            updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+            namespace_id = #{namespaceId,jdbcType=INTEGER},
+            user_id = #{userId,jdbcType=INTEGER},
+            access = #{access,jdbcType=INTEGER},
+            created_by_id = #{createdById,jdbcType=INTEGER}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+    <delete id="delete" parameterType="cn.notfound.gitone.server.entities.MemberEntity">
+        DELETE FROM members
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByNamespaceId" parameterType="java.lang.Integer">
+        DELETE FROM members
+        WHERE namespace_id = #{namespaceId,jdbcType=INTEGER}
+    </delete>
+</mapper>

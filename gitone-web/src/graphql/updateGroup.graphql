@@ -1,0 +1,7 @@
+mutation UpdateGroup($input: UpdateGroupInput!) {
+  payload: updateGroup(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}

@@ -1,14 +1,14 @@
 fragment UserFragment on User {
-    id
-    createdAt
-    updatedAt
-    name
-    username
-    avatarUrl
+  id
+  createdAt
+  updatedAt
+  name
+  username
+  avatarUrl
 }
 
 query User($username: String!) {
-    user(username: $username) {
-        ...UserFragment
-    }
+  user(username: $username) {
+    ...UserFragment
+  }
 }

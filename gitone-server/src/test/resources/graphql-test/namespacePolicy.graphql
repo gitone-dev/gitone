@@ -1,0 +1,7 @@
+query NamespacePolicy($fullPath: String!) {
+  namespacePolicy(fullPath: $fullPath) {
+    id
+    access
+    actions
+  }
+}

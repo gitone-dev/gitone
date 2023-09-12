@@ -6,7 +6,6 @@ import {
   UpdatePasswordInput,
   useUpdatePasswordMutation,
 } from "../../../generated/types";
-import Layout from "../../../layout";
 import ChunkPaper from "../../../shared/ChunkPaper";
 import { user as pattern } from "../../../utils/regex";
 
@@ -51,7 +50,7 @@ function Password() {
   });
 
   return (
-    <Layout.Profile>
+    <>
       <ChunkPaper primary="修改密码" component="form" onSubmit={onSubmit}>
         <TextField
           error={Boolean(errors.oldPassword)}
@@ -100,7 +99,7 @@ function Password() {
           提交
         </Button>
       </ChunkPaper>
-    </Layout.Profile>
+    </>
   );
 }
 

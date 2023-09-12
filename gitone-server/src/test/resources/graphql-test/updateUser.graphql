@@ -1,20 +1,20 @@
 fragment UserDetailFragment on User {
-    id
-    createdAt
-    updatedAt
-    name
-    username
-    active
-    role
-    bio
-    location
-    websiteUrl
+  id
+  createdAt
+  updatedAt
+  name
+  username
+  active
+  role
+  bio
+  location
+  websiteUrl
 }
 
 mutation UpdateUser($input: UpdateUserInput!) {
-    payload: updateUser(input: $input) {
-        user {
-            ...UserDetailFragment
-        }
+  payload: updateUser(input: $input) {
+    user {
+      ...UserDetailFragment
     }
+  }
 }

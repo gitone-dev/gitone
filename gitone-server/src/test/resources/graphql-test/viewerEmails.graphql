@@ -1,40 +1,40 @@
 fragment EmailFragment on Email {
-    id
-    createdAt
-    updatedAt
-    email
-    primary
+  id
+  createdAt
+  updatedAt
+  email
+  primary
 }
 
 fragment PageInfoFragment on PageInfo {
-    hasPreviousPage
-    hasNextPage
-    startCursor
-    endCursor
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
 }
 
 query Viewer {
-    viewer {
-        id
-        emails {
-            edges {
-                node {
-                    ...EmailFragment
-                }
-            }
-            pageInfo {
-                ...PageInfoFragment
-            }
+  viewer {
+    id
+    emails {
+      edges {
+        node {
+          ...EmailFragment
         }
-        unconfirmedEmails {
-            edges {
-                node {
-                    ...EmailFragment
-                }
-            }
-            pageInfo {
-                ...PageInfoFragment
-            }
-        }
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
     }
+    unconfirmedEmails {
+      edges {
+        node {
+          ...EmailFragment
+        }
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
 }

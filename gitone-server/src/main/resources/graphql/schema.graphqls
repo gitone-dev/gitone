@@ -1,268 +1,509 @@
 scalar DateTime
 
 interface Node {
-    id: ID!
+  id: ID!
 }
 
 enum OrderDirection {
-    ASC
-    DESC
+  ASC
+  DESC
 }
 
 enum Visibility {
-    PRIVATE
-    PUBLIC
+  PRIVATE
+  PUBLIC
+}
+
+enum Action {
+  READ
+  UPDATE
+  DELETE
+  READ_MEMBER
+  CREATE_MEMBER
+  UPDATE_MEMBER
+  DELETE_MEMBER
 }
 
 type PageInfo {
-    hasPreviousPage: Boolean!
-    hasNextPage: Boolean!
-    startCursor: String
-    endCursor: String
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+  startCursor: String
+  endCursor: String
 }
 
 schema {
-    query: Query
-    mutation: Mutation
+  query: Query
+  mutation: Mutation
 }
 
 type Query {
-    ping: String!
+  ping: String!
 
-    existEmail(email: String!): Boolean!
-    existFullPath(fullPath: String!): Boolean!
+  existEmail(email: String!): Boolean!
+  existFullPath(fullPath: String!): Boolean!
 
-    namespace(fullPath: String!): Namespace!
+  viewer: User!
+  user(username: String!): User!
+  users(
+    first: Int = 20
+    after: String
+    filterBy: UserFilter
+    orderBy: UserOrder = { field: CREATED_AT, direction: ASC }
+  ): UserConnection
 
-    viewer: User!
-    user(username: String!): User!
+  namespace(fullPath: String!): Namespace!
+  namespacePolicy(fullPath: String!): Policy!
+  group(fullPath: String!): Group!
+  groupPolicy(fullPath: String!): Policy!
+  groups(
+    first: Int = 20
+    after: String
+    filterBy: GroupFilter
+    orderBy: GroupOrder = { field: CREATED_AT, direction: DESC }
+  ): GroupConnection
+}
+
+type Policy implements Node {
+  id: ID!
+  access: Access!
+  actions: [Action!]!
 }
 
 type Mutation {
-    # session
-    createSession(input: CreateSessionInput!): CreateSessionPayload
-    deleteSession: DeleteSessionPayload
+  # session
+  createSession(input: CreateSessionInput!): CreateSessionPayload
+  deleteSession: DeleteSessionPayload
 
-    # user
-    createUser(input: CreateUserInput!): CreateUserPayload
-    deleteUser(input: DeleteUserInput!): DeleteUserPayload
+  # user
+  createUser(input: CreateUserInput!): CreateUserPayload
+  deleteUser(input: DeleteUserInput!): DeleteUserPayload
 
-    updateActivationEmail(input: UpdateActivationEmailInput!): UpdateActivationEmailPayload
-    sendActivationEmail(input: SendActivationEmailInput!): SendActivationEmailPayload
-    activateUser(input: ActivateUserInput!): ActivateUserPayload
+  updateActivationEmail(
+    input: UpdateActivationEmailInput!
+  ): UpdateActivationEmailPayload
+  sendActivationEmail(
+    input: SendActivationEmailInput!
+  ): SendActivationEmailPayload
+  activateUser(input: ActivateUserInput!): ActivateUserPayload
 
-    sendPasswordResetEmail(input: SendPasswordResetEmailInput!): SendPasswordResetEmailPayload
-    resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
+  sendPasswordResetEmail(
+    input: SendPasswordResetEmailInput!
+  ): SendPasswordResetEmailPayload
+  resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
 
-    updateUser(input: UpdateUserInput!): UpdateUserPayload
-    updateUsername(input: UpdateUsernameInput!): UpdateUsernamePayload
-    updatePassword(input: UpdatePasswordInput!): UpdatePasswordPayload
+  updateUser(input: UpdateUserInput!): UpdateUserPayload
+  updateUsername(input: UpdateUsernameInput!): UpdateUsernamePayload
+  updatePassword(input: UpdatePasswordInput!): UpdatePasswordPayload
 
-    createEmail(input: CreateEmailInput!): CreateEmailPayload
-    confirmEmail(input: ConfirmEmailInput!): ConfirmEmailPayload
-    setPrimaryEmail(input: SetPrimaryEmailInput!): SetPrimaryEmailPayload
-    deleteEmail(input: DeleteEmailInput!): DeleteEmailPayload
+  createEmail(input: CreateEmailInput!): CreateEmailPayload
+  confirmEmail(input: ConfirmEmailInput!): ConfirmEmailPayload
+  setPrimaryEmail(input: SetPrimaryEmailInput!): SetPrimaryEmailPayload
+  deleteEmail(input: DeleteEmailInput!): DeleteEmailPayload
+
+  # group
+  createGroup(input: CreateGroupInput!): CreateGroupPayload
+  deleteGroup(input: DeleteGroupInput!): DeleteGroupPayload
+  updateGroup(input: UpdateGroupInput!): UpdateGroupPayload
+  updateGroupPath(input: UpdateGroupPathInput!): UpdateGroupPathPayload
+  updateGroupVisibility(
+    input: UpdateGroupVisibilityInput!
+  ): UpdateGroupVisibilityPayload
+
+  # member
+  createMember(input: CreateMemberInput!): CreateMemberPayload
+  updateMember(input: UpdateMemberInput!): UpdateMemberPayload
+  deleteMember(input: DeleteMemberInput!): DeleteMemberPayload
 }
 
 # session
 
 type Session {
-    email: String
-    username: String!
-    header: String!
-    token: String!
-    active: Boolean!
+  email: String
+  username: String!
+  header: String!
+  token: String!
+  active: Boolean!
 }
 
 input CreateSessionInput {
-    username: String!
-    password: String!
+  username: String!
+  password: String!
 }
 
 type CreateSessionPayload {
-    session: Session
+  session: Session
 }
 
 type DeleteSessionPayload {
-    message: String
+  message: String
 }
 
 # namespace
 
 type Namespace implements Node {
-    id: ID!
-    createdAt: DateTime
-    updatedAt: DateTime
-    name: String
-    path: String
-    fullName: String
-    fullPath: String
-    visibility: Visibility
-    description: String
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  name: String
+  path: String
+  fullName: String
+  fullPath: String
+  visibility: Visibility
+  description: String
+}
+
+# group
+
+type Group implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  name: String
+  path: String
+  fullName: String
+  fullPath: String
+  visibility: Visibility!
+  description: String
+  members(
+    first: Int = 20
+    after: String
+    filterBy: MemberFilter
+    orderBy: MemberOrder = { field: CREATED_AT, direction: DESC }
+  ): MemberConnection
+}
+
+type GroupEdge {
+  node: Group!
+  cursor: String!
+}
+
+type GroupConnection {
+  edges: [GroupEdge!]
+  pageInfo: PageInfo
+}
+
+input GroupFilter {
+  query: String
+  visibility: Visibility
+  username: String
+}
+
+input GroupOrder {
+  direction: OrderDirection!
+  field: GroupOrderField!
+}
+
+enum GroupOrderField {
+  CREATED_AT
+  UPDATED_AT
+  PATH
+}
+
+input CreateGroupInput {
+  name: String!
+  path: String!
+  description: String!
+  visibility: Visibility!
+}
+
+type CreateGroupPayload {
+  group: Group
+}
+
+input DeleteGroupInput {
+  id: ID!
+}
+
+type DeleteGroupPayload {
+  group: Group
+}
+
+input UpdateGroupInput {
+  id: ID!
+  name: String!
+  description: String!
+}
+
+type UpdateGroupPayload {
+  group: Group
+}
+
+input UpdateGroupPathInput {
+  id: ID!
+  path: String!
+}
+
+type UpdateGroupPathPayload {
+  group: Group
+}
+
+input UpdateGroupVisibilityInput {
+  id: ID!
+  visibility: Visibility!
+}
+
+type UpdateGroupVisibilityPayload {
+  group: Group
 }
 
 # user
 
 type User implements Node {
-    id: ID!
-    createdAt: DateTime
-    updatedAt: DateTime
-    name: String
-    username: String
-    active: Boolean
-    role: Role
-    avatarUrl: String
-    bio: String
-    location: String
-    websiteUrl: String
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  name: String
+  username: String
+  active: Boolean
+  role: Role
+  avatarUrl: String
+  bio: String
+  location: String
+  websiteUrl: String
 
-    namespace: Namespace
+  namespace: Namespace
 
-    emails: EmailConnection
-    unconfirmedEmails: EmailConnection
+  emails: EmailConnection
+  unconfirmedEmails: EmailConnection
 }
 
 enum Role {
-    USER,
-    ADMIN
+  USER
+  ADMIN
+}
+
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
+type UserConnection {
+  edges: [UserEdge!]
+  pageInfo: PageInfo
+}
+
+input UserOrder {
+  direction: OrderDirection!
+  field: UserOrderField!
+}
+
+enum UserOrderField {
+  CREATED_AT
+  UPDATED_AT
+  USERNAME
+}
+
+input UserFilter {
+  query: String
 }
 
 input CreateUserInput {
-    email: String!
-    name: String!
-    username: String!
-    password: String!
+  email: String!
+  name: String!
+  username: String!
+  password: String!
 }
 
 type CreateUserPayload {
-    user: User
+  user: User
 }
 
 input DeleteUserInput {
-    id: ID!
+  id: ID!
 }
 
 type DeleteUserPayload {
-    user: User
+  user: User
 }
 
 input UpdateActivationEmailInput {
-    email: String!
+  email: String!
 }
 
 type UpdateActivationEmailPayload {
-    message: String
+  message: String
 }
 
 input SendActivationEmailInput {
-    email: String
+  email: String
 }
 
 type SendActivationEmailPayload {
-    message: String
+  message: String
 }
 
 input ActivateUserInput {
-    token: String!
+  token: String!
 }
 
 type ActivateUserPayload {
-    message: String
+  message: String
 }
 
 input SendPasswordResetEmailInput {
-    email: String!
+  email: String!
 }
 
 type SendPasswordResetEmailPayload {
-    message: String
+  message: String
 }
 
 input ResetPasswordInput {
-    token: String!
-    password: String!
+  token: String!
+  password: String!
 }
 
 type ResetPasswordPayload {
-    message: String
+  message: String
 }
 
 input UpdateUserInput {
-    name: String!
-    bio: String!
-    location: String!
-    websiteUrl: String!
+  name: String!
+  bio: String!
+  location: String!
+  websiteUrl: String!
 }
 
 type UpdateUserPayload {
-    user: User
+  user: User
 }
 
 input UpdateUsernameInput {
-    username: String!
+  username: String!
 }
 
 type UpdateUsernamePayload {
-    user: User
+  user: User
 }
 
 input UpdatePasswordInput {
-    oldPassword: String!
-    password: String!
-    passwordConfirmation: String!
+  oldPassword: String!
+  password: String!
+  passwordConfirmation: String!
 }
 
 type UpdatePasswordPayload {
-    user: User
+  user: User
 }
 
 # email
 
 type Email implements Node {
-    id: ID!
-    createdAt: DateTime
-    updatedAt: DateTime
-    email: String!
-    primary: Boolean!
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  email: String!
+  primary: Boolean!
 }
 
 type EmailEdge {
-    node: Email!
-    cursor: String!
+  node: Email!
+  cursor: String!
 }
 
 type EmailConnection {
-    edges: [EmailEdge!]
-    pageInfo: PageInfo
+  edges: [EmailEdge!]
+  pageInfo: PageInfo
 }
 input CreateEmailInput {
-    email: String!
+  email: String!
 }
 
 type CreateEmailPayload {
-    email: Email
+  email: Email
 }
 
 input ConfirmEmailInput {
-    token: String!
+  token: String!
 }
 
 type ConfirmEmailPayload {
-    email: Email
+  email: Email
 }
 
 input SetPrimaryEmailInput {
-    email: String!
+  email: String!
 }
 
 type SetPrimaryEmailPayload {
-    email: Email
+  email: Email
 }
 
 input DeleteEmailInput {
-    email: String!
+  email: String!
 }
 
 type DeleteEmailPayload {
-    email: Email
+  email: Email
+}
+
+# member
+
+enum Access {
+  NO_ACCESS
+  REPORTER
+  MAINTAINER
+  OWNER
+}
+
+type Member {
+  id: ID!
+  access: Access
+  createdAt: DateTime
+  updatedAt: DateTime
+  user: User
+}
+
+type MemberEdge {
+  node: Member!
+  cursor: String!
+}
+
+type MemberConnection {
+  edges: [MemberEdge!]
+  pageInfo: PageInfo
+}
+
+input MemberFilter {
+  query: String
+  access: Access
+}
+
+enum MemberOrderField {
+  CREATED_AT
+  UPDATED_AT
+  ACCESS
+  USERNAME
+}
+
+input MemberOrder {
+  direction: OrderDirection!
+  field: MemberOrderField!
+}
+
+input CreateMemberInput {
+  namespaceId: String!
+  userId: String!
+  access: Access!
+}
+
+type CreateMemberPayload {
+  member: Member
+}
+
+input UpdateMemberInput {
+  id: ID!
+  access: Access!
+}
+
+type UpdateMemberPayload {
+  member: Member
+}
+
+input DeleteMemberInput {
+  id: ID!
+}
+
+type DeleteMemberPayload {
+  member: Member
 }

@@ -22,6 +22,7 @@ public enum NamespaceType implements IntegerValue {
         return switch (value) {
             case 0 -> NamespaceEntity.TYPE;
             case 1 -> UserNamespaceEntity.TYPE;
+            case 2 -> GroupEntity.TYPE;
             default -> throw new IllegalArgumentException("invalid namespace type");
         };
     }

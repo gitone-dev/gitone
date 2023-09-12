@@ -1,6 +1,6 @@
 package cn.notfound.gitone.server.controllers.emails;
 
-import cn.notfound.gitone.server.controllers.BaseController;
+import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.controllers.emails.inputs.ConfirmEmailInput;
 import cn.notfound.gitone.server.controllers.emails.inputs.CreateEmailInput;
 import cn.notfound.gitone.server.controllers.emails.inputs.DeleteEmailInput;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Controller;
 
 @AllArgsConstructor
 @Controller
-public class EmailMutationController extends BaseController {
+public class EmailMutationController extends ViewerContext {
 
     private EmailService emailService;
 

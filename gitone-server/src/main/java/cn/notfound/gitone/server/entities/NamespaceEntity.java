@@ -30,4 +30,8 @@ public class NamespaceEntity implements TimestampNode<Integer> {
     private Visibility visibility = Visibility.PRIVATE;
 
     private String description = "";
+
+    public boolean isPublic() {
+        return Visibility.PUBLIC.equals(getVisibility());
+    }
 }

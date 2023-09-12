@@ -40,10 +40,20 @@ const httpLink = new HttpLink({
 
 const cache = new InMemoryCache({
   typePolicies: {
+    Query: {
+      fields: {
+        groups: relayStylePagination(),
+      },
+    },
     User: {
       fields: {
         emails: relayStylePagination(),
         unconfirmedEmails: relayStylePagination(),
+      },
+    },
+    Group: {
+      fields: {
+        members: relayStylePagination(),
       },
     },
   },
@@ -61,4 +71,4 @@ function deleteSession() {
 }
 
 export default client;
-export { deleteSession };
+export { cache, deleteSession };

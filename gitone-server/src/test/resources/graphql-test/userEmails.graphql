@@ -1,42 +1,42 @@
 fragment EmailFragment on Email {
-    id
-    createdAt
-    updatedAt
-    email
-    primary
+  id
+  createdAt
+  updatedAt
+  email
+  primary
 }
 
 fragment PageInfoFragment on PageInfo {
-    hasPreviousPage
-    hasNextPage
-    startCursor
-    endCursor
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
 }
 
 query UserEmails($username: String!) {
-    user(username: $username) {
-        id
-        emails {
-            edges {
-                node {
-                    ...EmailFragment
-                }
-                cursor
-            }
-            pageInfo {
-                ...PageInfoFragment
-            }
+  user(username: $username) {
+    id
+    emails {
+      edges {
+        node {
+          ...EmailFragment
         }
-        unconfirmedEmails {
-            edges {
-                node {
-                    ...EmailFragment
-                }
-                cursor
-            }
-            pageInfo {
-                ...PageInfoFragment
-            }
-        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
     }
+    unconfirmedEmails {
+      edges {
+        node {
+          ...EmailFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
 }

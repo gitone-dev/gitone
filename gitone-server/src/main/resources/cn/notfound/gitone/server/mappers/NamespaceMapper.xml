@@ -17,17 +17,17 @@
         <result property="description" column="description" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="namespaceColumns">
-        id,
-        created_at,
-        updated_at,
-        type,
-        parent_id,
-        name,
-        path,
-        full_name,
-        full_path,
-        visibility,
-        description
+        ns.id,
+        ns.created_at,
+        ns.updated_at,
+        ns.type,
+        ns.parent_id,
+        ns.name,
+        ns.path,
+        ns.full_name,
+        ns.full_path,
+        ns.visibility,
+        ns.description
     </sql>
     <sql id="insert">
         INSERT INTO namespaces (
@@ -56,35 +56,35 @@
     </sql>
     <sql id="update">
         UPDATE namespaces SET
-        created_at = #{createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
-        type = #{type,jdbcType=INTEGER},
-        parent_id = #{parentId,jdbcType=INTEGER},
-        name = #{name,jdbcType=VARCHAR},
-        path = #{path,jdbcType=VARCHAR},
-        full_name = #{fullName,jdbcType=VARCHAR},
-        full_path = #{fullPath,jdbcType=VARCHAR},
-        visibility = #{visibility,jdbcType=INTEGER},
-        description = #{description,jdbcType=VARCHAR}
+            created_at = #{createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
+            updated_at = #{updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
+            type = #{type,jdbcType=INTEGER},
+            parent_id = #{parentId,jdbcType=INTEGER},
+            name = #{name,jdbcType=VARCHAR},
+            path = #{path,jdbcType=VARCHAR},
+            full_name = #{fullName,jdbcType=VARCHAR},
+            full_path = #{fullPath,jdbcType=VARCHAR},
+            visibility = #{visibility,jdbcType=INTEGER},
+            description = #{description,jdbcType=VARCHAR}
         WHERE id = #{id,jdbcType=INTEGER}
     </sql>
     <select id="find" parameterType="java.lang.Integer" resultMap="namespaceMap">
         SELECT <include refid="namespaceColumns" />
-        FROM namespaces
-        WHERE id = #{id,jdbcType=INTEGER}
-    </select>
-    <select id="findByFullPath" parameterType="java.lang.String" resultMap="namespaceMap">
-        SELECT <include refid="namespaceColumns" />
-        FROM namespaces
-        WHERE full_path = #{fullPath,jdbcType=VARCHAR}
+        FROM namespaces AS ns
+        WHERE ns.id = #{id,jdbcType=INTEGER}
     </select>
     <select id="findByIds" parameterType="java.util.Collection" resultMap="namespaceMap">
         SELECT <include refid="namespaceColumns" />
-        FROM namespaces
-        WHERE id IN
+        FROM namespaces AS ns
+        WHERE ns.id IN
         <foreach collection="ids" open="(" item="id" separator="," close=")">
             #{id,jdbcType=INTEGER}
         </foreach>
+    </select>
+    <select id="findByFullPath" parameterType="java.lang.String" resultMap="namespaceMap">
+        SELECT <include refid="namespaceColumns" />
+        FROM namespaces AS ns
+        WHERE ns.full_path = #{fullPath,jdbcType=VARCHAR}
     </select>
     <insert id="create" parameterType="cn.notfound.gitone.server.entities.NamespaceEntity" keyProperty="id" useGeneratedKeys="true" >
         <include refid="insert" />

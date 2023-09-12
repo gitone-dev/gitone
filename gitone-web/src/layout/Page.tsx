@@ -1,5 +1,5 @@
 import Box, { BoxProps } from "@mui/material/Box";
-import Header from "./header/Index";
+import Header from "./Header";
 
 function Page(props: BoxProps) {
   return (

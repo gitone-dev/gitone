@@ -11,17 +11,17 @@
     </sql>
     <select id="find" parameterType="java.lang.Integer" resultMap="userNamespaceMap">
         SELECT <include refid="userNamespaceColumns" />
-        FROM namespaces
-        WHERE id = #{id,jdbcType=INTEGER} AND type = 1
+        FROM namespaces AS ns
+        WHERE ns.id = #{id,jdbcType=INTEGER} AND ns.type = 1
     </select>
     <select id="findByIds" parameterType="java.util.Collection" resultMap="userNamespaceMap">
         SELECT <include refid="userNamespaceColumns" />
-        FROM namespaces
-        WHERE id IN
+        FROM namespaces AS ns
+        WHERE ns.id IN
         <foreach collection="ids" open="(" item="id" separator="," close=")">
             #{id,jdbcType=INTEGER}
         </foreach>
-        AND type = 1
+        AND ns.type = 1
     </select>
     <insert id="create" parameterType="cn.notfound.gitone.server.entities.UserNamespaceEntity" keyProperty="id" useGeneratedKeys="true" >
         <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.insert" />

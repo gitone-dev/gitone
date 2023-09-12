@@ -1,16 +1,13 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Typography from "@mui/material/Typography";
+import { useState } from "react";
 import {
   CreateEmailInput,
   DeleteEmailInput,
   EmailConnection,
 } from "../../../generated/types";
 import ChunkPaper from "../../../shared/ChunkPaper";
+import CreateEmailDialog from "./CreateEmailDialog";
+import ListEmail from "./ListEmail";
 
 interface Props {
   emails: EmailConnection;
@@ -20,107 +17,24 @@ interface Props {
 }
 
 function EmailsPaper(props: Props) {
-  const { emails, unconfirmedEmails, onCreate, onDelete } = props;
-
-  const onCreateEmail = (email: string) => {
-    return () => onCreate({ email });
-  };
-
-  const onDeleteEmail = (email: string) => {
-    return () => onDelete({ email });
-  };
-
+  const [open, setOpen] = useState(false);
+  const onClick = () => setOpen(true);
+  const onClose = () => setOpen(false);
   return (
-    <ChunkPaper primary="邮箱列表">
-      <List sx={{ p: 0 }}>
-        {emails.edges?.map((edge) => (
-          <ListItem
-            divider
-            key={edge.cursor}
-            secondaryAction={
-              <IconButton
-                edge="end"
-                disabled={edge.node.primary}
-                onClick={onDeleteEmail(edge.node.email)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            }
-          >
-            <Box>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body1"
-                color="texxt.primary"
-              >
-                {edge.node.email}
-              </Typography>
-              <Box component="ul">
-                {edge.node.primary && (
-                  <>
-                    <Typography
-                      component="li"
-                      color="text.secondary"
-                      variant="body2"
-                    >
-                      主邮箱
-                    </Typography>
-                    <Typography
-                      component="li"
-                      color="text.secondary"
-                      variant="body2"
-                    >
-                      通知邮箱
-                    </Typography>
-                  </>
-                )}
-                <Typography
-                  component="li"
-                  color="text.secondary"
-                  variant="body2"
-                >
-                  已激活
-                </Typography>
-              </Box>
-            </Box>
-          </ListItem>
-        ))}
-        {unconfirmedEmails.edges?.map((edge) => (
-          <ListItem
-            divider
-            key={edge.cursor}
-            secondaryAction={
-              <IconButton edge="end" onClick={onDeleteEmail(edge.node.email)}>
-                <DeleteIcon />
-              </IconButton>
-            }
-          >
-            <Box>
-              <Typography
-                sx={{ display: "inline" }}
-                component="span"
-                variant="body1"
-                color="texxt.primary"
-              >
-                {edge.node.email}
-              </Typography>
-              <Box component="ul">
-                <Typography
-                  component="li"
-                  color="text.secondary"
-                  variant="body2"
-                >
-                  未激活
-                  <Button onClick={onCreateEmail(edge.node.email)}>
-                    重发激活邮件
-                  </Button>
-                </Typography>
-              </Box>
-            </Box>
-          </ListItem>
-        ))}
-      </List>
+    <ChunkPaper
+      primary="邮箱列表"
+      action={
+        <Button variant="contained" onClick={onClick}>
+          添加邮箱
+        </Button>
+      }
+    >
+      <ListEmail {...props} />
+      <CreateEmailDialog
+        open={open}
+        onClose={onClose}
+        onCreate={props.onCreate}
+      />
     </ChunkPaper>
   );
 }

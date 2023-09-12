@@ -1,0 +1,7 @@
+mutation UpdateGroupVisibility($input: UpdateGroupVisibilityInput!) {
+  payload: updateGroupVisibility(input: $input) {
+    group {
+      ...GroupFragment
+    }
+  }
+}

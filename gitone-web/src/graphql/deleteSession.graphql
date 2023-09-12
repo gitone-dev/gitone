@@ -1,5 +1,5 @@
 mutation DeleteSession {
-    payload: deleteSession {
-        message
-    }
+  payload: deleteSession {
+    message
+  }
 }

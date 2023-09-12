@@ -16,4 +16,24 @@ public enum Visibility implements IntegerValue {
     public int value() {
         return value;
     }
+
+    // Less than
+    public boolean lt(Visibility other) {
+        return this.value < other.value;
+    }
+
+    // Less than  or equal to
+    public boolean le(Visibility other) {
+        return this.value <= other.value;
+    }
+
+    // greater than or equal to
+    public boolean ge(Visibility other) {
+        return this.value >= other.value;
+    }
+
+    // greater than
+    public boolean gt(Visibility other) {
+        return this.value > other.value;
+    }
 }

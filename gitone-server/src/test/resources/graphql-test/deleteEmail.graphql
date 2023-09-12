@@ -1,15 +1,15 @@
 fragment EmailFragment on Email {
-    id
-    createdAt
-    updatedAt
-    email
-    primary
+  id
+  createdAt
+  updatedAt
+  email
+  primary
 }
 
 mutation DeleteEmail($input: DeleteEmailInput!) {
-    payload: deleteEmail(input: $input) {
-        email {
-            ...EmailFragment
-        }
+  payload: deleteEmail(input: $input) {
+    email {
+      ...EmailFragment
     }
+  }
 }

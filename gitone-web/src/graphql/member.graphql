@@ -1,0 +1,9 @@
+fragment MemberFragment on Member {
+  id
+  createdAt
+  updatedAt
+  access
+  user {
+    ...UserFragment
+  }
+}
