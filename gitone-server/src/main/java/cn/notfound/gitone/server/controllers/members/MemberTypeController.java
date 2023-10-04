@@ -1,8 +1,10 @@
 package cn.notfound.gitone.server.controllers.members;
 
 import cn.notfound.gitone.server.controllers.Relay;
+import cn.notfound.gitone.server.daos.NamespaceDao;
 import cn.notfound.gitone.server.daos.UserDao;
 import cn.notfound.gitone.server.entities.MemberEntity;
+import cn.notfound.gitone.server.entities.NamespaceEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
@@ -22,6 +24,8 @@ public class MemberTypeController {
 
     private UserDao userDao;
 
+    private NamespaceDao namespaceDao;
+
     @SchemaMapping
     public String id(MemberEntity memberEntity) {
         return Relay.toGlobalId(MemberEntity.TYPE, memberEntity.getId());
@@ -37,6 +41,20 @@ public class MemberTypeController {
         Map<MemberEntity, UserEntity> map = new HashMap<>();
         for (MemberEntity member : members) {
             map.put(member, userMap.get(member.getUserId()));
+        }
+        return map;
+    }
+
+    @BatchMapping
+    public Map<MemberEntity, NamespaceEntity> namespace(List<MemberEntity> members) {
+        List<Integer> namespaceIds = members.stream().map(MemberEntity::getNamespaceId).toList();
+        Map<Integer, NamespaceEntity> namespaceMap = namespaceDao.findByIds(namespaceIds)
+                .stream()
+                .collect(Collectors.toMap(NamespaceEntity::getId, Function.identity()));
+
+        Map<MemberEntity, NamespaceEntity> map = new HashMap<>();
+        for (MemberEntity member : members) {
+            map.put(member, namespaceMap.get(member.getNamespaceId()));
         }
         return map;
     }

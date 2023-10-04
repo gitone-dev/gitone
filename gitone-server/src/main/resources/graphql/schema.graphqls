@@ -183,8 +183,10 @@ type GroupConnection {
 }
 
 input GroupFilter {
-  query: String
+  parentId: ID
+  recursive: Boolean
   visibility: Visibility
+  query: String
   username: String
 }
 
@@ -200,6 +202,7 @@ enum GroupOrderField {
 }
 
 input CreateGroupInput {
+  parentId: ID
   name: String!
   path: String!
   description: String!
@@ -441,6 +444,7 @@ type DeleteEmailPayload {
 
 enum Access {
   NO_ACCESS
+  MIN_ACCESS
   REPORTER
   MAINTAINER
   OWNER
@@ -451,6 +455,7 @@ type Member {
   access: Access
   createdAt: DateTime
   updatedAt: DateTime
+  namespace: Namespace
   user: User
 }
 

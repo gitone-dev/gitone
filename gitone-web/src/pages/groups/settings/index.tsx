@@ -7,7 +7,7 @@ import UpdatePathPaper from "./UpdatePathPaper";
 import UpdateVisibilityPaper from "./UpdateVisibilityPaper";
 
 function Settings() {
-  const fullPath = useFullPath();
+  const { fullPath } = useFullPath();
   const { data, loading, error } = useGroupQuery({
     variables: { fullPath },
   });

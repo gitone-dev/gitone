@@ -3,6 +3,7 @@ package cn.notfound.gitone.server.entities;
 import lombok.Data;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Data
 public class NamespaceEntity implements TimestampNode<Integer> {
@@ -19,6 +20,8 @@ public class NamespaceEntity implements TimestampNode<Integer> {
 
     private Integer parentId = 0;
 
+    private Integer[] traversalIds = new Integer[0];
+
     private String name;
 
     private String path;
@@ -31,7 +34,19 @@ public class NamespaceEntity implements TimestampNode<Integer> {
 
     private String description = "";
 
+    public boolean isUser() {
+        return type.equals(NamespaceType.USER);
+    }
+
     public boolean isPublic() {
-        return Visibility.PUBLIC.equals(getVisibility());
+        return Visibility.PUBLIC.equals(visibility);
+    }
+
+    public boolean isPrivate() {
+        return Visibility.PRIVATE.equals(visibility);
+    }
+
+    public List<Integer> traversalIds() {
+        return List.of(traversalIds);
     }
 }

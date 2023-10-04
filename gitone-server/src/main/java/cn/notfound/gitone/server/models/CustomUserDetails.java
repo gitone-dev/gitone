@@ -15,6 +15,8 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     private final Integer id;
 
+    private final Integer namespaceId;
+
     private final String name;
 
     private final String username;
@@ -27,6 +29,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     public CustomUserDetails(UserEntity userEntity) {
         this.id = userEntity.getId();
+        this.namespaceId = userEntity.getNamespaceId();
         this.name = userEntity.getName();
         this.username = userEntity.getUsername();
         this.password = userEntity.getPassword();
@@ -40,6 +43,10 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     public Integer getId() {
         return id;
+    }
+
+    public Integer getNamespaceId() {
+        return namespaceId;
     }
 
     @Override

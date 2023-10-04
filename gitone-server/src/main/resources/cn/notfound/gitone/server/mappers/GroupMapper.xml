@@ -9,13 +9,62 @@
     <sql id="groupColumns">
         <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.namespaceColumns" />
     </sql>
+    <sql id="directWithUser">
+        <if test="filter.userId != null">
+            WITH direct_with_user AS MATERIALIZED (
+                SELECT ns.*
+                FROM namespaces AS ns INNER JOIN members AS mb ON ns.id = mb.namespace_id
+                WHERE mb.user_id = #{filter.userId,jdbcType=INTEGER}
+                <if test="filter.parentId != null">
+                    AND ns.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
+                </if>
+            )
+        </if>
+    </sql>
+    <sql id="directWithViewer">
+        <if test="filter.viewerId != null">
+            WITH direct_with_viewer AS MATERIALIZED (
+                SELECT ns.*
+                FROM namespaces AS ns INNER JOIN members AS mb ON ns.id = mb.namespace_id
+                WHERE mb.user_id = #{filter.viewerId,jdbcType=INTEGER}
+                <if test="filter.parentId != null">
+                    AND ns.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
+                </if>
+            )
+        </if>
+    </sql>
+    <sql id="ancestors">
+        SELECT ns.*
+        FROM namespaces AS ns
+            INNER JOIN (
+            <choose>
+                <when test="filter.parentId != null and filter.recursive">
+                    SELECT DISTINCT UNNEST(du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER} + 1:])
+                    FROM direct_with_user AS du
+                    WHERE du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
+                </when>
+                <when test="filter.parentId != null and !filter.recursive">
+                    SELECT DISTINCT du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER} + 1]
+                    FROM direct_with_user AS du
+                    WHERE du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
+                </when>
+                <when test="filter.parentId == null and filter.recursive">
+                    SELECT DISTINCT UNNEST(du.traversal_ids)
+                    FROM direct_with_user AS du
+                </when>
+                <when test="filter.parentId == null and !filter.recursive">
+                    SELECT DISTINCT du.traversal_ids[1]
+                    FROM direct_with_user AS du
+                </when>
+            </choose>
+        ) AS ancestors (ancestor_id) ON ns.id = ancestors.ancestor_id
+    </sql>
+    <sql id="descendants">
+        SELECT ns.*
+        FROM namespaces AS ns, direct_with_user AS du
+        WHERE du.id = ANY(ns.traversal_ids)
+    </sql>
     <sql id="filter">
-        <if test="filter.memberUserId ">
-            AND m.user_id = #{filter.memberUserId,jdbcType=INTEGER}
-        </if>
-        <if test="filter.parentId != null">
-            AND ns.parent_id = #{filter.parentId,jdbcType=INTEGER}
-        </if>
         <if test="filter.visibility != null">
             AND ns.visibility = #{filter.visibility,jdbcType=INTEGER}
         </if>
@@ -72,22 +121,80 @@
         </foreach>
         AND ns.type = 2
     </select>
+    <select id="findByDescendants" resultMap="groupMap">
+        SELECT <include refid="groupColumns" />
+        FROM namespaces AS ns
+        WHERE #{namespaceId,jdbcType=INTEGER} = ANY(ns.traversal_ids)
+    </select>
     <select id="findByFullPath" parameterType="java.lang.String" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
         FROM namespaces AS ns
         WHERE ns.full_path = #{fullPath,jdbcType=VARCHAR} AND ns.type = 2
     </select>
-    <select id="findByParentIdAndPath" parameterType="java.util.Map" resultMap="groupMap">
-        SELECT <include refid="groupColumns" />
+    <sql id="all">
+        SELECT ns.*
         FROM namespaces AS ns
-        WHERE ns.parent_id = #{parentId,jdbcType=INTEGER} AND ns.path = #{path,jdbcType=VARCHAR} AND ns.type = 2
-    </select>
+        <choose>
+            <when test="filter.parentId != null and filter.recursive">
+                WHERE ns.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
+                    AND ns.id != #{filter.parentId,jdbcType=INTEGER}
+            </when>
+            <when test="filter.parentId != null and !filter.recursive">
+                WHERE ns.parent_id = #{filter.parentId,jdbcType=INTEGER}
+            </when>
+            <when test="filter.parentId == null and !filter.recursive">
+                WHERE ns.parent_id = 0
+            </when>
+        </choose>
+    </sql>
+    <sql id="allWithUser">
+        <choose>
+            <when test="filter.userId == null">
+                <include refid="all" />
+            </when>
+            <when test="filter.recursive">
+                <include refid="directWithUser" />
+                SELECT ns.*
+                FROM (
+                    (
+                        <include refid="ancestors" />
+                    )
+                    UNION
+                    (
+                        <include refid="descendants" />
+                    )
+                ) AS ns
+            </when>
+            <otherwise>
+                <include refid="directWithUser" />
+                <include refid="ancestors" />
+            </otherwise>
+        </choose>
+    </sql>
+    <sql id="allWithViewer">
+        <choose>
+            <when test="filter.viewerId == null">
+                <include refid="allWithUser" />
+            </when>
+            <otherwise>
+                <include refid="directWithViewer" />
+                SELECT ns.*
+                FROM (
+                    <include refid="allWithUser" />
+                ) AS ns
+                WHERE ns.visibility = 40 OR EXISTS (
+                    SELECT dv.id
+                    FROM direct_with_viewer AS dv
+                    WHERE ns.id = ANY (dv.traversal_ids) OR dv.id = ANY (ns.traversal_ids)
+                )
+            </otherwise>
+        </choose>
+    </sql>
     <select id="findAll" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
-        FROM namespaces AS ns
-        <if test="filter.memberUserId != null">
-            inner join members AS m on ns.id = m.namespace_id
-        </if>
+        FROM (
+            <include refid="allWithViewer" />
+        ) AS ns
         <where>
             <include refid="filter" />
             <include refid="page" />

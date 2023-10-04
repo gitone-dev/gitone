@@ -23,7 +23,27 @@ public class GroupDao extends TimestampDao<Integer, GroupEntity, GroupMapper> {
         return mapper.findByFullPath(fullPath);
     }
 
-    public GroupEntity findByParentIdAndPath(Integer parentId, String path) {
-        return mapper.findByParentIdAndPath(parentId, path);
+    public GroupEntity updateName(GroupEntity groupEntity, String oldFullName) {
+        super.update(groupEntity);
+        renameDescendants(groupEntity, groupEntity.getFullPath(), oldFullName);
+        return groupEntity;
+    }
+
+    public GroupEntity updatePath(GroupEntity groupEntity, String oldFullPath) {
+        super.update(groupEntity);
+        renameDescendants(groupEntity, oldFullPath, groupEntity.getFullName());
+        return groupEntity;
+    }
+
+    // TODO N+1
+    private void renameDescendants(GroupEntity groupEntity, String oldFullPath, String oldFullName) {
+        List<GroupEntity> entities = mapper.findByDescendants(groupEntity.getId());
+        for (GroupEntity entity : entities) {
+            if (entity.getId().equals(groupEntity.getId())) continue;
+
+            entity.setFullPath(entity.getFullPath().replaceFirst(oldFullPath, groupEntity.getFullPath()));
+            entity.setFullName(entity.getFullName().replaceFirst(oldFullName, groupEntity.getFullName()));
+            mapper.update(entity);
+        }
     }
 }

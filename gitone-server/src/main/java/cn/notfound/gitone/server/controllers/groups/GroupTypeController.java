@@ -37,7 +37,8 @@ public class GroupTypeController {
             @Argument MemberOrder orderBy) {
 
         MemberFilter filter = Objects.requireNonNullElse(filterBy, new MemberFilter.By()).filter();
-        filter.setNamespaceId(groupEntity.getId());
+        filter.setTraversalIds(groupEntity.traversalIds());
+
         MemberPage page = new MemberPage(first, after, orderBy).validate();
         List<MemberEntity> members = memberDao.findAll(filter, page);
         return new MemberConnection(members, page);

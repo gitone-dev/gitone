@@ -15,6 +15,7 @@ import {
 import TableRowMember from "./TableRowMember";
 
 interface Props {
+  namespaceId: string;
   policy: Policy;
   edges: Array<MemberEdge>;
   pageInfo: PageInfo;
@@ -24,7 +25,8 @@ interface Props {
 }
 
 function TableMember(props: Props) {
-  const { policy, edges, pageInfo, loadMore, onUpdate, onDelete } = props;
+  const { namespaceId, policy, edges, pageInfo, loadMore, onUpdate, onDelete } =
+    props;
 
   return (
     <TableContainer>
@@ -32,7 +34,8 @@ function TableMember(props: Props) {
         <TableHead>
           <TableRow>
             <TableCell>成员</TableCell>
-            <TableCell>权限</TableCell>
+            <TableCell>来源</TableCell>
+            <TableCell>最大权限</TableCell>
             <TableCell>加入时间</TableCell>
             <TableCell>操作</TableCell>
           </TableRow>
@@ -41,6 +44,7 @@ function TableMember(props: Props) {
           {edges.map((edge) => (
             <TableRowMember
               key={edge.cursor}
+              namespaceId={namespaceId}
               policy={policy}
               member={edge.node}
               onUpdate={onUpdate}

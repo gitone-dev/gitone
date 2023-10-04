@@ -18,18 +18,36 @@ public class GroupFactory extends BaseFactory {
     }
 
     public CreateGroupInput createGroupInput() {
-        String path = Faker.path();
+        return createGroupInput(Faker.path(), Visibility.PRIVATE);
+    }
 
+    public CreateGroupInput createGroupInput(String path, Visibility visibility) {
         CreateGroupInput input = new CreateGroupInput();
         input.setName(path.toUpperCase());
         input.setPath(path);
-        input.setDescription(path + " description");
-        input.setVisibility(Visibility.PRIVATE);
+        input.setDescription(path + " description\n");
+        input.setVisibility(visibility);
         return input;
     }
 
     public GroupResult create(SessionResult session) {
         return create(session, createGroupInput());
+    }
+
+    public GroupResult create(SessionResult session, String parentId, String path, Visibility visibility) {
+        CreateGroupInput createGroupInput = createGroupInput();
+        createGroupInput.setParentId(parentId);
+        createGroupInput.setName(path.toUpperCase());
+        createGroupInput.setPath(path);
+        createGroupInput.setVisibility(visibility);
+        return create(session, createGroupInput);
+    }
+
+    public GroupResult create(SessionResult session, String parentId, Visibility visibility) {
+        CreateGroupInput createGroupInput = createGroupInput();
+        createGroupInput.setParentId(parentId);
+        createGroupInput.setVisibility(visibility);
+        return create(session, createGroupInput);
     }
 
     public GroupResult create(SessionResult session, Visibility visibility) {

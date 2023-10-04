@@ -1,0 +1,56 @@
+@startuml groups
+start
+
+note
+groups 查询逻辑
+
+用户和组织之间的关系：
+1. 直接加入
+1. 加入后代 n 从而获得 n 的祖先最小访问权限
+1. 加入后代 n 从而获得 n 的后代访问权限
+
+两种用户：
+* viewer 登录用户
+* user 查询条件中的用户
+
+end note
+
+:parent not null;
+:recursive is true;
+
+if (viewer) then (yes)
+    if (user) then (yes)
+        if (viewer in ancestors) then (yes)
+            if (user in ancestors) then (yes)
+                :所有后代\n[A1];
+            else (no)
+                :user 加入的后代\n[A2];
+            endif
+        else (no)
+            if (user in ancestors) then (yes)
+                :公开或 viewer 加入的后代\n[V1];
+            else (no)
+                :user 加入且\n公开或 viewer 的加入后代\n[V2];
+            endif
+        endif
+    else (no)
+        if (viewer in ancestors) then (yes)
+            :所有后代\n[A1];
+        else (no)
+            :公开或 viewer 加入的后代\n[V1];
+        endif
+    endif
+else (no)
+    if (user) then (yes)
+        if (user in ancestors) then (yes)
+            :公开后代\n[A3];
+        else (no)
+            :user 加入且\n公开的后代\n[A4];
+        endif
+    else (no)
+        :公开后代\n[A3];
+    endif
+endif
+
+stop
+@enduml

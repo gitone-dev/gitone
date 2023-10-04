@@ -2,6 +2,8 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
+import { useViewerQuery } from "../generated/types";
+import LoadingPage from "../pages/LoadingPage";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
 import Sidebar from "./Sidebar";
@@ -26,7 +28,13 @@ const breadcrumbItems: BreadcrumbItems = {
   ],
 };
 
-const Explore = () => {
+function Explore() {
+  const { loading } = useViewerQuery();
+
+  if (loading) {
+    return <LoadingPage />;
+  }
+
   return (
     <Page sx={{ display: "flex" }}>
       <Sidebar items={items} />
@@ -39,6 +47,6 @@ const Explore = () => {
       </Box>
     </Page>
   );
-};
+}
 
 export default Explore;

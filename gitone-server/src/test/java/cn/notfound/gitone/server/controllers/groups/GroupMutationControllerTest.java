@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.execution.ErrorType;
+import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
 
 @AutoConfigureHttpGraphQlTester
@@ -68,94 +69,260 @@ class GroupMutationControllerTest extends BaseFactory {
     @Test
     void deleteGroup() {
         SessionResult session = userFactory.viewer();
-        GroupResult groupResult = groupFactory.create(session);
+        GroupResult group = groupFactory.create(session);
 
-        DeleteGroupInput deleteGroupInput = new DeleteGroupInput();
-        deleteGroupInput.setId(groupResult.getId());
-
-        mutate("deleteGroup", deleteGroupInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-        mutate("deleteGroup", session, deleteGroupInput)
-                .errors().verify();
-        mutate("deleteGroup", session, deleteGroupInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.NOT_FOUND));
+        mutationDeleteGroup(null, group, ErrorType.UNAUTHORIZED);
+        mutationDeleteGroup(session, group, null);
+        mutationDeleteGroup(session, group, ErrorType.NOT_FOUND);
 
         query("namespace")
-                .variable("fullPath", groupResult.getFullPath())
+                .variable("fullPath", group.getFullPath())
                 .execute()
                 .errors().expect(e -> e.getErrorType().equals(ErrorType.NOT_FOUND));
     }
 
     @Test
     void updateGroup() {
+        /*
+         * 组织 name
+         * |                       | 1  | 2  | 3  |
+         * +-------+-------+-------+----+----+----+
+         * | A1(0)                 |    |    | AA |
+         * |       +-------+-------+----+----+----+
+         * |       | B1(0)         |    | BA |    |
+         * |       |       +-------+----+----+----+
+         * |       |       | C1(0) | CA |    |    |
+         * +-------+-------+-------+----+----+----+
+         * | A2(1)                 |    |    |    |
+         * +-------+-------+-------+----+----+----+
+         */
+
         SessionResult session = userFactory.viewer();
-        GroupResult groupResult = groupFactory.create(session);
+        SessionResult user = userFactory.viewer();
+
+        GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a2 = groupFactory.create(session, null, Visibility.PUBLIC);
+
+        /*
+         * 非 name 修改
+         */
 
         UpdateGroupInput updateGroupInput = new UpdateGroupInput();
-        updateGroupInput.setId(groupResult.getId());
-        updateGroupInput.setName(Faker.username().toUpperCase());
+        updateGroupInput.setId(a1b1c1.getId());
+        updateGroupInput.setName(a1b1c1.getName());
         updateGroupInput.setDescription(Faker.username() + " description");
+        a1b1c1.setDescription(updateGroupInput.getDescription());
+        mutationUpdateGroup(session, updateGroupInput, a1b1c1);
+        queryNamespace(session, a1b1c1);
+
+        /*
+         * name 修改，层级
+         */
+
+        updateGroupInput.setId(a1b1c1.getId());
+        updateGroupInput.setName("CA");
+        updateGroupInput.setDescription(a1b1c1.getDescription());
+        Assertions.assertNotEquals(a1b1c1.getName(), updateGroupInput.getName());
+
+        a1b1c1.setName(updateGroupInput.getName());
+        a1b1c1.setFullName(a1b1c1.getFullName().replaceFirst("C1", "CA"));
+        mutationUpdateGroup(session, updateGroupInput, a1b1c1);
+        queryNamespace(session, a1b1c1);
+
+        updateGroupInput.setId(a1b1.getId());
+        updateGroupInput.setName("BA");
+        updateGroupInput.setDescription(a1b1.getDescription());
+        Assertions.assertNotEquals(a1b1.getName(), updateGroupInput.getName());
+
+        a1b1.setName(updateGroupInput.getName());
+        a1b1.setFullName(a1b1.getFullName().replaceFirst("B1", "BA"));
+        a1b1c1.setFullName(a1b1c1.getFullName().replaceFirst("B1", "BA"));
+        mutationUpdateGroup(session, updateGroupInput, a1b1);
+        queryNamespace(session, a1b1);
+        queryNamespace(session, a1b1c1);
+
+        /*
+         * 权限
+         */
 
         mutate("updateGroup", updateGroupInput)
                 .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-        mutate("updateGroup", session, updateGroupInput)
-                .path("payload.group.id").entity(String.class).isEqualTo(updateGroupInput.getId())
-                .path("payload.group.name").entity(String.class).isEqualTo(updateGroupInput.getName())
-                .path("payload.group.fullName").entity(String.class).isEqualTo(updateGroupInput.getName())
-                .path("payload.group.description").entity(String.class).isEqualTo(updateGroupInput.getDescription());
 
-        query("namespace", session)
-                .variable("fullPath", groupResult.getPath())
-                .execute()
-                .path("namespace.name").entity(String.class).isEqualTo(updateGroupInput.getName())
-                .path("namespace.fullName").entity(String.class).isEqualTo(updateGroupInput.getName());
+        mutate("updateGroup", user, updateGroupInput)
+                .errors().expect(e -> e.getErrorType().equals(ErrorType.FORBIDDEN));
     }
 
     @Test
     void updateGroupPath() {
+        /*
+         * 组织
+         * |                       | 1  | 2  | 3  |
+         * +-------+-------+-------+----+----+----+
+         * | a1(0)                 |    |    | aa |
+         * |       +-------+-------+----+----+----+
+         * |       | b1(0)         |    | ba |    |
+         * |       |       +-------+----+----+----+
+         * |       |       | c1(0) | ca |    |    |
+         * +-------+-------+-------+----+----+----+
+         * | a2(1)                 |    |    |    |
+         * +-------+-------+-------+----+----+----+
+         */
+
         SessionResult session = userFactory.viewer();
-        GroupResult groupResult = groupFactory.create(session);
+        SessionResult user = userFactory.viewer();
+
+        GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a2 = groupFactory.create(session, null, Visibility.PUBLIC);
+
+        /*
+         * 层级修改
+         */
 
         UpdateGroupPathInput updateGroupPathInput = new UpdateGroupPathInput();
-        updateGroupPathInput.setId(groupResult.getId());
-        updateGroupPathInput.setPath(Faker.path());
+        updateGroupPathInput.setId(a1b1c1.getId());
+        updateGroupPathInput.setPath("ca");
+        Assertions.assertNotEquals(a1b1c1.getPath(), updateGroupPathInput.getPath());
 
-        Assertions.assertNotEquals(groupResult.getPath(), updateGroupPathInput.getPath());
+        a1b1c1.setPath(updateGroupPathInput.getPath());
+        a1b1c1.setFullPath(a1b1c1.getFullPath().replaceFirst("c1", "ca"));
+        mutationUpdateGroupPath(session, updateGroupPathInput, a1b1c1);
+        queryNamespace(session, a1b1c1);
 
-        mutate("updateGroupPath", updateGroupPathInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-        mutate("updateGroupPath", session, updateGroupPathInput)
-                .path("payload.group.id").entity(String.class).isEqualTo(updateGroupPathInput.getId())
-                .path("payload.group.path").entity(String.class).isEqualTo(updateGroupPathInput.getPath())
-                .path("payload.group.fullPath").entity(String.class).isEqualTo(updateGroupPathInput.getPath());
+        updateGroupPathInput.setId(a1b1.getId());
+        updateGroupPathInput.setPath("ba");
+        Assertions.assertNotEquals(a1b1.getPath(), updateGroupPathInput.getPath());
 
-        query("namespace", session)
-                .variable("fullPath", groupResult.getPath())
-                .execute()
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.NOT_FOUND));
+        a1b1.setPath(updateGroupPathInput.getPath());
+        a1b1.setFullPath(a1b1.getFullPath().replaceFirst("b1", "ba"));
+        a1b1c1.setFullPath(a1b1c1.getFullPath().replaceFirst("b1", "ba"));
+        mutationUpdateGroupPath(session, updateGroupPathInput, a1b1);
+        queryNamespace(session, a1b1);
+        queryNamespace(session, a1b1c1);
 
-        query("namespace", session)
-                .variable("fullPath", updateGroupPathInput.getPath())
-                .execute()
-                .path("namespace.path").entity(String.class).isEqualTo(updateGroupPathInput.getPath())
-                .path("namespace.fullPath").entity(String.class).isEqualTo(updateGroupPathInput.getPath());
+        /*
+         * 权限
+         */
+
+        mutationUpdateGroupPath(null, updateGroupPathInput, ErrorType.UNAUTHORIZED);
+        mutationUpdateGroupPath(user, updateGroupPathInput, ErrorType.FORBIDDEN);
     }
 
     @Test
     void updateGroupVisibility() {
+        /*
+         * 组织可见性，0 私有，1 公开
+         * +-------+-------+-------+----+----+
+         * |                       | 0  | 1  |
+         * +-------+-------+-------+----+----+
+         * | a1(0)                 |    | Y  |
+         * |       +-------+-------+----+----+
+         * |       | b1(0)         |    | N  |
+         * |       |       +-------+----+----+
+         * |       |       | c1(0) |    | N  |
+         * +-------+-------+-------+----+----+
+         * | a2(1)                 | N  |    |
+         * |       +-------+-------+----+----+
+         * |       | b1(1)         | N  |    |
+         * |       |       +-------+----+----+
+         * |       |       | c1(1) | Y  |    |
+         * +-------+-------+-------+----+----+
+         */
+
         SessionResult session = userFactory.viewer();
-        GroupResult groupResult = groupFactory.create(session);
+        SessionResult user = userFactory.viewer();
 
-        UpdateGroupVisibilityInput updateGroupVisibilityInput = new UpdateGroupVisibilityInput();
-        updateGroupVisibilityInput.setId(groupResult.getId());
-        updateGroupVisibilityInput.setVisibility(Visibility.PUBLIC);
+        GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
 
-        Assertions.assertNotEquals(groupResult.getVisibility(), updateGroupVisibilityInput.getVisibility());
+        GroupResult a2 = groupFactory.create(session, null, Visibility.PUBLIC);
+        GroupResult a2b1 = groupFactory.create(session, a2.getId(), "b1", Visibility.PUBLIC);
+        GroupResult a2b1c1 = groupFactory.create(session, a2b1.getId(), "c1", Visibility.PUBLIC);
 
-        mutate("updateGroupVisibility", updateGroupVisibilityInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-        mutate("updateGroupVisibility", session, updateGroupVisibilityInput)
-                .path("payload.group.id").entity(String.class).isEqualTo(updateGroupVisibilityInput.getId())
-                .path("payload.group.visibility").entity(Visibility.class).isEqualTo(updateGroupVisibilityInput.getVisibility());
+        /*
+         * 层级
+         */
+
+        UpdateGroupVisibilityInput input = new UpdateGroupVisibilityInput();
+        input.setVisibility(Visibility.PUBLIC);
+
+        input.setId(a1b1c1.getId());
+        mutationUpdateGroupVisibility(session, input, ErrorType.BAD_REQUEST);
+        input.setId(a1b1.getId());
+        mutationUpdateGroupVisibility(session, input, ErrorType.BAD_REQUEST);
+        input.setId(a1.getId());
+        mutationUpdateGroupVisibility(session, input, null);
+
+        input.setVisibility(Visibility.PRIVATE);
+
+        input.setId(a2.getId());
+        mutationUpdateGroupVisibility(session, input, ErrorType.BAD_REQUEST);
+        input.setId(a2b1.getId());
+        mutationUpdateGroupVisibility(session, input, ErrorType.BAD_REQUEST);
+        input.setId(a2b1c1.getId());
+
+        /*
+         * 权限
+         */
+
+        mutationUpdateGroupVisibility(null, input, ErrorType.UNAUTHORIZED);
+        mutationUpdateGroupVisibility(user, input, ErrorType.FORBIDDEN);
+    }
+
+    private void mutationUpdateGroupVisibility(SessionResult session, UpdateGroupVisibilityInput input, ErrorType errorType) {
+        GraphQlTester.Response response = mutate("updateGroupVisibility", session, input);
+        if (errorType != null) {
+            response.errors().expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+
+        response.path("payload.group.id").entity(String.class).isEqualTo(input.getId())
+                .path("payload.group.visibility").entity(Visibility.class).isEqualTo(input.getVisibility());
+    }
+
+    private void mutationUpdateGroup(SessionResult session, UpdateGroupInput input, GroupResult result) {
+        mutate("updateGroup", session, input)
+                .path("payload.group.id").entity(String.class).isEqualTo(result.getId())
+                .path("payload.group.name").entity(String.class).isEqualTo(result.getName())
+                .path("payload.group.fullName").entity(String.class).isEqualTo(result.getFullName())
+                .path("payload.group.description").entity(String.class).isEqualTo(result.getDescription());
+    }
+
+    private void mutationDeleteGroup(SessionResult session, GroupResult group, ErrorType errorType) {
+        DeleteGroupInput deleteGroupInput = new DeleteGroupInput();
+        deleteGroupInput.setId(group.getId());
+
+        GraphQlTester.Response response = mutate("deleteGroup", session, deleteGroupInput);
+        if (errorType != null) {
+            response.errors().expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+        response.path("payload.group.id").entity(String.class).isEqualTo(group.getId());
+    }
+
+    private void mutationUpdateGroupPath(SessionResult session, UpdateGroupPathInput input, ErrorType errorType) {
+        mutate("updateGroupPath", session, input)
+                .errors().expect(e -> e.getErrorType().equals(errorType));
+    }
+
+    private void mutationUpdateGroupPath(SessionResult session, UpdateGroupPathInput input, GroupResult result) {
+        mutate("updateGroupPath", session, input)
+                .path("payload.group.id").entity(String.class).isEqualTo(result.getId())
+                .path("payload.group.path").entity(String.class).isEqualTo(result.getPath())
+                .path("payload.group.fullPath").entity(String.class).isEqualTo(result.getFullPath());
+    }
+
+    private void queryNamespace(SessionResult session, GroupResult group) {
+        GraphQlTester.Response response = query("namespace", session)
+                .variable("fullName", group.getFullName())
+                .variable("fullPath", group.getFullPath())
+                .execute();
+
+        response.path("namespace.path").entity(String.class).isEqualTo(group.getPath())
+                .path("namespace.fullPath").entity(String.class).isEqualTo(group.getFullPath());
     }
 }

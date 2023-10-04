@@ -20,7 +20,8 @@ function useFullPath() {
     paths.push(path);
   });
 
-  return paths.join("/");
+  const fullPath = paths.join("/");
+  return { paths, fullPath };
 }
 
 export { paths, segments, useFullPath };

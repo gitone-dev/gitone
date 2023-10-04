@@ -6,7 +6,7 @@ import LoadingPage from "../../LoadingPage";
 import Groups from "../../groups";
 
 function Settings() {
-  const fullPath = useFullPath();
+  const { fullPath } = useFullPath();
   const { data, loading, error } = useNamespaceQuery({
     variables: { fullPath },
   });

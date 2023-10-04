@@ -11,19 +11,20 @@ import ListGroup from "../ListGroup";
 import LoadingBox from "../LoadingBox";
 
 interface Props {
-  username?: string;
+  parentId?: string;
+  username?: Maybe<string>;
   query?: Maybe<string>;
-  visibility: Maybe<Visibility>;
+  visibility?: Maybe<Visibility>;
   orderField: GroupOrderField;
 }
 
 function GroupsContainer(props: Props) {
-  const { username, query, visibility, orderField } = props;
+  const { parentId, username, query, visibility, orderField } = props;
   const { data, loading, error, fetchMore } = useGroupsQuery({
     fetchPolicy: "network-only",
     variables: {
       first: 20,
-      filterBy: { username, visibility, query },
+      filterBy: { username, visibility, query, parentId },
       orderBy: {
         direction:
           orderField === GroupOrderField.Path

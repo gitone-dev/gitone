@@ -35,4 +35,13 @@ public class MemberFactory extends BaseFactory {
         return mutate("createMember", session, createMemberInput(group))
                 .path("payload.member").entity(MemberResult.class).get();
     }
+
+    public MemberResult create(SessionResult session, String namespaceId, String userId) {
+        CreateMemberInput createMemberInput = new CreateMemberInput();
+        createMemberInput.setNamespaceId(namespaceId);
+        createMemberInput.setUserId(userId);
+        createMemberInput.setAccess(Access.MAINTAINER);
+        return mutate("createMember", session, createMemberInput)
+                .path("payload.member").entity(MemberResult.class).get();
+    }
 }

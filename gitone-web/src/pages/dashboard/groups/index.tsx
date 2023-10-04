@@ -7,12 +7,13 @@ import GroupsContainer, {
 } from "../../../shared/GroupsContainer";
 
 function Groups() {
-  const { query, visibility, orderField } = useSearch({ isViewer: true });
   const viewer = cache.readQuery<ViewerQuery>({ query: ViewerDocument });
+  const isViewer = Boolean(viewer);
+  const { query, visibility, orderField } = useSearch({ isViewer });
 
   return (
     <ChunkPaper primary="组织列表">
-      <Header isViewer={true} />
+      <Header isViewer={isViewer} />
       <GroupsContainer
         username={viewer?.viewer.username || ""}
         query={query}

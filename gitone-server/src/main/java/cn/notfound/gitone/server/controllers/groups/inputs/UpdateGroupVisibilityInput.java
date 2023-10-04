@@ -19,4 +19,12 @@ public class UpdateGroupVisibilityInput {
     public int id() {
         return Relay.fromGlobalId(GroupEntity.TYPE, id).id();
     }
+
+    public boolean toPublic(GroupEntity entity) {
+        return entity.isPrivate() && Visibility.PUBLIC.equals(visibility);
+    }
+
+    public boolean toPrivate(GroupEntity entity) {
+        return entity.isPublic() && Visibility.PRIVATE.equals(visibility);
+    }
 }

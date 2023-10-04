@@ -13,7 +13,7 @@ public interface GroupMapper extends NodeMapper<Integer, GroupEntity> {
 
     GroupEntity findByFullPath(String fullPath);
 
-    GroupEntity findByParentIdAndPath(@Param("parentId") Integer parentId, @Param("path") String path);
+    List<GroupEntity> findByDescendants(Integer namespaceId);
 
     List<GroupEntity> findAll(@Param("filter") GroupFilter filter, @Param("page") GroupPage page);
 }

@@ -44,6 +44,7 @@ function MembersContainer(props: Props) {
       },
     },
   });
+  const namespaceId = data?.group.id;
   const edges = data?.group?.members?.edges;
   const pageInfo = data?.group?.members?.pageInfo;
 
@@ -112,12 +113,13 @@ function MembersContainer(props: Props) {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
-  } else if (!edges || !pageInfo || !policy) {
+  } else if (!namespaceId || !edges || !pageInfo || !policy) {
     return <ErrorBox message="客户端查询条件错误" />;
   }
 
   return (
     <TableMember
+      namespaceId={namespaceId}
       policy={policy}
       edges={edges}
       pageInfo={pageInfo}

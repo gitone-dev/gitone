@@ -4,7 +4,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import { Action, useGroupQuery } from "../generated/types";
+import { Action, useGroupQuery, useViewerQuery } from "../generated/types";
 import ErrorPage from "../pages/ErrorPage";
 import LoadingPage from "../pages/LoadingPage";
 import { useFullPath } from "../utils/router";
@@ -34,26 +34,36 @@ const items = (fullPath: string, actions: Array<Action>) => [
   },
 ];
 
-const breadcrumbItems = (fullPath: string): BreadcrumbItems => ({
-  [`/${fullPath}`]: [{ to: `/${fullPath}`, text: fullPath }],
-  [`/${fullPath}/-/members`]: [
-    { to: `/${fullPath}`, text: fullPath },
-    { to: `/${fullPath}/-/members`, text: "组织成员" },
-  ],
-  [`/${fullPath}/-/settings`]: [
-    { to: `/${fullPath}`, text: fullPath },
-    { to: `/${fullPath}/-/settings`, text: "组织设置" },
-  ],
-});
+const breadcrumbItems = (paths: Array<string>): BreadcrumbItems => {
+  const fullPathItems = [];
+  for (let i = 0; i < paths.length; i++) {
+    const fullPath = paths.slice(0, i + 1).join("/");
+    fullPathItems.push({ to: `/${fullPath}`, text: paths[i] });
+  }
+  const fullPath = paths.join("/");
+
+  return {
+    [`/${fullPath}`]: fullPathItems,
+    [`/${fullPath}/-/members`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/members`, text: "组织成员" },
+    ],
+    [`/${fullPath}/-/settings`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/settings`, text: "组织设置" },
+    ],
+  };
+};
 
 function Group() {
-  const fullPath = useFullPath();
+  const { fullPath, paths } = useFullPath();
+  const { loading: loadingViewer } = useViewerQuery();
   const { data, loading, error } = useGroupQuery({
     variables: { fullPath },
   });
   const actions = data?.groupPolicy.actions;
 
-  if (loading) {
+  if (loading || loadingViewer) {
     return <LoadingPage />;
   } else if (error) {
     return <ErrorPage message={error.message} />;
@@ -66,7 +76,7 @@ function Group() {
       <Sidebar items={items(fullPath, actions)} />
       <Box sx={{ mx: 2, my: 1, width: "100%" }}>
         <Toolbar />
-        <Breadcrumbs items={breadcrumbItems(fullPath)} />
+        <Breadcrumbs items={breadcrumbItems(paths)} />
         <Box>
           <Outlet />
         </Box>

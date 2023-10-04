@@ -35,7 +35,7 @@ const breadcrumbItems = (username: string): BreadcrumbItems => ({
 });
 
 function User() {
-  const username = useFullPath();
+  const { fullPath: username } = useFullPath();
   const { loading, error } = useUserQuery({
     variables: { username },
   });

@@ -50,7 +50,9 @@ public class MemberService extends ViewerContext {
         Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
 
         if (memberEntity.getAccess().equals(Access.OWNER) && memberEntity.getId().equals(memberViewer.getId())) {
-            MemberFilter filter = new MemberFilter().setAccess(Access.OWNER).setNamespaceId(namespaceEntity.getId());
+            MemberFilter filter = new MemberFilter().setAccess(Access.OWNER);
+            filter.getTraversalIds().add(namespaceEntity.getId());
+
             MemberPage page = new MemberPage(2);
             List<MemberEntity> members = memberDao.findAll(filter, page);
             Assert.isTrue(members.size() == 2, "至少保留一位所有者");
@@ -68,7 +70,9 @@ public class MemberService extends ViewerContext {
         Forbidden.isTrue(memberViewer.getAccess().ge(memberEntity.getAccess()), "无权限");
 
         if (memberEntity.getAccess().equals(Access.OWNER) && memberEntity.getId().equals(memberViewer.getId())) {
-            MemberFilter filter = new MemberFilter().setAccess(Access.OWNER).setNamespaceId(namespaceEntity.getId());
+            MemberFilter filter = new MemberFilter().setAccess(Access.OWNER);
+            filter.getTraversalIds().add(namespaceEntity.getId());
+
             MemberPage page = new MemberPage(2);
             List<MemberEntity> members = memberDao.findAll(filter, page);
             Assert.isTrue(members.size() == 2, "至少保留一位所有者");

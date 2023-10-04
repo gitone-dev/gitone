@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
+
+import java.util.List;
 
 @AutoConfigureHttpGraphQlTester
 @SpringBootTest
@@ -55,42 +58,44 @@ class UserQueryControllerTest extends BaseFactory {
         UserResult user2 = userFactory.create();
         UserResult user3 = userFactory.create();
 
-        UserOrder order = new UserOrder();
-        order.setField(UserOrderField.CREATED_AT);
-        order.setDirection(OrderDirection.DESC);
+        UserOrder orderBy = new UserOrder();
+        orderBy.setField(UserOrderField.CREATED_AT);
+        orderBy.setDirection(OrderDirection.DESC);
+        UserFilter filterBy = new UserFilter();
 
-        String endCursor = query("users")
-                .variable("first", 2)
-                .variable("orderBy", order)
-                .execute()
-                .path("users.edges").entityList(Object.class).hasSize(2)
-                .path("users.edges[0].node.id").entity(String.class).isEqualTo(user3.getId())
-                .path("users.edges[1].node.id").entity(String.class).isEqualTo(user2.getId())
-                .path("users.pageInfo.endCursor").entity(String.class).get();
-        endCursor = query("users")
-                .variable("first", 1)
-                .variable("after", endCursor)
-                .variable("orderBy", order)
-                .execute()
-                .path("users.edges").entityList(Object.class).hasSize(1)
-                .path("users.edges[0].node.id").entity(String.class).isEqualTo(user1.getId())
-                .path("users.pageInfo.endCursor").entity(String.class).get();
+        /*
+         * 分页
+         */
 
-        order.setDirection(OrderDirection.ASC);
-        endCursor= query("users")
-                .variable("first", 1)
-                .variable("after", endCursor)
-                .variable("orderBy", order)
-                .execute()
-                .path("users.edges").entityList(Object.class).hasSize(1)
-                .path("users.edges[0].node.id").entity(String.class).isEqualTo(user2.getId())
-                .path("users.pageInfo.endCursor").entity(String.class).get();
-        query("users")
-                .variable("first", 1)
-                .variable("after", endCursor)
-                .variable("orderBy", order)
-                .execute()
-                .path("users.edges").entityList(Object.class).hasSize(1)
-                .path("users.edges[0].node.id").entity(String.class).isEqualTo(user3.getId());
+        String after = queryUsers(null, filterBy, orderBy, List.of(user3.getId(), user2.getId()));
+        after = queryUsers(after, filterBy, orderBy, List.of(user1.getId()));
+
+        orderBy.setDirection(OrderDirection.ASC);
+        after = queryUsers(after, filterBy, orderBy, List.of(user2.getId()));
+
+        after = queryUsers(after, filterBy, orderBy, List.of(user3.getId()));
+
+        /*
+         * 过滤
+         */
+
+        orderBy.setDirection(OrderDirection.DESC);
+        filterBy.setQuery(user1.getUsername());
+        queryUsers(after, filterBy, orderBy, List.of(user1.getId()));
+    }
+
+    private String queryUsers(String after, UserFilter filterBy, UserOrder orderBy, List<String> ids) {
+        GraphQlTester.Response response = query("users")
+                .variable("first", ids.size())
+                .variable("after", after)
+                .variable("filterBy", filterBy)
+                .variable("orderBy", orderBy)
+                .execute();
+        response.path("users.edges").entityList(Object.class).hasSize(ids.size());
+        for (int i = 0; i < ids.size(); i++) {
+            response.path(String.format("users.edges[%d].node.id", i)).entity(String.class).isEqualTo(ids.get(i));
+        }
+
+        return response.path("users.pageInfo.endCursor").entity(String.class).get();
     }
 }

@@ -1,5 +1,6 @@
 package cn.notfound.gitone.server.controllers.groups.inputs;
 
+import cn.notfound.gitone.server.controllers.Relay;
 import cn.notfound.gitone.server.entities.GroupEntity;
 import cn.notfound.gitone.server.entities.Visibility;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,8 @@ import lombok.Data;
 
 @Data
 public class CreateGroupInput {
+
+    private String parentId;
 
     @NotBlank @Size(min = 1, max = 64)
     private String name;
@@ -23,9 +26,15 @@ public class CreateGroupInput {
     @NotNull @Size(max = 255)
     private String description;
 
+    private int parentId() {
+        if (parentId == null || parentId.isBlank()) return 0;
+
+        return Relay.fromGlobalId(GroupEntity.TYPE, parentId).id();
+    }
+
     public GroupEntity entity() {
         GroupEntity entity = new GroupEntity();
-        entity.setParentId(0);
+        entity.setParentId(parentId());
         entity.setName(name);
         entity.setPath(path);
         entity.setFullName(name);

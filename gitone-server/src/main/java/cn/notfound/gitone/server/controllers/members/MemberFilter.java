@@ -4,6 +4,9 @@ import cn.notfound.gitone.server.entities.Access;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
+
 @Data
 @Accessors(chain = true)
 public class MemberFilter {
@@ -22,7 +25,7 @@ public class MemberFilter {
         }
     }
 
-    private Integer namespaceId;
+    private Collection<Integer> traversalIds = new LinkedHashSet<>();
 
     private Access access;
 

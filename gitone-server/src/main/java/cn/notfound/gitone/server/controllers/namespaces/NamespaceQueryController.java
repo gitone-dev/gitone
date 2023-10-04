@@ -28,6 +28,7 @@ public class NamespaceQueryController {
     public NamespaceEntity namespace(@Argument String fullPath) {
         NamespaceEntity namespaceEntity = namespaceDao.findByFullPath(fullPath);
         NotFound.notNull(namespaceEntity, fullPath);
+
         if (!namespacePolicy.policy(namespaceEntity).getActions().contains(Action.READ)) {
             NamespaceEntity entity = namespaceEntity;
             namespaceEntity = new NamespaceEntity();
@@ -41,7 +42,6 @@ public class NamespaceQueryController {
     @QueryMapping
     public Policy namespacePolicy(@Argument String fullPath) {
         NamespaceEntity namespaceEntity = namespaceDao.findByFullPath(fullPath);
-        NotFound.notNull(namespaceEntity, fullPath);
         return namespacePolicy.policy(namespaceEntity);
     }
 }

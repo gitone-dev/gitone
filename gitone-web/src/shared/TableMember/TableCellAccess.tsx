@@ -11,6 +11,7 @@ import {
 import { ge } from "../../utils/access";
 
 interface Props {
+  namespaceId: string;
   policy: Policy;
   member: Member;
   onUpdate: (input: UpdateMemberInput) => void;
@@ -18,6 +19,7 @@ interface Props {
 
 function TableCellAccess(props: Props & TableCellProps) {
   const {
+    namespaceId,
     policy: { access, actions },
     member,
     onUpdate,
@@ -28,12 +30,15 @@ function TableCellAccess(props: Props & TableCellProps) {
     onUpdate({ id: member.id, access: event.target.value as Access });
   };
 
+  const disabledSelect =
+    !actions.includes(Action.UpdateMember) ||
+    !ge(access, member.access) ||
+    namespaceId !== member.namespace?.id;
+
   return (
     <TableCell {...tableCellProps}>
       <Select
-        disabled={
-          !actions.includes(Action.UpdateMember) || !ge(access, member.access)
-        }
+        disabled={disabledSelect}
         onChange={onChange}
         size="small"
         value={member.access || Access.NoAccess}

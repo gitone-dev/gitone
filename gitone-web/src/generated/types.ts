@@ -66,6 +66,7 @@ export type CreateEmailPayload = {
 export type CreateGroupInput = {
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  parentId?: InputMaybe<Scalars['ID']['input']>;
   path: Scalars['String']['input'];
   visibility: Visibility;
 };
@@ -208,7 +209,10 @@ export type GroupEdge = {
 };
 
 export type GroupFilter = {
+  /**  null/''/string  */
+  parentId?: InputMaybe<Scalars['ID']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
   username?: InputMaybe<Scalars['String']['input']>;
   visibility?: InputMaybe<Visibility>;
 };
@@ -229,6 +233,7 @@ export type Member = {
   access?: Maybe<Access>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   id: Scalars['ID']['output'];
+  namespace?: Maybe<Namespace>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   user?: Maybe<User>;
 };
@@ -731,7 +736,7 @@ export type CreateMemberMutationVariables = Exact<{
 }>;
 
 
-export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } | null } | null };
 
 export type CreateSessionMutationVariables = Exact<{
   input: CreateSessionInput;
@@ -759,7 +764,7 @@ export type DeleteMemberMutationVariables = Exact<{
 }>;
 
 
-export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } | null } | null };
 
 export type DeleteSessionMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -807,7 +812,7 @@ export type GroupMembersQueryVariables = Exact<{
 }>;
 
 
-export type GroupMembersQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
+export type GroupMembersQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
 
 export type GroupPolicyQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -826,7 +831,7 @@ export type GroupsQueryVariables = Exact<{
 
 export type GroupsQuery = { __typename?: 'Query', groups?: { __typename?: 'GroupConnection', edges?: Array<{ __typename?: 'GroupEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
-export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null };
+export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null };
 
 export type NamespaceFragmentFragment = { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null };
 
@@ -909,7 +914,7 @@ export type UpdateMemberMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } | null } | null };
 
 export type UpdatePasswordMutationVariables = Exact<{
   input: UpdatePasswordInput;
@@ -1006,17 +1011,6 @@ export const UserFragmentFragmentDoc = gql`
   avatarUrl
 }
     `;
-export const MemberFragmentFragmentDoc = gql`
-    fragment MemberFragment on Member {
-  id
-  createdAt
-  updatedAt
-  access
-  user {
-    ...UserFragment
-  }
-}
-    ${UserFragmentFragmentDoc}`;
 export const NamespaceFragmentFragmentDoc = gql`
     fragment NamespaceFragment on Namespace {
   id
@@ -1030,6 +1024,21 @@ export const NamespaceFragmentFragmentDoc = gql`
   description
 }
     `;
+export const MemberFragmentFragmentDoc = gql`
+    fragment MemberFragment on Member {
+  id
+  createdAt
+  updatedAt
+  access
+  user {
+    ...UserFragment
+  }
+  namespace {
+    ...NamespaceFragment
+  }
+}
+    ${UserFragmentFragmentDoc}
+${NamespaceFragmentFragmentDoc}`;
 export const PageInfoFragmentFragmentDoc = gql`
     fragment PageInfoFragment on PageInfo {
   hasPreviousPage

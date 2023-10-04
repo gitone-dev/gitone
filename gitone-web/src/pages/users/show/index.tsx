@@ -7,7 +7,7 @@ import RelativeTime from "../../../shared/RelativeTime";
 import { useFullPath } from "../../../utils/router";
 
 function Show() {
-  const username = useFullPath();
+  const { fullPath: username } = useFullPath();
   const { data, loading, error } = useUserDetailQuery({
     variables: { username },
   });

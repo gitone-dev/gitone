@@ -29,7 +29,7 @@ public class GroupPolicy extends NamespacePolicy {
             case OWNER, MAINTAINER -> Set.of(
                     READ_MEMBER, CREATE_MEMBER, UPDATE_MEMBER, DELETE_MEMBER
             );
-            case REPORTER -> Set.of(
+            case REPORTER, MIN_ACCESS -> Set.of(
                     READ_MEMBER
             );
             default -> Set.of();
@@ -52,13 +52,20 @@ public class GroupPolicy extends NamespacePolicy {
     public MemberEntity assertPermission(NamespaceEntity namespaceEntity, Action action) {
         NotFound.notNull(namespaceEntity, "命名空间不存在");
 
-        if (namespaceEntity.isPublic()) {
-            if (action.equals(READ)) return null;
-            if (action.equals(Action.READ_MEMBER)) return null;
+        MemberEntity memberEntity = null;
+        if (isAuthenticated()) {
+            memberEntity = memberDao.findByAncestors(namespaceEntity.traversalIds(), viewerId());
         }
-        Forbidden.isTrue(isAuthenticated(), "无权限");
 
-        MemberEntity memberEntity = memberDao.findByNamespaceIdAndUserId(namespaceEntity.getId(), viewerId());
+        if (namespaceEntity.isPublic()) {
+            if (action.equals(READ)) return memberEntity;
+            if (action.equals(Action.READ_MEMBER)) return memberEntity;
+        } else if (memberEntity == null && isAuthenticated()) {
+            Forbidden.isTrue(accessActionsMap.get(Access.MIN_ACCESS).contains(action), "无权限");
+            Forbidden.notNull(memberDao.findByDescendants(namespaceEntity.getId(), viewerId()), "无权限");
+            return null;
+        }
+
         Forbidden.notNull(memberEntity, "无权限");
         Forbidden.isTrue(accessActionsMap.get(memberEntity.getAccess()).contains(action), "无权限");
 

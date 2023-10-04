@@ -31,7 +31,7 @@ const documents = {
     "query GroupMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {\n  group(fullPath: $fullPath) {\n    id\n    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n      edges {\n        node {\n          ...MemberFragment\n        }\n        cursor\n      }\n      pageInfo {\n        ...PageInfoFragment\n      }\n    }\n  }\n}": types.GroupMembersDocument,
     "query GroupPolicy($fullPath: String!) {\n  groupPolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.GroupPolicyDocument,
     "query Groups($first: Int!, $after: String, $filterBy: GroupFilter, $orderBy: GroupOrder) {\n  groups(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...GroupFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.GroupsDocument,
-    "fragment MemberFragment on Member {\n  id\n  createdAt\n  updatedAt\n  access\n  user {\n    ...UserFragment\n  }\n}": types.MemberFragmentFragmentDoc,
+    "fragment MemberFragment on Member {\n  id\n  createdAt\n  updatedAt\n  access\n  user {\n    ...UserFragment\n  }\n  namespace {\n    ...NamespaceFragment\n  }\n}": types.MemberFragmentFragmentDoc,
     "fragment NamespaceFragment on Namespace {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Namespace($fullPath: String!) {\n  namespace(fullPath: $fullPath) {\n    ...NamespaceFragment\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.NamespaceFragmentFragmentDoc,
     "fragment PageInfoFragment on PageInfo {\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}": types.PageInfoFragmentFragmentDoc,
     "query Ping {\n  ping\n}": types.PingDocument,
@@ -146,7 +146,7 @@ export function graphql(source: "query Groups($first: Int!, $after: String, $fil
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "fragment MemberFragment on Member {\n  id\n  createdAt\n  updatedAt\n  access\n  user {\n    ...UserFragment\n  }\n}"): (typeof documents)["fragment MemberFragment on Member {\n  id\n  createdAt\n  updatedAt\n  access\n  user {\n    ...UserFragment\n  }\n}"];
+export function graphql(source: "fragment MemberFragment on Member {\n  id\n  createdAt\n  updatedAt\n  access\n  user {\n    ...UserFragment\n  }\n  namespace {\n    ...NamespaceFragment\n  }\n}"): (typeof documents)["fragment MemberFragment on Member {\n  id\n  createdAt\n  updatedAt\n  access\n  user {\n    ...UserFragment\n  }\n  namespace {\n    ...NamespaceFragment\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

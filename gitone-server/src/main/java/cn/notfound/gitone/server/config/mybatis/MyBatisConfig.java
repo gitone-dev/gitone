@@ -12,4 +12,9 @@ public class MyBatisConfig {
         return configuration ->
                 configuration.setDefaultEnumTypeHandler(EnumValueTypeHandler.class);
     }
+
+    @Bean
+    public IntegerArrayTypeHandler integerArrayTypeHandler() {
+        return new IntegerArrayTypeHandler();
+    }
 }

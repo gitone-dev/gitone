@@ -9,6 +9,7 @@
         <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
         <result property="type" column="type" jdbcType="INTEGER" />
         <result property="parentId" column="parent_id" jdbcType="INTEGER" />
+        <result property="traversalIds" column="traversal_ids" jdbcType="ARRAY" />
         <result property="name" column="name" jdbcType="VARCHAR" />
         <result property="path" column="path" jdbcType="VARCHAR" />
         <result property="fullName" column="full_name" jdbcType="VARCHAR" />
@@ -22,6 +23,7 @@
         ns.updated_at,
         ns.type,
         ns.parent_id,
+        ns.traversal_ids,
         ns.name,
         ns.path,
         ns.full_name,
@@ -35,6 +37,7 @@
             updated_at,
             type,
             parent_id,
+            traversal_ids,
             name,
             path,
             full_name,
@@ -46,6 +49,7 @@
             #{updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
             #{type,jdbcType=INTEGER},
             #{parentId,jdbcType=INTEGER},
+            #{traversalIds,jdbcType=ARRAY},
             #{name,jdbcType=VARCHAR},
             #{path,jdbcType=VARCHAR},
             #{fullName,jdbcType=VARCHAR},
@@ -60,6 +64,7 @@
             updated_at = #{updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE},
             type = #{type,jdbcType=INTEGER},
             parent_id = #{parentId,jdbcType=INTEGER},
+            traversal_ids = #{traversalIds,jdbcType=ARRAY},
             name = #{name,jdbcType=VARCHAR},
             path = #{path,jdbcType=VARCHAR},
             full_name = #{fullName,jdbcType=VARCHAR},

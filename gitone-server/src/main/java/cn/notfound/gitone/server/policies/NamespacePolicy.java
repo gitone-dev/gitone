@@ -35,7 +35,7 @@ public class NamespacePolicy extends ViewerContext {
             case MAINTAINER -> Set.of(
                     READ, UPDATE
             );
-            case REPORTER -> Set.of(
+            case REPORTER, MIN_ACCESS -> Set.of(
                     READ
             );
             default -> Set.of();
@@ -50,15 +50,25 @@ public class NamespacePolicy extends ViewerContext {
     }
 
     public Policy policy(NamespaceEntity namespaceEntity) {
+        NotFound.notNull(namespaceEntity, "命名空间不存在");
+
         Policy policy = new Policy(this.getClass(), namespaceEntity.getId());
-        if (isAuthenticated()) {
-            MemberEntity memberEntity = memberDao.findByNamespaceIdAndUserId(namespaceEntity.getId(), viewerId());
+        if (isAuthenticated() && namespaceEntity.isUser()) {
+            if (namespaceEntity.getId().equals(userDetails().getNamespaceId())) {
+                policy.setAccess(Access.OWNER);
+            } else {
+                policy.setAccess(Access.MIN_ACCESS);
+            }
+        } else if (isAuthenticated()) {
+            MemberEntity memberEntity = memberDao.findByAncestors(namespaceEntity.traversalIds(), viewerId());
             if (memberEntity != null) {
                 policy.setAccess(memberEntity.getAccess());
+            } else if (memberDao.findByDescendants(namespaceEntity.getId(), viewerId()) != null) {
+                policy.setAccess(Access.MIN_ACCESS);
             }
         }
-        if (policy.getAccess().lt(Access.REPORTER) && namespaceEntity.isPublic()) {
-            policy.setAccess(Access.REPORTER);
+        if (policy.getAccess().lt(Access.MIN_ACCESS) && namespaceEntity.isPublic()) {
+            policy.setAccess(Access.MIN_ACCESS);
         }
 
         policy.setActions(accessActions().get(policy.getAccess()));
@@ -73,13 +83,24 @@ public class NamespacePolicy extends ViewerContext {
     public MemberEntity assertPermission(NamespaceEntity namespaceEntity, Action action) {
         NotFound.notNull(namespaceEntity, "命名空间不存在");
 
-        if (namespaceEntity.isPublic()) {
-            if (action.equals(READ)) return null;
-            if (action.equals(READ_MEMBER)) return null;
+        MemberEntity memberEntity = null;
+        if (isAuthenticated() && namespaceEntity.isUser()) {
+            if (namespaceEntity.getId().equals(userDetails().getNamespaceId())) {
+                return null;
+            }
+        } else if (isAuthenticated()) {
+            memberEntity = memberDao.findByAncestors(namespaceEntity.traversalIds(), viewerId());
         }
-        Forbidden.isTrue(isAuthenticated(), "无权限");
 
-        MemberEntity memberEntity = memberDao.findByNamespaceIdAndUserId(namespaceEntity.getId(), viewerId());
+        if (namespaceEntity.isPublic()) {
+            if (action.equals(READ)) return memberEntity;
+            if (action.equals(READ_MEMBER)) return memberEntity;
+        } else if (memberEntity == null && isAuthenticated() && !namespaceEntity.isUser()) {
+            Forbidden.isTrue(accessActionsMap.get(Access.MIN_ACCESS).contains(action), "无权限");
+            Forbidden.notNull(memberDao.findByDescendants(namespaceEntity.getId(), viewerId()), "无权限");
+            return null;
+        }
+
         Forbidden.notNull(memberEntity, "无权限");
         Forbidden.isTrue(accessActionsMap.get(memberEntity.getAccess()).contains(action), "无权限");
 

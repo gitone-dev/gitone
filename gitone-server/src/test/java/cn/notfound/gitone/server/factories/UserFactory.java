@@ -26,8 +26,11 @@ public class UserFactory extends BaseFactory {
     }
 
     public CreateUserInput createUserInput() {
+        return createUserInput(Faker.username());
+    }
+
+    public CreateUserInput createUserInput(String username) {
         CreateUserInput input = new CreateUserInput();
-        String username = Faker.username();
         input.setName(username.toUpperCase());
         input.setUsername(username);
         input.setEmail(username + "@notfound.cn");
@@ -59,7 +62,11 @@ public class UserFactory extends BaseFactory {
     }
 
     public SessionResult viewer() {
-        CreateUserInput createUserInput = createUserInput();
+        return viewer(Faker.username());
+    }
+
+    public SessionResult viewer(String username) {
+        CreateUserInput createUserInput = createUserInput(username);
         create(createUserInput);
         activate(createUserInput.getEmail());
         SessionResult session = createSession(createUserInput.getUsername(), createUserInput.getPassword());

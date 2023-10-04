@@ -6,8 +6,6 @@ import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureH
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @AutoConfigureHttpGraphQlTester
 @SpringBootTest
 class PingControllerTest {

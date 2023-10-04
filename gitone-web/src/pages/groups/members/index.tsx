@@ -16,7 +16,7 @@ import NewDialog from "./NewPaper";
 
 function Members() {
   const [open, setOpen] = useState(false);
-  const fullPath = useFullPath();
+  const { fullPath } = useFullPath();
   const { orderField, query, access } = useSearch();
   const { enqueueSnackbar } = useSnackbar();
 

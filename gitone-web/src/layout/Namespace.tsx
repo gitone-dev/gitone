@@ -7,7 +7,7 @@ import Group from "./Group";
 import User from "./User";
 
 function Namespace() {
-  const fullPath = useFullPath();
+  const { fullPath } = useFullPath();
   const { data, loading, error } = useNamespaceQuery({
     variables: { fullPath },
   });
