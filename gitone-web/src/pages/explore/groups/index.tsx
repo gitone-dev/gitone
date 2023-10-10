@@ -1,5 +1,4 @@
-import { cache } from "../../../client";
-import { ViewerDocument, ViewerQuery } from "../../../generated/types";
+import { useViewerQuery } from "../../../generated/types";
 import ChunkPaper from "../../../shared/ChunkPaper";
 import GroupsContainer, {
   Header,
@@ -7,7 +6,7 @@ import GroupsContainer, {
 } from "../../../shared/GroupsContainer";
 
 function Groups() {
-  const viewer = cache.readQuery<ViewerQuery>({ query: ViewerDocument });
+  const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
   const isViewer = Boolean(viewer);
   const { query, visibility, orderField } = useSearch({ isViewer });
 

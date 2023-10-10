@@ -1,9 +1,13 @@
-import { Action, useNamespaceQuery } from "../../../generated/types";
-import { fromGlobalId } from "../../../utils/relay";
+import {
+  Action,
+  NamespaceType,
+  useNamespaceQuery,
+} from "../../../generated/types";
+import ErrorBox from "../../../shared/ErrorBox";
 import { useFullPath } from "../../../utils/router";
-import ErrorPage from "../../ErrorPage";
 import LoadingPage from "../../LoadingPage";
 import Groups from "../../groups";
+import Projects from "../../projects";
 
 function Settings() {
   const { fullPath } = useFullPath();
@@ -14,19 +18,20 @@ function Settings() {
   if (loading) {
     return <LoadingPage />;
   } else if (error) {
-    return <ErrorPage message={error.message} />;
+    return <ErrorBox message={error.message} />;
   } else if (!data?.namespace.fullPath) {
-    return <ErrorPage message="客户查询条件出错" />;
+    return <ErrorBox message="客户查询条件出错" />;
   } else if (!data.namespacePolicy.actions?.includes(Action.Update)) {
-    return <ErrorPage message="无权限" />;
+    return <ErrorBox message="无权限" />;
   }
 
-  const globalId = fromGlobalId(data.namespace.id);
-  switch (globalId.type) {
-    case "Group":
+  switch (data.namespace.type) {
+    case NamespaceType.Group:
       return <Groups.Settings />;
+    case NamespaceType.Project:
+      return <Projects.Settings />;
     default:
-      return <ErrorPage message={`${globalId.type} 未知类型`} />;
+      return <ErrorBox message={`未知类型：${data.namespace.type}`} />;
   }
 }
 

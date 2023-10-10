@@ -35,50 +35,45 @@ class GroupMutationControllerTest extends BaseFactory {
 
     @Test
     void createGroup() {
-        SessionResult session = userFactory.viewer();
+        SessionResult session1 = userFactory.viewer();
+        SessionResult session2 = userFactory.viewer();
 
-        CreateGroupInput createGroupInput = groupFactory.createGroupInput();
+        // 一层
+        CreateGroupInput input = groupFactory.createGroupInput();
+        mutationCreateGroup(null, input, ErrorType.UNAUTHORIZED);
+        GroupResult group1 = groupFactory.create(session1, input);
+        queryGroupMembers(session1, group1);
 
-        mutate("createGroup", createGroupInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-
-        mutate("createGroup", session, createGroupInput)
-                .path("payload.group.name").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("payload.group.path").entity(String.class).isEqualTo(createGroupInput.getPath())
-                .path("payload.group.fullName").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("payload.group.fullPath").entity(String.class).isEqualTo(createGroupInput.getPath())
-                .path("payload.group.description").entity(String.class).isEqualTo(createGroupInput.getDescription())
-                .path("payload.group.visibility").entity(Visibility.class).isEqualTo(createGroupInput.getVisibility());
-
-        query("groupMembers", session)
-                .variable("fullPath", createGroupInput.getPath()).variable("first", 10)
-                .execute()
-                .path("group.members.edges").entityList(Object.class).hasSize(1)
-                .path("group.members.edges[0].node.access").entity(Access.class).isEqualTo(Access.OWNER)
-                .path("group.members.edges[0].node.user.username").entity(String.class).isEqualTo(session.getUsername());
-
-        query("namespace", session)
-                .variable("fullPath", createGroupInput.getPath())
-                .execute()
-                .path("namespace.name").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("namespace.path").entity(String.class).isEqualTo(createGroupInput.getPath())
-                .path("namespace.fullName").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("namespace.fullPath").entity(String.class).isEqualTo(createGroupInput.getPath());
+        // 二层
+        input.setParentId(group1.getId());
+        mutationCreateGroup(null, input, ErrorType.UNAUTHORIZED);
+        mutationCreateGroup(session2, input, ErrorType.FORBIDDEN);
+        GroupResult group2 = groupFactory.create(session1, group1, input);
+        queryGroupMembers(session1, group2);
     }
 
     @Test
     void deleteGroup() {
-        SessionResult session = userFactory.viewer();
-        GroupResult group = groupFactory.create(session);
+        SessionResult session1 = userFactory.viewer();
+        SessionResult session2 = userFactory.viewer();
 
-        mutationDeleteGroup(null, group, ErrorType.UNAUTHORIZED);
-        mutationDeleteGroup(session, group, null);
-        mutationDeleteGroup(session, group, ErrorType.NOT_FOUND);
+        GroupResult group1 = groupFactory.create(session1);
+        GroupResult group2 = groupFactory.create(session1, group1);
 
-        query("namespace")
-                .variable("fullPath", group.getFullPath())
-                .execute()
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.NOT_FOUND));
+        mutationDeleteGroup(session1, group1, ErrorType.BAD_REQUEST);
+
+        // 二层
+        CreateGroupInput input = groupFactory.createGroupInput();
+        mutationDeleteGroup(null, group2, ErrorType.UNAUTHORIZED);
+        mutationDeleteGroup(session2, group2, ErrorType.FORBIDDEN);
+        mutationDeleteGroup(session1, group2, null);
+        mutationDeleteGroup(session1, group2, ErrorType.NOT_FOUND);
+
+        // 一层
+        mutationDeleteGroup(null, group1, ErrorType.UNAUTHORIZED);
+        mutationDeleteGroup(session2, group1, ErrorType.FORBIDDEN);
+        mutationDeleteGroup(session1, group1, null);
+        mutationDeleteGroup(session1, group1, ErrorType.NOT_FOUND);
     }
 
     @Test
@@ -101,8 +96,8 @@ class GroupMutationControllerTest extends BaseFactory {
         SessionResult user = userFactory.viewer();
 
         GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
-        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
-        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1, "b1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1, "c1", Visibility.PRIVATE);
         GroupResult a2 = groupFactory.create(session, null, Visibility.PUBLIC);
 
         /*
@@ -174,8 +169,8 @@ class GroupMutationControllerTest extends BaseFactory {
         SessionResult user = userFactory.viewer();
 
         GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
-        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
-        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1, "b1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1, "c1", Visibility.PRIVATE);
         GroupResult a2 = groupFactory.create(session, null, Visibility.PUBLIC);
 
         /*
@@ -236,12 +231,12 @@ class GroupMutationControllerTest extends BaseFactory {
         SessionResult user = userFactory.viewer();
 
         GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
-        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
-        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1, "b1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1, "c1", Visibility.PRIVATE);
 
         GroupResult a2 = groupFactory.create(session, null, Visibility.PUBLIC);
-        GroupResult a2b1 = groupFactory.create(session, a2.getId(), "b1", Visibility.PUBLIC);
-        GroupResult a2b1c1 = groupFactory.create(session, a2b1.getId(), "c1", Visibility.PUBLIC);
+        GroupResult a2b1 = groupFactory.create(session, a2, "b1", Visibility.PUBLIC);
+        GroupResult a2b1c1 = groupFactory.create(session, a2b1, "c1", Visibility.PUBLIC);
 
         /*
          * 层级
@@ -271,6 +266,11 @@ class GroupMutationControllerTest extends BaseFactory {
 
         mutationUpdateGroupVisibility(null, input, ErrorType.UNAUTHORIZED);
         mutationUpdateGroupVisibility(user, input, ErrorType.FORBIDDEN);
+    }
+
+    private void mutationCreateGroup(SessionResult session, CreateGroupInput input, ErrorType errorType) {
+        mutate("createGroup", session, input)
+                .errors().expect(e -> e.getErrorType().equals(errorType));
     }
 
     private void mutationUpdateGroupVisibility(SessionResult session, UpdateGroupVisibilityInput input, ErrorType errorType) {
@@ -318,11 +318,19 @@ class GroupMutationControllerTest extends BaseFactory {
 
     private void queryNamespace(SessionResult session, GroupResult group) {
         GraphQlTester.Response response = query("namespace", session)
-                .variable("fullName", group.getFullName())
                 .variable("fullPath", group.getFullPath())
                 .execute();
 
         response.path("namespace.path").entity(String.class).isEqualTo(group.getPath())
                 .path("namespace.fullPath").entity(String.class).isEqualTo(group.getFullPath());
+    }
+
+    private void queryGroupMembers(SessionResult session, GroupResult group) {
+        query("groupMembers", session)
+                .variable("fullPath", group.getFullPath()).variable("first", 10)
+                .execute()
+                .path("group.members.edges").entityList(Object.class).hasSize(1)
+                .path("group.members.edges[0].node.access").entity(Access.class).isEqualTo(Access.OWNER)
+                .path("group.members.edges[0].node.user.username").entity(String.class).isEqualTo(session.getUsername());
     }
 }

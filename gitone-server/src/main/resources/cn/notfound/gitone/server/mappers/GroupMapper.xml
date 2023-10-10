@@ -10,102 +10,37 @@
         <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.namespaceColumns" />
     </sql>
     <sql id="directWithUser">
-        <if test="filter.userId != null">
-            WITH direct_with_user AS MATERIALIZED (
-                SELECT ns.*
-                FROM namespaces AS ns INNER JOIN members AS mb ON ns.id = mb.namespace_id
-                WHERE mb.user_id = #{filter.userId,jdbcType=INTEGER}
-                <if test="filter.parentId != null">
-                    AND ns.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
-                </if>
-            )
-        </if>
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.directWithUser" />
     </sql>
     <sql id="directWithViewer">
-        <if test="filter.viewerId != null">
-            WITH direct_with_viewer AS MATERIALIZED (
-                SELECT ns.*
-                FROM namespaces AS ns INNER JOIN members AS mb ON ns.id = mb.namespace_id
-                WHERE mb.user_id = #{filter.viewerId,jdbcType=INTEGER}
-                <if test="filter.parentId != null">
-                    AND ns.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
-                </if>
-            )
-        </if>
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.directWithViewer" />
     </sql>
     <sql id="ancestors">
-        SELECT ns.*
-        FROM namespaces AS ns
-            INNER JOIN (
-            <choose>
-                <when test="filter.parentId != null and filter.recursive">
-                    SELECT DISTINCT UNNEST(du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER} + 1:])
-                    FROM direct_with_user AS du
-                    WHERE du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
-                </when>
-                <when test="filter.parentId != null and !filter.recursive">
-                    SELECT DISTINCT du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER} + 1]
-                    FROM direct_with_user AS du
-                    WHERE du.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
-                </when>
-                <when test="filter.parentId == null and filter.recursive">
-                    SELECT DISTINCT UNNEST(du.traversal_ids)
-                    FROM direct_with_user AS du
-                </when>
-                <when test="filter.parentId == null and !filter.recursive">
-                    SELECT DISTINCT du.traversal_ids[1]
-                    FROM direct_with_user AS du
-                </when>
-            </choose>
-        ) AS ancestors (ancestor_id) ON ns.id = ancestors.ancestor_id
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.ancestors" />
     </sql>
     <sql id="descendants">
-        SELECT ns.*
-        FROM namespaces AS ns, direct_with_user AS du
-        WHERE du.id = ANY(ns.traversal_ids)
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.descendants" />
+    </sql>
+    <sql id="all">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.all" />
+    </sql>
+    <sql id="allWithUser">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.allWithUser" />
+    </sql>
+    <sql id="allWithViewer">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.allWithViewer" />
     </sql>
     <sql id="filter">
-        <if test="filter.visibility != null">
-            AND ns.visibility = #{filter.visibility,jdbcType=INTEGER}
-        </if>
-        <if test="filter.query != null">
-            AND ns.path like '%' || #{filter.query,jdbcType=VARCHAR} || '%'
-        </if>
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.filter" />
     </sql>
-    <sql id="direction">${page.direction(before)}</sql>
+    <sql id="direction">
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.direction" />
+    </sql>
     <sql id="cursorOp">
-        <choose>
-            <when test="cursor.createdAt != null">
-                AND (
-                    ns.created_at = #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND ns.id &gt; #{cursor.id,jdbcType=INTEGER}
-                    OR ns.created_at <include refid="direction" /> #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
-                )
-            </when>
-            <when test="cursor.updatedAt != null">
-                AND (
-                    ns.updated_at = #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND ns.id &gt; #{cursor.id,jdbcType=INTEGER}
-                    OR ns.updated_at <include refid="direction" /> #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
-                )
-            </when>
-            <when test="cursor.path != null">
-                AND (
-                    ns.path = #{cursor.path,jdbcType=VARCHAR} AND ns.id &gt; #{cursor.id,jdbcType=INTEGER}
-                    OR ns.path <include refid="direction" /> #{cursor.path,jdbcType=VARCHAR}
-                )
-            </when>
-        </choose>
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.cursorOp" />
     </sql>
     <sql id="page">
-        <if test="page.before != null">
-            <bind name="before" value="true"/>
-            <bind name="cursor" value="page.before"/>
-            <include refid="cursorOp" />
-        </if>
-        <if test="page.after != null">
-            <bind name="before" value="false"/>
-            <bind name="cursor" value="page.after"/>
-            <include refid="cursorOp" />
-        </if>
+        <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.page" />
     </sql>
     <select id="find" parameterType="java.lang.Integer" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
@@ -121,75 +56,16 @@
         </foreach>
         AND ns.type = 2
     </select>
-    <select id="findByDescendants" resultMap="groupMap">
-        SELECT <include refid="groupColumns" />
-        FROM namespaces AS ns
-        WHERE #{namespaceId,jdbcType=INTEGER} = ANY(ns.traversal_ids)
-    </select>
     <select id="findByFullPath" parameterType="java.lang.String" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
         FROM namespaces AS ns
         WHERE ns.full_path = #{fullPath,jdbcType=VARCHAR} AND ns.type = 2
     </select>
-    <sql id="all">
-        SELECT ns.*
+    <select id="findByDescendants" resultMap="groupMap">
+        SELECT <include refid="groupColumns" />
         FROM namespaces AS ns
-        <choose>
-            <when test="filter.parentId != null and filter.recursive">
-                WHERE ns.traversal_ids[#{filter.parentLevel,jdbcType=INTEGER}] = #{filter.parentId,jdbcType=INTEGER}
-                    AND ns.id != #{filter.parentId,jdbcType=INTEGER}
-            </when>
-            <when test="filter.parentId != null and !filter.recursive">
-                WHERE ns.parent_id = #{filter.parentId,jdbcType=INTEGER}
-            </when>
-            <when test="filter.parentId == null and !filter.recursive">
-                WHERE ns.parent_id = 0
-            </when>
-        </choose>
-    </sql>
-    <sql id="allWithUser">
-        <choose>
-            <when test="filter.userId == null">
-                <include refid="all" />
-            </when>
-            <when test="filter.recursive">
-                <include refid="directWithUser" />
-                SELECT ns.*
-                FROM (
-                    (
-                        <include refid="ancestors" />
-                    )
-                    UNION
-                    (
-                        <include refid="descendants" />
-                    )
-                ) AS ns
-            </when>
-            <otherwise>
-                <include refid="directWithUser" />
-                <include refid="ancestors" />
-            </otherwise>
-        </choose>
-    </sql>
-    <sql id="allWithViewer">
-        <choose>
-            <when test="filter.viewerId == null">
-                <include refid="allWithUser" />
-            </when>
-            <otherwise>
-                <include refid="directWithViewer" />
-                SELECT ns.*
-                FROM (
-                    <include refid="allWithUser" />
-                ) AS ns
-                WHERE ns.visibility = 40 OR EXISTS (
-                    SELECT dv.id
-                    FROM direct_with_viewer AS dv
-                    WHERE ns.id = ANY (dv.traversal_ids) OR dv.id = ANY (ns.traversal_ids)
-                )
-            </otherwise>
-        </choose>
-    </sql>
+        WHERE #{namespaceId,jdbcType=INTEGER} = ANY(ns.traversal_ids)
+    </select>
     <select id="findAll" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
         FROM (
@@ -198,7 +74,6 @@
         <where>
             <include refid="filter" />
             <include refid="page" />
-            AND ns.type = 2
         </where>
         ORDER BY ns.${page.order.field} ${page.orderDirection}, ns.id ASC
         LIMIT #{page.limit,jdbcType=INTEGER}

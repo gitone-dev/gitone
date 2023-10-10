@@ -2,6 +2,7 @@ package cn.notfound.gitone.server.factories;
 
 import cn.notfound.gitone.server.controllers.session.inputs.CreateSessionInput;
 import cn.notfound.gitone.server.entities.SessionEntity;
+import cn.notfound.gitone.server.results.NamespaceResult;
 import cn.notfound.gitone.server.results.SessionResult;
 import cn.notfound.gitone.server.results.UserResult;
 import org.springframework.graphql.test.tester.GraphQlTester;
@@ -84,5 +85,12 @@ public class BaseFactory {
         return query("viewer", session)
                 .execute()
                 .path("viewer").entity(UserResult.class).get();
+    }
+
+    public NamespaceResult queryNamespace(SessionResult session, String fullPath) {
+        return query("namespace", session)
+                .variable("fullPath", fullPath)
+                .execute()
+                .path("namespace").entity(NamespaceResult.class).get();
     }
 }

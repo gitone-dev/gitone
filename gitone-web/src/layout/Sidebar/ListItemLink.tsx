@@ -5,14 +5,14 @@ import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 
 interface Props {
-  to: string;
-  text: string;
   icon?: React.ReactNode;
+  text: string;
+  to: string;
   hidden?: boolean;
 }
 
 function ListItemLink(props: Props) {
-  const { to, text, icon, hidden } = props;
+  const { icon, text, to, hidden } = props;
   const { pathname } = useLocation();
 
   if (hidden) return <></>;

@@ -53,6 +53,13 @@ type Query {
 
   namespace(fullPath: String!): Namespace!
   namespacePolicy(fullPath: String!): Policy!
+  namespaces(
+    first: Int = 20
+    after: String
+    filterBy: NamespaceFilter
+    orderBy: NamespaceOrder = { field: CREATED_AT, direction: DESC }
+  ): NamespaceConnection
+
   group(fullPath: String!): Group!
   groupPolicy(fullPath: String!): Policy!
   groups(
@@ -61,6 +68,15 @@ type Query {
     filterBy: GroupFilter
     orderBy: GroupOrder = { field: CREATED_AT, direction: DESC }
   ): GroupConnection
+
+  project(fullPath: String!): Project!
+  projectPolicy(fullPath: String!): Policy!
+  projects(
+    first: Int = 20
+    after: String
+    filterBy: ProjectFilter
+    orderBy: ProjectOrder = { field: CREATED_AT, direction: DESC }
+  ): ProjectConnection
 }
 
 type Policy implements Node {
@@ -101,18 +117,26 @@ type Mutation {
   deleteEmail(input: DeleteEmailInput!): DeleteEmailPayload
 
   # group
+
   createGroup(input: CreateGroupInput!): CreateGroupPayload
   deleteGroup(input: DeleteGroupInput!): DeleteGroupPayload
   updateGroup(input: UpdateGroupInput!): UpdateGroupPayload
   updateGroupPath(input: UpdateGroupPathInput!): UpdateGroupPathPayload
-  updateGroupVisibility(
-    input: UpdateGroupVisibilityInput!
-  ): UpdateGroupVisibilityPayload
+  updateGroupVisibility(input: UpdateGroupVisibilityInput!): UpdateGroupVisibilityPayload
 
   # member
+
   createMember(input: CreateMemberInput!): CreateMemberPayload
   updateMember(input: UpdateMemberInput!): UpdateMemberPayload
   deleteMember(input: DeleteMemberInput!): DeleteMemberPayload
+
+  # project
+
+  createProject(input: CreateProjectInput!): CreateProjectPayload
+  deleteProject(input: DeleteProjectInput!): DeleteProjectPayload
+  updateProject(input: UpdateProjectInput!): UpdateProjectPayload
+  updateProjectPath(input: UpdateProjectPathInput!): UpdateProjectPathPayload
+  updateProjectVisibility(input: UpdateProjectVisibilityInput!): UpdateProjectVisibilityPayload
 }
 
 # session
@@ -140,16 +164,53 @@ type DeleteSessionPayload {
 
 # namespace
 
+enum NamespaceType {
+  USER
+  GROUP
+  PROJECT
+}
+
 type Namespace implements Node {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
+  type: NamespaceType
   name: String
   path: String
   fullName: String
   fullPath: String
-  visibility: Visibility
+  visibility: Visibility!
   description: String
+}
+
+type NamespaceEdge {
+  node: Namespace!
+  cursor: String!
+}
+
+type NamespaceConnection {
+  edges: [NamespaceEdge!]
+  pageInfo: PageInfo
+}
+
+input NamespaceFilter {
+  parentId: ID
+  recursive: Boolean
+  visibility: Visibility
+  query: String
+  username: String
+  types: [NamespaceType!]
+}
+
+input NamespaceOrder {
+  direction: OrderDirection!
+  field: NamespaceOrderField!
+}
+
+enum NamespaceOrderField {
+  CREATED_AT
+  UPDATED_AT
+  PATH
 }
 
 # group
@@ -247,6 +308,103 @@ input UpdateGroupVisibilityInput {
 
 type UpdateGroupVisibilityPayload {
   group: Group
+}
+
+# project
+
+type Project implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  name: String
+  path: String
+  fullName: String
+  fullPath: String
+  visibility: Visibility!
+  description: String
+  members(
+    first: Int = 20
+    after: String
+    filterBy: MemberFilter
+    orderBy: MemberOrder = { field: CREATED_AT, direction: DESC }
+  ): MemberConnection
+}
+
+type ProjectEdge {
+  node: Project!
+  cursor: String!
+}
+
+type ProjectConnection {
+  edges: [ProjectEdge!]
+  pageInfo: PageInfo
+}
+
+input ProjectFilter {
+  parentId: ID
+  recursive: Boolean
+  visibility: Visibility
+  query: String
+  username: String
+}
+
+input ProjectOrder {
+  direction: OrderDirection!
+  field: ProjectOrderField!
+}
+
+enum ProjectOrderField {
+  CREATED_AT
+  UPDATED_AT
+  PATH
+}
+
+input CreateProjectInput {
+  parentId: ID!
+  name: String!
+  path: String!
+  description: String!
+  visibility: Visibility!
+}
+
+type CreateProjectPayload {
+  project: Project
+}
+
+input DeleteProjectInput {
+  id: ID!
+}
+
+type DeleteProjectPayload {
+  project: Project
+}
+
+input UpdateProjectInput {
+  id: ID!
+  name: String!
+  description: String!
+}
+
+type UpdateProjectPayload {
+  project: Project
+}
+
+input UpdateProjectPathInput {
+  id: ID!
+  path: String!
+}
+
+type UpdateProjectPathPayload {
+  project: Project
+}
+
+input UpdateProjectVisibilityInput {
+  id: ID!
+  visibility: Visibility!
+}
+
+type UpdateProjectVisibilityPayload {
+  project: Project
 }
 
 # user

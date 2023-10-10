@@ -3,6 +3,7 @@ import ConfirmEmail from "./confirm-email";
 import ForgetPassword from "./forget-password";
 import Groups from "./groups";
 import New from "./new";
+import Projects from "./projects";
 import ResetPassword from "./reset-password";
 import Sent from "./sent";
 import Show from "./show";
@@ -14,6 +15,7 @@ const Users = {
   ForgetPassword,
   Groups,
   New,
+  Projects,
   Sent,
   Show,
   ResetPassword,

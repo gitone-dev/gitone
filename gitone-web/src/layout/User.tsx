@@ -1,3 +1,4 @@
+import CodeIcon from "@mui/icons-material/Code";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PersonIcon from "@mui/icons-material/Person";
 import Box from "@mui/material/Box";
@@ -19,6 +20,12 @@ const items = (username: string) => [
     to: `/${username}`,
   },
   {
+    key: `/users/${username}/projects`,
+    icon: <CodeIcon />,
+    text: "项目",
+    to: `/users/${username}/projects`,
+  },
+  {
     key: `/users/${username}/groups`,
     icon: <GroupsIcon />,
     text: "组织",
@@ -28,6 +35,10 @@ const items = (username: string) => [
 
 const breadcrumbItems = (username: string): BreadcrumbItems => ({
   [`/${username}`]: [{ to: `/${username}`, text: username }],
+  [`/users/${username}/projects`]: [
+    { to: `/${username}`, text: username },
+    { to: `/users/${username}/projects`, text: "项目" },
+  ],
   [`/users/${username}/groups`]: [
     { to: `/${username}`, text: username },
     { to: `/users/${username}/groups`, text: "组织" },

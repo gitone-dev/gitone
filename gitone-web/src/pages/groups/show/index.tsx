@@ -1,11 +1,10 @@
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import { Link as RouterLink } from "react-router-dom";
-import { cache } from "../../../client";
 import {
   Action,
-  ViewerDocument,
-  ViewerQuery,
   useGroupQuery,
+  useViewerQuery,
 } from "../../../generated/types";
 import ChunkPaper from "../../../shared/ChunkPaper";
 import Descriptions, { Item } from "../../../shared/Descriptions";
@@ -20,7 +19,7 @@ import { useFullPath } from "../../../utils/router";
 
 function Show() {
   const { fullPath } = useFullPath();
-  const viewer = cache.readQuery<ViewerQuery>({ query: ViewerDocument });
+  const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
   const isViewer = Boolean(viewer);
   const { query, visibility, orderField } = useSearch({ isViewer });
   const { data, loading, error } = useGroupQuery({
@@ -42,15 +41,25 @@ function Show() {
       <ChunkPaper
         primary="组织概览"
         action={
-          <Button
-            disabled={!policy.actions.includes(Action.Update)}
-            variant="contained"
-            component={RouterLink}
-            to={`/groups/new`}
-            state={group}
-          >
-            创建子组
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              disabled={!policy.actions.includes(Action.Update)}
+              component={RouterLink}
+              to={`/groups/new`}
+              state={group}
+            >
+              创建子组
+            </Button>
+            <Button
+              disabled={!policy.actions.includes(Action.Update)}
+              variant="contained"
+              component={RouterLink}
+              to={`/projects/new`}
+              state={group}
+            >
+              创建项目
+            </Button>
+          </Stack>
         }
       >
         <Descriptions>

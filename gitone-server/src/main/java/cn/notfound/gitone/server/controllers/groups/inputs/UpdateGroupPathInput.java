@@ -16,6 +16,6 @@ public class UpdateGroupPathInput {
     private String path;
 
     public int id() {
-        return Relay.fromGlobalId( GroupEntity.TYPE, id).id();
+        return Relay.fromGlobalId(GroupEntity.TYPE, id).id();
     }
 }

@@ -14,6 +14,7 @@ import cn.notfound.gitone.server.entities.MemberEntity;
 import cn.notfound.gitone.server.entities.NamespaceEntity;
 import cn.notfound.gitone.server.policies.Action;
 import cn.notfound.gitone.server.policies.GroupPolicy;
+import cn.notfound.gitone.server.policies.ProjectPolicy;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -30,12 +31,23 @@ public class MemberService extends ViewerContext {
 
     private GroupPolicy groupPolicy;
 
+    private ProjectPolicy projectPolicy;
+
     public MemberEntity create(CreateMemberInput input) {
         MemberEntity memberEntity = input.entity(viewerId());
 
         NamespaceEntity namespaceEntity = namespaceDao.find(memberEntity.getNamespaceId());
-        MemberEntity memberViewer = groupPolicy.assertPermission(namespaceEntity, Action.CREATE_MEMBER);
-        Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
+        switch (namespaceEntity.getType()) {
+            case GROUP -> {
+                MemberEntity memberViewer = groupPolicy.assertPermission(namespaceEntity, Action.CREATE_MEMBER);
+                Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
+            }
+            case PROJECT -> {
+                MemberEntity memberViewer = projectPolicy.assertPermission(namespaceEntity, Action.CREATE_MEMBER);
+                Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
+            }
+            default -> throw new IllegalArgumentException("命名空间类型错误");
+        }
 
         return memberDao.create(memberEntity);
     }

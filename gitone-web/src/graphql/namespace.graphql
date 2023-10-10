@@ -2,6 +2,7 @@ fragment NamespaceFragment on Namespace {
   id
   createdAt
   updatedAt
+  type
   name
   path
   fullName

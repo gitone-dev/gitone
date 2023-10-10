@@ -1,0 +1,23 @@
+query Projects(
+  $first: Int!
+  $after: String
+  $filterBy: ProjectFilter
+  $orderBy: ProjectOrder
+) {
+  projects(
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...ProjectFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

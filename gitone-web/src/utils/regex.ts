@@ -83,4 +83,33 @@ const group = {
   },
 };
 
-export { user, group };
+const project = {
+  name: {
+    helper: "长度 2~64",
+    rules: {
+      pattern: /^.{2,64}$/,
+      maxLength: 64,
+      required: true,
+    },
+  },
+  path: {
+    helper: "长度 2~64，可包含字母、数字且以字母开头",
+    rules: {
+      pattern: /^[A-Za-z][A-Za-z0-9]{1,63}$/,
+      maxLength: 64,
+      required: true,
+    },
+  },
+  description: {
+    helper: "介绍一下组织",
+    rules: {
+      pattern: /^.{0,255}$/,
+      maxLength: 255,
+    },
+  },
+  visibility: {
+    helper: "对外是否可见",
+  },
+};
+
+export { user, group, project };

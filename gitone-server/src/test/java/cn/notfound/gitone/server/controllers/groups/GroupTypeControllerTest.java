@@ -69,10 +69,10 @@ class GroupTypeControllerTest extends BaseFactory {
         SessionResult u1 = userFactory.viewer();
         SessionResult u2 = userFactory.viewer();
         SessionResult u3 = userFactory.viewer();
-        UserResult user = queryViewer(session);
-        UserResult u1u = queryViewer(u1);
-        UserResult u2u = queryViewer(u2);
-        UserResult u3u = queryViewer(u3);
+        UserResult user = userFactory.queryViewer(session);
+        UserResult u1u = userFactory.queryViewer(u1);
+        UserResult u2u = userFactory.queryViewer(u2);
+        UserResult u3u = userFactory.queryViewer(u3);
 
         /*
          * 成员继承
@@ -81,11 +81,11 @@ class GroupTypeControllerTest extends BaseFactory {
         GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
         memberFactory.create(session, a1.getId(), u1u.getId());
 
-        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1, "b1", Visibility.PRIVATE);
         memberFactory.create(session, a1b1.getId(), u2u.getId());
-        GroupResult a1b2 = groupFactory.create(session, a1.getId(), "b2", Visibility.PRIVATE);
+        GroupResult a1b2 = groupFactory.create(session, a1, "b2", Visibility.PRIVATE);
 
-        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1, "c1", Visibility.PRIVATE);
         memberFactory.create(session, a1b1c1.getId(), u3u.getId());
 
         GroupResult a2 = groupFactory.create(session, null, Visibility.PRIVATE);
@@ -114,7 +114,7 @@ class GroupTypeControllerTest extends BaseFactory {
 
         queryMembers(null, a2.getFullPath(), filterBy, orderBy, null, 1)
                 .errors()
-                .expect((e) -> e.getErrorType().equals(ErrorType.FORBIDDEN));
+                .expect((e) -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
 
         queryMembers(u1, a2.getFullPath(), filterBy, orderBy, null, 1)
                 .errors()

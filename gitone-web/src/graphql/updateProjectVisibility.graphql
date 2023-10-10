@@ -1,0 +1,7 @@
+mutation UpdateProjectVisibility($input: UpdateProjectVisibilityInput!) {
+  payload: updateProjectVisibility(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}

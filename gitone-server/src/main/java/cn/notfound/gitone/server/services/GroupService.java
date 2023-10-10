@@ -40,7 +40,6 @@ public class GroupService extends ViewerContext {
 
             groupEntity.setFullName(String.join("/", parent.getFullName(), groupEntity.getName()));
             groupEntity.setFullPath(String.join("/", parent.getFullPath(), groupEntity.getPath()));
-
             groupEntity.setTraversalIds(parent.getTraversalIds());
         }
         groupDao.create(groupEntity);

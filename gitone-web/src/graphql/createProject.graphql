@@ -1,0 +1,7 @@
+mutation CreateProject($input: CreateProjectInput!) {
+  payload: createProject(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}

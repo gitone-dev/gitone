@@ -1,0 +1,7 @@
+mutation UpdateProject($input: UpdateProjectInput!) {
+  payload: updateProject(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}

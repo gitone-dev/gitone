@@ -1,0 +1,7 @@
+mutation UpdateProjectPath($input: UpdateProjectPathInput!) {
+  payload: updateProjectPath(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}

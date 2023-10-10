@@ -7,6 +7,7 @@ import Explore from "../pages/explore";
 import Groups from "../pages/groups";
 import Namespace from "../pages/namespace";
 import Profile from "../pages/profile";
+import Projects from "../pages/projects";
 import Session from "../pages/session";
 import Users from "../pages/users";
 import { paths } from "../utils/router";
@@ -17,7 +18,8 @@ const router = createBrowserRouter([
     path: "/explore",
     element: <Layout.Explore />,
     children: [
-      { index: true, element: <Explore.Groups /> },
+      { index: true, element: <Explore.Projects /> },
+      { path: "/explore/projects", element: <Explore.Projects /> },
       { path: "/explore/groups", element: <Explore.Groups /> },
     ],
   },
@@ -33,18 +35,25 @@ const router = createBrowserRouter([
     path: "/users/:path0",
     element: <Layout.User />,
     children: [
-      {
-        path: "groups",
-        element: <Users.Groups />,
-      },
+      { path: "projects", element: <Users.Projects /> },
+      { path: "groups", element: <Users.Groups /> },
     ],
   },
   {
     path: "/dashboard",
     element: <Layout.Dashboard />,
     children: [
-      { index: true, element: <Dashboard.Groups /> },
+      { index: true, element: <Dashboard.Projects /> },
       { path: "groups", element: <Dashboard.Groups /> },
+      { path: "projects", element: <Dashboard.Projects /> },
+    ],
+  },
+  {
+    path: "/projects",
+    element: <Layout.Dashboard />,
+    children: [
+      { index: true, element: <Projects.New /> },
+      { path: "new", element: <Projects.New /> },
     ],
   },
   {
@@ -70,8 +79,9 @@ const router = createBrowserRouter([
     element: <Layout.Namespace />,
     children: [
       { index: true, element: <Namespace.Show /> },
-      { path: "-/settings", element: <Namespace.Settings /> },
+      { path: "-/projects", element: <Namespace.Projects /> },
       { path: "-/members", element: <Namespace.Members /> },
+      { path: "-/settings", element: <Namespace.Settings /> },
     ],
   })),
   { path: "*", element: <NotFoundPage /> },

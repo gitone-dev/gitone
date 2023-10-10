@@ -1,0 +1,23 @@
+query Namespaces(
+  $first: Int!
+  $after: String
+  $filterBy: NamespaceFilter
+  $orderBy: NamespaceOrder
+) {
+  namespaces(
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...NamespaceFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

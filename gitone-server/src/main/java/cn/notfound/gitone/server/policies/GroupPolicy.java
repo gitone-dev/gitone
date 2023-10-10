@@ -2,6 +2,7 @@ package cn.notfound.gitone.server.policies;
 
 import cn.notfound.gitone.server.config.exception.Forbidden;
 import cn.notfound.gitone.server.config.exception.NotFound;
+import cn.notfound.gitone.server.config.exception.Unauthorized;
 import cn.notfound.gitone.server.daos.MemberDao;
 import cn.notfound.gitone.server.entities.Access;
 import cn.notfound.gitone.server.entities.MemberEntity;
@@ -66,6 +67,7 @@ public class GroupPolicy extends NamespacePolicy {
             return null;
         }
 
+        Unauthorized.isTrue(isAuthenticated(), "未登录");
         Forbidden.notNull(memberEntity, "无权限");
         Forbidden.isTrue(accessActionsMap.get(memberEntity.getAccess()).contains(action), "无权限");
 

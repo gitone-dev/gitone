@@ -25,4 +25,12 @@ public abstract class ViewerContext {
             return null;
         }
     }
+
+    public Integer namespaceId() {
+        if (isAuthenticated()) {
+            return userDetails().getNamespaceId();
+        } else {
+            return null;
+        }
+    }
 }

@@ -23,6 +23,7 @@ public enum NamespaceType implements IntegerValue {
             case 0 -> NamespaceEntity.TYPE;
             case 1 -> UserNamespaceEntity.TYPE;
             case 2 -> GroupEntity.TYPE;
+            case 3 -> ProjectEntity.TYPE;
             default -> throw new IllegalArgumentException("invalid namespace type");
         };
     }

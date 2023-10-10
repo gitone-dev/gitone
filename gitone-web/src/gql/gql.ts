@@ -18,6 +18,7 @@ const documents = {
     "mutation CreateEmail($input: CreateEmailInput!) {\n  payload: createEmail(input: $input) {\n    email {\n      ...EmailFragment\n    }\n  }\n}": types.CreateEmailDocument,
     "mutation CreateGroup($input: CreateGroupInput!) {\n  payload: createGroup(input: $input) {\n    group {\n      ...GroupFragment\n    }\n  }\n}": types.CreateGroupDocument,
     "mutation CreateMember($input: CreateMemberInput!) {\n  payload: createMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}": types.CreateMemberDocument,
+    "mutation CreateProject($input: CreateProjectInput!) {\n  payload: createProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.CreateProjectDocument,
     "mutation CreateSession($input: CreateSessionInput!) {\n  payload: createSession(input: $input) {\n    session {\n      ...SessionFragment\n    }\n  }\n}": types.CreateSessionDocument,
     "mutation CreateUser($input: CreateUserInput!) {\n  payload: createUser(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.CreateUserDocument,
     "mutation DeleteEmail($input: DeleteEmailInput!) {\n  payload: deleteEmail(input: $input) {\n    email {\n      ...EmailFragment\n    }\n  }\n}": types.DeleteEmailDocument,
@@ -32,10 +33,14 @@ const documents = {
     "query GroupPolicy($fullPath: String!) {\n  groupPolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.GroupPolicyDocument,
     "query Groups($first: Int!, $after: String, $filterBy: GroupFilter, $orderBy: GroupOrder) {\n  groups(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...GroupFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.GroupsDocument,
     "fragment MemberFragment on Member {\n  id\n  createdAt\n  updatedAt\n  access\n  user {\n    ...UserFragment\n  }\n  namespace {\n    ...NamespaceFragment\n  }\n}": types.MemberFragmentFragmentDoc,
-    "fragment NamespaceFragment on Namespace {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Namespace($fullPath: String!) {\n  namespace(fullPath: $fullPath) {\n    ...NamespaceFragment\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.NamespaceFragmentFragmentDoc,
+    "fragment NamespaceFragment on Namespace {\n  id\n  createdAt\n  updatedAt\n  type\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Namespace($fullPath: String!) {\n  namespace(fullPath: $fullPath) {\n    ...NamespaceFragment\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.NamespaceFragmentFragmentDoc,
+    "query Namespaces($first: Int!, $after: String, $filterBy: NamespaceFilter, $orderBy: NamespaceOrder) {\n  namespaces(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...NamespaceFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.NamespacesDocument,
     "fragment PageInfoFragment on PageInfo {\n  hasPreviousPage\n  hasNextPage\n  startCursor\n  endCursor\n}": types.PageInfoFragmentFragmentDoc,
     "query Ping {\n  ping\n}": types.PingDocument,
     "fragment PolicyFragment on Policy {\n  id\n  access\n  actions\n}": types.PolicyFragmentFragmentDoc,
+    "fragment ProjectFragment on Project {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Project($fullPath: String!) {\n  project(fullPath: $fullPath) {\n    ...ProjectFragment\n  }\n  projectPolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.ProjectFragmentFragmentDoc,
+    "query ProjectMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {\n  project(fullPath: $fullPath) {\n    id\n    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n      edges {\n        node {\n          ...MemberFragment\n        }\n        cursor\n      }\n      pageInfo {\n        ...PageInfoFragment\n      }\n    }\n  }\n}": types.ProjectMembersDocument,
+    "query Projects($first: Int!, $after: String, $filterBy: ProjectFilter, $orderBy: ProjectOrder) {\n  projects(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...ProjectFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.ProjectsDocument,
     "mutation ResetPassword($input: ResetPasswordInput!) {\n  payload: resetPassword(input: $input) {\n    message\n  }\n}": types.ResetPasswordDocument,
     "mutation SendActivationEmail($input: SendActivationEmailInput!) {\n  payload: sendActivationEmail(input: $input) {\n    message\n  }\n}": types.SendActivationEmailDocument,
     "mutation SendPasswordResetEmail($input: SendPasswordResetEmailInput!) {\n  payload: sendPasswordResetEmail(input: $input) {\n    message\n  }\n}": types.SendPasswordResetEmailDocument,
@@ -47,6 +52,9 @@ const documents = {
     "mutation UpdateGroupVisibility($input: UpdateGroupVisibilityInput!) {\n  payload: updateGroupVisibility(input: $input) {\n    group {\n      ...GroupFragment\n    }\n  }\n}": types.UpdateGroupVisibilityDocument,
     "mutation UpdateMember($input: UpdateMemberInput!) {\n  payload: updateMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}": types.UpdateMemberDocument,
     "mutation updatePassword($input: UpdatePasswordInput!) {\n  payload: updatePassword(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.UpdatePasswordDocument,
+    "mutation UpdateProject($input: UpdateProjectInput!) {\n  payload: updateProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.UpdateProjectDocument,
+    "mutation UpdateProjectPath($input: UpdateProjectPathInput!) {\n  payload: updateProjectPath(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.UpdateProjectPathDocument,
+    "mutation UpdateProjectVisibility($input: UpdateProjectVisibilityInput!) {\n  payload: updateProjectVisibility(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.UpdateProjectVisibilityDocument,
     "mutation UpdateUser($input: UpdateUserInput!) {\n  payload: updateUser(input: $input) {\n    user {\n      ...UserDetailFragment\n    }\n  }\n}": types.UpdateUserDocument,
     "mutation UpdateUsername($input: UpdateUsernameInput!) {\n  payload: updateUsername(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.UpdateUsernameDocument,
     "fragment UserFragment on User {\n  id\n  createdAt\n  updatedAt\n  name\n  username\n  avatarUrl\n}\n\nquery User($username: String!) {\n  user(username: $username) {\n    ...UserFragment\n  }\n}": types.UserFragmentFragmentDoc,
@@ -91,6 +99,10 @@ export function graphql(source: "mutation CreateGroup($input: CreateGroupInput!)
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation CreateMember($input: CreateMemberInput!) {\n  payload: createMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}"): (typeof documents)["mutation CreateMember($input: CreateMemberInput!) {\n  payload: createMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreateProject($input: CreateProjectInput!) {\n  payload: createProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"): (typeof documents)["mutation CreateProject($input: CreateProjectInput!) {\n  payload: createProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -150,7 +162,11 @@ export function graphql(source: "fragment MemberFragment on Member {\n  id\n  cr
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "fragment NamespaceFragment on Namespace {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Namespace($fullPath: String!) {\n  namespace(fullPath: $fullPath) {\n    ...NamespaceFragment\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"): (typeof documents)["fragment NamespaceFragment on Namespace {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Namespace($fullPath: String!) {\n  namespace(fullPath: $fullPath) {\n    ...NamespaceFragment\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"];
+export function graphql(source: "fragment NamespaceFragment on Namespace {\n  id\n  createdAt\n  updatedAt\n  type\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Namespace($fullPath: String!) {\n  namespace(fullPath: $fullPath) {\n    ...NamespaceFragment\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"): (typeof documents)["fragment NamespaceFragment on Namespace {\n  id\n  createdAt\n  updatedAt\n  type\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Namespace($fullPath: String!) {\n  namespace(fullPath: $fullPath) {\n    ...NamespaceFragment\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Namespaces($first: Int!, $after: String, $filterBy: NamespaceFilter, $orderBy: NamespaceOrder) {\n  namespaces(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...NamespaceFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}"): (typeof documents)["query Namespaces($first: Int!, $after: String, $filterBy: NamespaceFilter, $orderBy: NamespaceOrder) {\n  namespaces(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...NamespaceFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -163,6 +179,18 @@ export function graphql(source: "query Ping {\n  ping\n}"): (typeof documents)["
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "fragment PolicyFragment on Policy {\n  id\n  access\n  actions\n}"): (typeof documents)["fragment PolicyFragment on Policy {\n  id\n  access\n  actions\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "fragment ProjectFragment on Project {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Project($fullPath: String!) {\n  project(fullPath: $fullPath) {\n    ...ProjectFragment\n  }\n  projectPolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"): (typeof documents)["fragment ProjectFragment on Project {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  visibility\n  description\n}\n\nquery Project($fullPath: String!) {\n  project(fullPath: $fullPath) {\n    ...ProjectFragment\n  }\n  projectPolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query ProjectMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {\n  project(fullPath: $fullPath) {\n    id\n    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n      edges {\n        node {\n          ...MemberFragment\n        }\n        cursor\n      }\n      pageInfo {\n        ...PageInfoFragment\n      }\n    }\n  }\n}"): (typeof documents)["query ProjectMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {\n  project(fullPath: $fullPath) {\n    id\n    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n      edges {\n        node {\n          ...MemberFragment\n        }\n        cursor\n      }\n      pageInfo {\n        ...PageInfoFragment\n      }\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Projects($first: Int!, $after: String, $filterBy: ProjectFilter, $orderBy: ProjectOrder) {\n  projects(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...ProjectFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}"): (typeof documents)["query Projects($first: Int!, $after: String, $filterBy: ProjectFilter, $orderBy: ProjectOrder) {\n  projects(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...ProjectFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -207,6 +235,18 @@ export function graphql(source: "mutation UpdateMember($input: UpdateMemberInput
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation updatePassword($input: UpdatePasswordInput!) {\n  payload: updatePassword(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}"): (typeof documents)["mutation updatePassword($input: UpdatePasswordInput!) {\n  payload: updatePassword(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdateProject($input: UpdateProjectInput!) {\n  payload: updateProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"): (typeof documents)["mutation UpdateProject($input: UpdateProjectInput!) {\n  payload: updateProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdateProjectPath($input: UpdateProjectPathInput!) {\n  payload: updateProjectPath(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"): (typeof documents)["mutation UpdateProjectPath($input: UpdateProjectPathInput!) {\n  payload: updateProjectPath(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdateProjectVisibility($input: UpdateProjectVisibilityInput!) {\n  payload: updateProjectVisibility(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"): (typeof documents)["mutation UpdateProjectVisibility($input: UpdateProjectVisibilityInput!) {\n  payload: updateProjectVisibility(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

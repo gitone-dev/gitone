@@ -1,4 +1,5 @@
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import CodeIcon from "@mui/icons-material/Code";
 import GroupIcon from "@mui/icons-material/Group";
 import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -40,6 +41,12 @@ function NewMenu() {
         open={Boolean(anchorEl)}
         onClose={onClose}
       >
+        <MenuItem component={RouterLink} to="/projects/new">
+          <ListItemIcon>
+            <CodeIcon />
+          </ListItemIcon>
+          <ListItemText>新建项目</ListItemText>
+        </MenuItem>
         <MenuItem component={RouterLink} to="/groups/new">
           <ListItemIcon>
             <GroupIcon />

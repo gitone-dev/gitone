@@ -27,8 +27,10 @@ import {
   useCreateGroupMutation,
   useExistFullPathLazyQuery,
   useGroupsLazyQuery,
+  useViewerQuery,
 } from "../../../generated/types";
 import ChunkPaper from "../../../shared/ChunkPaper";
+import VisibilityIcon from "../../../shared/VisibilityIcon";
 import { group as pattern } from "../../../utils/regex";
 
 interface Props {
@@ -38,7 +40,7 @@ interface Props {
 function SubgroupForm(props: Props) {
   const { group } = props;
   const groupEdge: GroupEdge = { node: group, cursor: group.id };
-  const [parentFullPath, setParentFullPath] = useState(group.fullPath);
+  const [parent, setParent] = useState(group);
   const [options, setOptions] = useState<GroupEdge[]>([groupEdge]);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -53,6 +55,7 @@ function SubgroupForm(props: Props) {
     mode: "onBlur",
     defaultValues: { parentId: groupEdge.node.id },
   });
+  const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
   const [existFullPathQuery] = useExistFullPathLazyQuery();
   const [createGroupMutation] = useCreateGroupMutation();
   const [groupsLazyQuery, { loading }] = useGroupsLazyQuery({
@@ -60,7 +63,7 @@ function SubgroupForm(props: Props) {
   });
 
   const validatePath = async (path: string): Promise<boolean> => {
-    const fullPath = `${parentFullPath}/${path}`;
+    const fullPath = `${parent}/${path}`;
     const { data } = await existFullPathQuery({
       variables: { fullPath },
       onCompleted(data) {
@@ -80,7 +83,11 @@ function SubgroupForm(props: Props) {
   const groupsQuery = useMemo(
     () =>
       debounce((query: string) => {
-        const filterBy: GroupFilter = { query, username: "aa" };
+        const filterBy: GroupFilter = {
+          query,
+          username: viewer?.username,
+          recursive: true,
+        };
         groupsLazyQuery({
           variables: { first: 20, filterBy },
           onCompleted(data) {
@@ -88,13 +95,13 @@ function SubgroupForm(props: Props) {
           },
         });
       }, 500),
-    [groupsLazyQuery]
+    [viewer, groupsLazyQuery]
   );
   const onChange = (_event: any, edge: Maybe<GroupEdge>) => {
     if (!edge) return;
 
     setValue("parentId", edge.node.id);
-    setParentFullPath(edge.node.fullPath);
+    setParent(edge.node);
   };
   const onInputChange = (_event: any, value: string) => {
     groupsQuery(value);
@@ -144,7 +151,7 @@ function SubgroupForm(props: Props) {
           }
           onInputChange={onInputChange}
           renderInput={(params) => (
-            <TextField {...params} required size="small" label="父级组织" />
+            <TextField {...params} required size="small" label="上级组织" />
           )}
           renderOption={(props, option) => {
             return (
@@ -153,7 +160,12 @@ function SubgroupForm(props: Props) {
                   <Avatar />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={option.node.fullName}
+                  primary={
+                    <>
+                      <span>{option.node.fullName}</span>
+                      <VisibilityIcon visibility={option.node.visibility} />
+                    </>
+                  }
                   secondary={option.node.fullPath}
                 />
               </ListItem>
@@ -193,7 +205,7 @@ function SubgroupForm(props: Props) {
             {...register("visibility")}
           />
           <FormControlLabel
-            disabled={group.visibility === Visibility.Private}
+            disabled={parent.visibility === Visibility.Private}
             value={Visibility.Public}
             control={<Radio />}
             label="公开"

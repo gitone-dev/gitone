@@ -1,0 +1,20 @@
+fragment ProjectFragment on Project {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+query Project($fullPath: String!) {
+  project(fullPath: $fullPath) {
+    ...ProjectFragment
+  }
+  projectPolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}

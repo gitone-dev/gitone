@@ -49,37 +49,18 @@ class GroupQueryControllerTest extends BaseFactory {
 
     @Test
     void group() {
-        SessionResult session = userFactory.viewer();
+        SessionResult session1 = userFactory.viewer();
+        SessionResult session2 = userFactory.viewer();
 
-        CreateGroupInput createGroupInput = groupFactory.createGroupInput();
-        createGroupInput.setVisibility(Visibility.PRIVATE);
-        groupFactory.create(session, createGroupInput);
-        query("group")
-                .variable("fullPath", createGroupInput.getPath())
-                .execute()
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.FORBIDDEN));
-        query("group", session)
-                .variable("fullPath", createGroupInput.getPath())
-                .execute()
-                .path("group.name").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("group.path").entity(String.class).isEqualTo(createGroupInput.getPath())
-                .path("group.fullName").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("group.fullPath").entity(String.class).isEqualTo(createGroupInput.getPath())
-                .path("group.description").entity(String.class).isEqualTo(createGroupInput.getDescription())
-                .path("group.visibility").entity(Visibility.class).isEqualTo(createGroupInput.getVisibility());
+        GroupResult group1 = groupFactory.create(session1, Visibility.PRIVATE);
+        groupFactory.queryGroup(session1, group1.getFullPath(), group1);
+        groupFactory.queryGroup(session2, group1.getFullPath(), ErrorType.FORBIDDEN);
+        groupFactory.queryGroup(null, group1.getFullPath(), ErrorType.UNAUTHORIZED);
 
-        createGroupInput = groupFactory.createGroupInput();
-        createGroupInput.setVisibility(Visibility.PUBLIC);
-        groupFactory.create(session, createGroupInput);
-        query("group")
-                .variable("fullPath", createGroupInput.getPath())
-                .execute()
-                .path("group.name").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("group.path").entity(String.class).isEqualTo(createGroupInput.getPath())
-                .path("group.fullName").entity(String.class).isEqualTo(createGroupInput.getName())
-                .path("group.fullPath").entity(String.class).isEqualTo(createGroupInput.getPath())
-                .path("group.description").entity(String.class).isEqualTo(createGroupInput.getDescription())
-                .path("group.visibility").entity(Visibility.class).isEqualTo(createGroupInput.getVisibility());
+        GroupResult group2 = groupFactory.create(session1, Visibility.PUBLIC);
+        groupFactory.queryGroup(session1, group2.getFullPath(), group2);
+        groupFactory.queryGroup(session2, group2.getFullPath(), group2);
+        groupFactory.queryGroup(null, group2.getFullPath(), group2);
 
         /*
          * 用户加入的组织
@@ -100,30 +81,30 @@ class GroupQueryControllerTest extends BaseFactory {
         SessionResult u2 = userFactory.viewer();
         SessionResult u3 = userFactory.viewer();
 
-        UserResult u1u = queryViewer(u1);
-        UserResult u2u = queryViewer(u2);
-        UserResult u3u = queryViewer(u3);
+        UserResult u1u = userFactory.queryViewer(u1);
+        UserResult u2u = userFactory.queryViewer(u2);
+        UserResult u3u = userFactory.queryViewer(u3);
 
-        GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
-        memberFactory.create(session, a1.getId(), u1u.getId());
+        GroupResult a1 = groupFactory.create(session1, Visibility.PRIVATE);
+        memberFactory.create(session1, a1.getId(), u1u.getId());
 
-        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
-        memberFactory.create(session, a1b1.getId(), u2u.getId());
-        GroupResult a1b2 = groupFactory.create(session, a1.getId(), "b2", Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session1, a1, "b1", Visibility.PRIVATE);
+        memberFactory.create(session1, a1b1.getId(), u2u.getId());
+        GroupResult a1b2 = groupFactory.create(session1, a1, "b2", Visibility.PRIVATE);
 
-        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
-        memberFactory.create(session, a1b1c1.getId(), u3u.getId());
+        GroupResult a1b1c1 = groupFactory.create(session1, a1b1, "c1", Visibility.PRIVATE);
+        memberFactory.create(session1, a1b1c1.getId(), u3u.getId());
 
-        GroupResult a2 = groupFactory.create(session, null, Visibility.PRIVATE);
+        GroupResult a2 = groupFactory.create(session1, Visibility.PRIVATE);
 
-        queryGroup(u1, a1.getFullPath(), null);
-        queryGroup(u1, a2.getFullPath(), ErrorType.FORBIDDEN);
-        queryGroup(u1, a1b1.getFullPath(), null);
+        groupFactory.queryGroup(u1, a1.getFullPath(), a1);
+        groupFactory.queryGroup(u1, a2.getFullPath(), ErrorType.FORBIDDEN);
+        groupFactory.queryGroup(u1, a1b1.getFullPath(), a1b1);
 
-        queryGroup(u2, a1.getFullPath(), null);
-        queryGroup(u2, a1b1.getFullPath(), null);
-        queryGroup(u2, a1b2.getFullPath(), ErrorType.FORBIDDEN);
-        queryGroup(u2, a1b1c1.getFullPath(), null);
+        groupFactory.queryGroup(u2, a1.getFullPath(), a1);
+        groupFactory.queryGroup(u2, a1b1.getFullPath(), a1b1);
+        groupFactory.queryGroup(u2, a1b2.getFullPath(), ErrorType.FORBIDDEN);
+        groupFactory.queryGroup(u2, a1b1c1.getFullPath(), a1b1c1);
     }
 
     @Test
@@ -169,8 +150,8 @@ class GroupQueryControllerTest extends BaseFactory {
         SessionResult session = userFactory.viewer();
         SessionResult v1 = userFactory.viewer();
         SessionResult u1 = userFactory.viewer();
-        UserResult v1u = queryViewer(v1);
-        UserResult u1u = queryViewer(u1);
+        UserResult v1u = userFactory.queryViewer(v1);
+        UserResult u1u = userFactory.queryViewer(u1);
 
         GroupResult a1 = groupFactory.create(session, Visibility.PUBLIC);
         GroupResult a2 = groupFactory.create(session, Visibility.PUBLIC);
@@ -186,22 +167,22 @@ class GroupQueryControllerTest extends BaseFactory {
 
         GroupResult a7 = groupFactory.create(session, Visibility.PUBLIC);
         memberFactory.create(session, a7.getId(), v1u.getId());
-        GroupResult a7b1 = groupFactory.create(session, a7.getId(), "b1", Visibility.PUBLIC);
+        GroupResult a7b1 = groupFactory.create(session, a7, "b1", Visibility.PUBLIC);
         memberFactory.create(session, a7b1.getId(), u1u.getId());
 
         GroupResult a8 = groupFactory.create(session, Visibility.PUBLIC);
         memberFactory.create(session, a8.getId(), u1u.getId());
-        GroupResult a8b1 = groupFactory.create(session, a8.getId(), "b1", Visibility.PUBLIC);
+        GroupResult a8b1 = groupFactory.create(session, a8, "b1", Visibility.PUBLIC);
         memberFactory.create(session, a8b1.getId(), v1u.getId());
 
         GroupResult a9 = groupFactory.create(session, Visibility.PRIVATE);
         memberFactory.create(session, a9.getId(), v1u.getId());
-        GroupResult a9b1 = groupFactory.create(session, a9.getId(), "b1", Visibility.PRIVATE);
+        GroupResult a9b1 = groupFactory.create(session, a9, "b1", Visibility.PRIVATE);
         memberFactory.create(session, a9b1.getId(), u1u.getId());
 
         GroupResult a10 = groupFactory.create(session, Visibility.PRIVATE);
         memberFactory.create(session, a10.getId(), u1u.getId());
-        GroupResult a10b1 = groupFactory.create(session, a10.getId(), "b1", Visibility.PRIVATE);
+        GroupResult a10b1 = groupFactory.create(session, a10, "b1", Visibility.PRIVATE);
         memberFactory.create(session, a10b1.getId(), v1u.getId());
 
         GroupFilter.By filterBy = new GroupFilter.By();
@@ -333,45 +314,45 @@ class GroupQueryControllerTest extends BaseFactory {
         SessionResult v2 = userFactory.viewer();
         SessionResult u2 = userFactory.viewer();
 
-        UserResult v1u = queryViewer(v1);
-        UserResult u1u = queryViewer(u1);
-        UserResult v2u = queryViewer(v2);
-        UserResult u2u = queryViewer(u2);
+        UserResult v1u = userFactory.queryViewer(v1);
+        UserResult u1u = userFactory.queryViewer(u1);
+        UserResult v2u = userFactory.queryViewer(v2);
+        UserResult u2u = userFactory.queryViewer(u2);
 
         GroupResult a1 = groupFactory.create(user, null, Visibility.PUBLIC);
         memberFactory.create(user, a1.getId(), v1u.getId());
         memberFactory.create(user, a1.getId(), u1u.getId());
 
-        GroupResult a1b1 = groupFactory.create(user, a1.getId(), "b1", Visibility.PUBLIC);
-        GroupResult a1b2 = groupFactory.create(user, a1.getId(), "b2", Visibility.PUBLIC);
+        GroupResult a1b1 = groupFactory.create(user, a1, "b1", Visibility.PUBLIC);
+        GroupResult a1b2 = groupFactory.create(user, a1, "b2", Visibility.PUBLIC);
         memberFactory.create(user, a1b2.getId(), v2u.getId());
-        GroupResult a1b3 = groupFactory.create(user, a1.getId(), "b3", Visibility.PUBLIC);
+        GroupResult a1b3 = groupFactory.create(user, a1, "b3", Visibility.PUBLIC);
         memberFactory.create(user, a1b3.getId(), u2u.getId());
 
-        GroupResult a1b4 = groupFactory.create(user, a1.getId(), "b4", Visibility.PRIVATE);
-        GroupResult a1b5 = groupFactory.create(user, a1.getId(), "b5", Visibility.PRIVATE);
+        GroupResult a1b4 = groupFactory.create(user, a1, "b4", Visibility.PRIVATE);
+        GroupResult a1b5 = groupFactory.create(user, a1, "b5", Visibility.PRIVATE);
         memberFactory.create(user, a1b5.getId(), v2u.getId());
-        GroupResult a1b6 = groupFactory.create(user, a1.getId(), "b6", Visibility.PRIVATE);
+        GroupResult a1b6 = groupFactory.create(user, a1, "b6", Visibility.PRIVATE);
         memberFactory.create(user, a1b6.getId(), u2u.getId());
 
-        GroupResult a1b7 = groupFactory.create(user, a1.getId(), "b7", Visibility.PUBLIC);
+        GroupResult a1b7 = groupFactory.create(user, a1, "b7", Visibility.PUBLIC);
         memberFactory.create(user, a1b7.getId(), v2u.getId());
-        GroupResult a1b7c1 = groupFactory.create(user, a1b7.getId(), "c1", Visibility.PUBLIC);
+        GroupResult a1b7c1 = groupFactory.create(user, a1b7, "c1", Visibility.PUBLIC);
         memberFactory.create(user, a1b7c1.getId(), u2u.getId());
 
-        GroupResult a1b8 = groupFactory.create(user, a1.getId(), "b8", Visibility.PUBLIC);
+        GroupResult a1b8 = groupFactory.create(user, a1, "b8", Visibility.PUBLIC);
         memberFactory.create(user, a1b8.getId(), u2u.getId());
-        GroupResult a1b8c1 = groupFactory.create(user, a1b8.getId(), "c1", Visibility.PUBLIC);
+        GroupResult a1b8c1 = groupFactory.create(user, a1b8, "c1", Visibility.PUBLIC);
         memberFactory.create(user, a1b8c1.getId(), v2u.getId());
 
-        GroupResult a1b9 = groupFactory.create(user, a1.getId(), "b9", Visibility.PRIVATE);
+        GroupResult a1b9 = groupFactory.create(user, a1, "b9", Visibility.PRIVATE);
         memberFactory.create(user, a1b9.getId(), v2u.getId());
-        GroupResult a1b9c1 = groupFactory.create(user, a1b9.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b9c1 = groupFactory.create(user, a1b9, "c1", Visibility.PRIVATE);
         memberFactory.create(user, a1b9c1.getId(), u2u.getId());
 
-        GroupResult a1b10 = groupFactory.create(user, a1.getId(), "b10", Visibility.PRIVATE);
+        GroupResult a1b10 = groupFactory.create(user, a1, "b10", Visibility.PRIVATE);
         memberFactory.create(user, a1b10.getId(), u2u.getId());
-        GroupResult a1b10c1 = groupFactory.create(user, a1b10.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b10c1 = groupFactory.create(user, a1b10, "c1", Visibility.PRIVATE);
         memberFactory.create(user, a1b10c1.getId(), v2u.getId());
 
         GroupResult a2 = groupFactory.create(user, null, Visibility.PUBLIC);
@@ -379,7 +360,7 @@ class GroupQueryControllerTest extends BaseFactory {
         memberFactory.create(user, a2.getId(), u1u.getId());
         memberFactory.create(user, a2.getId(), v2u.getId());
         memberFactory.create(user, a2.getId(), u2u.getId());
-        GroupResult a2b1 = groupFactory.create(user, a2.getId(), "b1", Visibility.PUBLIC);
+        GroupResult a2b1 = groupFactory.create(user, a2, "b1", Visibility.PUBLIC);
         memberFactory.create(user, a2b1.getId(), v1u.getId());
         memberFactory.create(user, a2b1.getId(), u1u.getId());
         memberFactory.create(user, a2b1.getId(), v2u.getId());
@@ -564,18 +545,18 @@ class GroupQueryControllerTest extends BaseFactory {
         SessionResult u1 = userFactory.viewer();
         SessionResult u2 = userFactory.viewer();
         SessionResult u3 = userFactory.viewer();
-        UserResult u1u = queryViewer(u1);
-        UserResult u2u = queryViewer(u2);
-        UserResult u3u = queryViewer(u3);
+        UserResult u1u = userFactory.queryViewer(u1);
+        UserResult u2u = userFactory.queryViewer(u2);
+        UserResult u3u = userFactory.queryViewer(u3);
 
         GroupResult a1 = groupFactory.create(session, null, Visibility.PRIVATE);
         memberFactory.create(session, a1.getId(), u1u.getId());
 
-        GroupResult a1b1 = groupFactory.create(session, a1.getId(), "b1", Visibility.PRIVATE);
+        GroupResult a1b1 = groupFactory.create(session, a1, "b1", Visibility.PRIVATE);
         memberFactory.create(session, a1b1.getId(), u2u.getId());
-        GroupResult a1b2 = groupFactory.create(session, a1.getId(), "b2", Visibility.PRIVATE);
+        GroupResult a1b2 = groupFactory.create(session, a1, "b2", Visibility.PRIVATE);
 
-        GroupResult a1b1c1 = groupFactory.create(session, a1b1.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b1c1 = groupFactory.create(session, a1b1, "c1", Visibility.PRIVATE);
         memberFactory.create(session, a1b1c1.getId(), u3u.getId());
 
         GroupResult a2 = groupFactory.create(session, null, Visibility.PRIVATE);
@@ -602,45 +583,45 @@ class GroupQueryControllerTest extends BaseFactory {
         SessionResult v2 = userFactory.viewer("v2");
         SessionResult u2 = userFactory.viewer("u2");
 
-        UserResult v1u = queryViewer(v1);
-        UserResult u1u = queryViewer(u1);
-        UserResult v2u = queryViewer(v2);
-        UserResult u2u = queryViewer(u2);
+        UserResult v1u = userFactory.queryViewer(v1);
+        UserResult u1u = userFactory.queryViewer(u1);
+        UserResult v2u = userFactory.queryViewer(v2);
+        UserResult u2u = userFactory.queryViewer(u2);
 
         GroupResult a1 = groupFactory.create(user, null, "a1", Visibility.PUBLIC);
         memberFactory.create(user, a1.getId(), v1u.getId());
         memberFactory.create(user, a1.getId(), u1u.getId());
 
-        GroupResult a1b1 = groupFactory.create(user, a1.getId(), "b1", Visibility.PUBLIC);
-        GroupResult a1b2 = groupFactory.create(user, a1.getId(), "b2", Visibility.PUBLIC);
+        GroupResult a1b1 = groupFactory.create(user, a1, "b1", Visibility.PUBLIC);
+        GroupResult a1b2 = groupFactory.create(user, a1, "b2", Visibility.PUBLIC);
         memberFactory.create(user, a1b2.getId(), v2u.getId());
-        GroupResult a1b3 = groupFactory.create(user, a1.getId(), "b3", Visibility.PUBLIC);
+        GroupResult a1b3 = groupFactory.create(user, a1, "b3", Visibility.PUBLIC);
         memberFactory.create(user, a1b3.getId(), u2u.getId());
 
-        GroupResult a1b4 = groupFactory.create(user, a1.getId(), "b4", Visibility.PRIVATE);
-        GroupResult a1b5 = groupFactory.create(user, a1.getId(), "b5", Visibility.PRIVATE);
+        GroupResult a1b4 = groupFactory.create(user, a1, "b4", Visibility.PRIVATE);
+        GroupResult a1b5 = groupFactory.create(user, a1, "b5", Visibility.PRIVATE);
         memberFactory.create(user, a1b5.getId(), v2u.getId());
-        GroupResult a1b6 = groupFactory.create(user, a1.getId(), "b6", Visibility.PRIVATE);
+        GroupResult a1b6 = groupFactory.create(user, a1, "b6", Visibility.PRIVATE);
         memberFactory.create(user, a1b6.getId(), u2u.getId());
 
-        GroupResult a1b7 = groupFactory.create(user, a1.getId(), "b7", Visibility.PUBLIC);
+        GroupResult a1b7 = groupFactory.create(user, a1, "b7", Visibility.PUBLIC);
         memberFactory.create(user, a1b7.getId(), v2u.getId());
-        GroupResult a1b7c1 = groupFactory.create(user, a1b7.getId(), "c1", Visibility.PUBLIC);
+        GroupResult a1b7c1 = groupFactory.create(user, a1b7, "c1", Visibility.PUBLIC);
         memberFactory.create(user, a1b7c1.getId(), u2u.getId());
 
-        GroupResult a1b8 = groupFactory.create(user, a1.getId(), "b8", Visibility.PUBLIC);
+        GroupResult a1b8 = groupFactory.create(user, a1, "b8", Visibility.PUBLIC);
         memberFactory.create(user, a1b8.getId(), u2u.getId());
-        GroupResult a1b8c1 = groupFactory.create(user, a1b8.getId(), "c1", Visibility.PUBLIC);
+        GroupResult a1b8c1 = groupFactory.create(user, a1b8, "c1", Visibility.PUBLIC);
         memberFactory.create(user, a1b8c1.getId(), v2u.getId());
 
-        GroupResult a1b9 = groupFactory.create(user, a1.getId(), "b9", Visibility.PRIVATE);
+        GroupResult a1b9 = groupFactory.create(user, a1, "b9", Visibility.PRIVATE);
         memberFactory.create(user, a1b9.getId(), v2u.getId());
-        GroupResult a1b9c1 = groupFactory.create(user, a1b9.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b9c1 = groupFactory.create(user, a1b9, "c1", Visibility.PRIVATE);
         memberFactory.create(user, a1b9c1.getId(), u2u.getId());
 
-        GroupResult a1b10 = groupFactory.create(user, a1.getId(), "b10", Visibility.PRIVATE);
+        GroupResult a1b10 = groupFactory.create(user, a1, "b10", Visibility.PRIVATE);
         memberFactory.create(user, a1b10.getId(), u2u.getId());
-        GroupResult a1b10c1 = groupFactory.create(user, a1b10.getId(), "c1", Visibility.PRIVATE);
+        GroupResult a1b10c1 = groupFactory.create(user, a1b10, "c1", Visibility.PRIVATE);
         memberFactory.create(user, a1b10c1.getId(), v2u.getId());
 
         GroupResult a2 = groupFactory.create(user, null, "a2", Visibility.PUBLIC);
@@ -648,7 +629,7 @@ class GroupQueryControllerTest extends BaseFactory {
         memberFactory.create(user, a2.getId(), u1u.getId());
         memberFactory.create(user, a2.getId(), v2u.getId());
         memberFactory.create(user, a2.getId(), u2u.getId());
-        GroupResult a2b1 = groupFactory.create(user, a2.getId(), "b1", Visibility.PUBLIC);
+        GroupResult a2b1 = groupFactory.create(user, a2, "b1", Visibility.PUBLIC);
         memberFactory.create(user, a2b1.getId(), v1u.getId());
         memberFactory.create(user, a2b1.getId(), u1u.getId());
         memberFactory.create(user, a2b1.getId(), v2u.getId());
@@ -656,17 +637,6 @@ class GroupQueryControllerTest extends BaseFactory {
 
         GroupResult a3 = groupFactory.create(user, null, "a3", Visibility.PUBLIC);
         GroupResult a4 = groupFactory.create(user, null, "a4", Visibility.PRIVATE);
-    }
-
-    private void queryGroup(SessionResult session, String fullPath, ErrorType errorType) {
-        GraphQlTester.Response response = query("group", session)
-                .variable("fullPath", fullPath)
-                .execute();
-        if (errorType == null) {
-            response.path("group.fullPath").entity(String.class).isEqualTo(fullPath);
-        } else {
-            response.errors().expect(e -> e.getErrorType().equals(errorType));
-        }
     }
 
     private void queryGroups(SessionResult session, Integer first, GroupFilter.By filterBy, GroupOrder order, List<String> ids) {

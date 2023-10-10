@@ -1,3 +1,4 @@
+import CodeIcon from "@mui/icons-material/Code";
 import GroupsIcon from "@mui/icons-material/Groups";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -10,6 +11,12 @@ import Sidebar from "./Sidebar";
 
 const items = [
   {
+    key: "/explore/projects",
+    icon: <CodeIcon />,
+    text: "项目",
+    to: "/explore/projects",
+  },
+  {
     key: "/explore/groups",
     icon: <GroupsIcon />,
     text: "组织",
@@ -20,7 +27,11 @@ const items = [
 const breadcrumbItems: BreadcrumbItems = {
   "/explore": [
     { to: "/explore", text: "探索" },
-    { to: "/explore/groups", text: "组织" },
+    { to: "/explore/projects", text: "项目" },
+  ],
+  "/explore/projects": [
+    { to: "/explore", text: "探索" },
+    { to: "/explore/projects", text: "项目" },
   ],
   "/explore/groups": [
     { to: "/explore", text: "探索" },

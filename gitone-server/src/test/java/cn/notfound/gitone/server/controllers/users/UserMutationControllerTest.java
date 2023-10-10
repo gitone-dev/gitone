@@ -192,7 +192,7 @@ class UserMutationControllerTest extends BaseFactory {
     void updateUser() {
         SessionResult session = userFactory.viewer();
 
-        UserResult userResult = queryViewer(session);
+        UserResult userResult = userFactory.queryViewer(session);
 
         UpdateUserInput updateUserInput = new UpdateUserInput();
         updateUserInput.setName(Faker.username());
@@ -220,7 +220,7 @@ class UserMutationControllerTest extends BaseFactory {
     @Test
     void updateUsername() {
         SessionResult session = userFactory.viewer();
-        UserResult userResult = queryViewer(session);
+        UserResult userResult = userFactory.queryViewer(session);
 
         UpdateUsernameInput updateUsernameInput = new UpdateUsernameInput();
         updateUsernameInput.setUsername(Faker.username());

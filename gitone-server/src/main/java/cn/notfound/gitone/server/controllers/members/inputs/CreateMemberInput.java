@@ -1,17 +1,18 @@
 package cn.notfound.gitone.server.controllers.members.inputs;
 
 import cn.notfound.gitone.server.controllers.Relay;
-import cn.notfound.gitone.server.entities.Access;
-import cn.notfound.gitone.server.entities.GroupEntity;
-import cn.notfound.gitone.server.entities.MemberEntity;
-import cn.notfound.gitone.server.entities.UserEntity;
+import cn.notfound.gitone.server.entities.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 @Data
 public class CreateMemberInput {
+
+    public static final List<String> types = List.of(ProjectEntity.TYPE, GroupEntity.TYPE);
 
     @NotBlank
     private String namespaceId;
@@ -22,7 +23,7 @@ public class CreateMemberInput {
 
     public Integer namespaceId() {
         Relay.ResolvedGlobalId globalId = Relay.fromGlobalId(namespaceId);
-        Assert.isTrue(GroupEntity.TYPE.equals(globalId.type()), "id 格式错误");
+        Assert.isTrue(types.contains(globalId.type()), "命名空间标识格式错误");
         return globalId.id();
     }
 

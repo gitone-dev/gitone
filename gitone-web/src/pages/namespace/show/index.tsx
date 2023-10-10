@@ -1,9 +1,13 @@
-import { Action, useNamespaceQuery } from "../../../generated/types";
-import { fromGlobalId } from "../../../utils/relay";
+import {
+  Action,
+  NamespaceType,
+  useNamespaceQuery,
+} from "../../../generated/types";
 import { useFullPath } from "../../../utils/router";
 import ErrorPage from "../../ErrorPage";
 import LoadingPage from "../../LoadingPage";
 import Groups from "../../groups";
+import Projects from "../../projects";
 import Users from "../../users";
 
 function Show() {
@@ -22,14 +26,15 @@ function Show() {
     return <ErrorPage message="无权限" />;
   }
 
-  const globalId = fromGlobalId(data.namespace.id);
-  switch (globalId.type) {
-    case "UserNamespace":
-      return <Users.Show />;
-    case "Group":
+  switch (data.namespace.type) {
+    case NamespaceType.Group:
       return <Groups.Show />;
+    case NamespaceType.Project:
+      return <Projects.Show />;
+    case NamespaceType.User:
+      return <Users.Show />;
     default:
-      return <ErrorPage message={`${globalId.type} 未知类型`} />;
+      return <ErrorPage message={`未知类型：${data.namespace.type}`} />;
   }
 }
 

@@ -53,9 +53,9 @@ public class GroupQueryController extends ViewerContext {
         }
 
         if (!filter.hasParent()) {
-            filter = root(filter);
+            root(filter);
         } else {
-            filter = subgroup(filter);
+            subgroup(filter);
         }
 
         GroupPage page = new GroupPage(first, after, orderBy).validate();
@@ -63,12 +63,17 @@ public class GroupQueryController extends ViewerContext {
         return new GroupConnection(groups, page);
     }
 
-    public GroupFilter root(GroupFilter filter) {
+    @QueryMapping
+    public Policy groupPolicy(@Argument String fullPath) {
+        GroupEntity groupEntity= groupDao.findByFullPath(fullPath);
+        return groupPolicy.policy(groupEntity);
+    }
+
+    private void root(GroupFilter filter) {
         if (isAuthenticated()) {
             if (viewerId().equals(filter.getUserId())) {
                 filter.setViewerId(null);
             }
-            return filter;
         } else {
             if (filter.getVisibility() == null) {
                 filter.setVisibility(Visibility.PUBLIC);
@@ -77,10 +82,9 @@ public class GroupQueryController extends ViewerContext {
             }
         }
 
-        return filter;
     }
 
-    public GroupFilter subgroup(GroupFilter filter) {
+    private void subgroup(GroupFilter filter) {
         GroupEntity parent = groupDao.find(filter.getParentId());
         NotFound.notNull(parent, "父组未找到");
         filter.setParentLevel(parent.getTraversalIds().length);
@@ -113,12 +117,5 @@ public class GroupQueryController extends ViewerContext {
                 }
             }
         }
-        return filter;
-    }
-
-    @QueryMapping
-    public Policy groupPolicy(@Argument String fullPath) {
-        GroupEntity groupEntity= groupDao.findByFullPath(fullPath);
-        return groupPolicy.policy(groupEntity);
     }
 }

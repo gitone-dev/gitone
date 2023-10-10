@@ -1,3 +1,4 @@
+import CodeIcon from "@mui/icons-material/Code";
 import GroupsIcon from "@mui/icons-material/Groups";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,6 +12,12 @@ import Sidebar from "./Sidebar";
 
 const items = [
   {
+    key: "/dashboard/projects",
+    icon: <CodeIcon />,
+    text: "项目",
+    to: "/dashboard/projects",
+  },
+  {
     key: "/dashboard/groups",
     icon: <GroupsIcon />,
     text: "组织",
@@ -21,11 +28,20 @@ const items = [
 const breadcrumbItems: BreadcrumbItems = {
   "/dashboard": [
     { to: "/dashboard", text: "工作台" },
-    { to: "/dashboard/groups", text: "组织" },
+    { to: "/dashboard/projects", text: "项目" },
+  ],
+  "/dashboard/projects": [
+    { to: "/dashboard", text: "工作台" },
+    { to: "/dashboard/projects", text: "项目" },
   ],
   "/dashboard/groups": [
     { to: "/dashboard", text: "工作台" },
     { to: "/dashboard/groups", text: "组织" },
+  ],
+  "/projects/new": [
+    { to: "/dashboard", text: "工作台" },
+    { to: "/dashboard/projects", text: "项目" },
+    { to: "/projects/new", text: "新建" },
   ],
   "/groups": [
     { to: "/dashboard", text: "工作台" },

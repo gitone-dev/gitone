@@ -21,6 +21,7 @@ export type Scalars = {
 /**  member */
 export enum Access {
   Maintainer = 'MAINTAINER',
+  MinAccess = 'MIN_ACCESS',
   NoAccess = 'NO_ACCESS',
   Owner = 'OWNER',
   Reporter = 'REPORTER'
@@ -87,6 +88,19 @@ export type CreateMemberPayload = {
   member?: Maybe<Member>;
 };
 
+export type CreateProjectInput = {
+  description: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  parentId: Scalars['ID']['input'];
+  path: Scalars['String']['input'];
+  visibility: Visibility;
+};
+
+export type CreateProjectPayload = {
+  __typename?: 'CreateProjectPayload';
+  project?: Maybe<Project>;
+};
+
 export type CreateSessionInput = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
@@ -134,6 +148,15 @@ export type DeleteMemberInput = {
 export type DeleteMemberPayload = {
   __typename?: 'DeleteMemberPayload';
   member?: Maybe<Member>;
+};
+
+export type DeleteProjectInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteProjectPayload = {
+  __typename?: 'DeleteProjectPayload';
+  project?: Maybe<Project>;
 };
 
 export type DeleteSessionPayload = {
@@ -209,7 +232,6 @@ export type GroupEdge = {
 };
 
 export type GroupFilter = {
-  /**  null/''/string  */
   parentId?: InputMaybe<Scalars['ID']['input']>;
   query?: InputMaybe<Scalars['String']['input']>;
   recursive?: InputMaybe<Scalars['Boolean']['input']>;
@@ -276,6 +298,8 @@ export type Mutation = {
   createGroup?: Maybe<CreateGroupPayload>;
   /**  member */
   createMember?: Maybe<CreateMemberPayload>;
+  /**  project */
+  createProject?: Maybe<CreateProjectPayload>;
   /**  session */
   createSession?: Maybe<CreateSessionPayload>;
   /**  user */
@@ -283,6 +307,7 @@ export type Mutation = {
   deleteEmail?: Maybe<DeleteEmailPayload>;
   deleteGroup?: Maybe<DeleteGroupPayload>;
   deleteMember?: Maybe<DeleteMemberPayload>;
+  deleteProject?: Maybe<DeleteProjectPayload>;
   deleteSession?: Maybe<DeleteSessionPayload>;
   deleteUser?: Maybe<DeleteUserPayload>;
   resetPassword?: Maybe<ResetPasswordPayload>;
@@ -295,6 +320,9 @@ export type Mutation = {
   updateGroupVisibility?: Maybe<UpdateGroupVisibilityPayload>;
   updateMember?: Maybe<UpdateMemberPayload>;
   updatePassword?: Maybe<UpdatePasswordPayload>;
+  updateProject?: Maybe<UpdateProjectPayload>;
+  updateProjectPath?: Maybe<UpdateProjectPathPayload>;
+  updateProjectVisibility?: Maybe<UpdateProjectVisibilityPayload>;
   updateUser?: Maybe<UpdateUserPayload>;
   updateUsername?: Maybe<UpdateUsernamePayload>;
 };
@@ -325,6 +353,11 @@ export type MutationCreateMemberArgs = {
 };
 
 
+export type MutationCreateProjectArgs = {
+  input: CreateProjectInput;
+};
+
+
 export type MutationCreateSessionArgs = {
   input: CreateSessionInput;
 };
@@ -347,6 +380,11 @@ export type MutationDeleteGroupArgs = {
 
 export type MutationDeleteMemberArgs = {
   input: DeleteMemberInput;
+};
+
+
+export type MutationDeleteProjectArgs = {
+  input: DeleteProjectInput;
 };
 
 
@@ -405,6 +443,21 @@ export type MutationUpdatePasswordArgs = {
 };
 
 
+export type MutationUpdateProjectArgs = {
+  input: UpdateProjectInput;
+};
+
+
+export type MutationUpdateProjectPathArgs = {
+  input: UpdateProjectPathInput;
+};
+
+
+export type MutationUpdateProjectVisibilityArgs = {
+  input: UpdateProjectVisibilityInput;
+};
+
+
 export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
 };
@@ -414,7 +467,6 @@ export type MutationUpdateUsernameArgs = {
   input: UpdateUsernameInput;
 };
 
-/**  namespace */
 export type Namespace = Node & {
   __typename?: 'Namespace';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
@@ -424,9 +476,49 @@ export type Namespace = Node & {
   id: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   path?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<NamespaceType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
-  visibility?: Maybe<Visibility>;
+  visibility: Visibility;
 };
+
+export type NamespaceConnection = {
+  __typename?: 'NamespaceConnection';
+  edges?: Maybe<Array<NamespaceEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type NamespaceEdge = {
+  __typename?: 'NamespaceEdge';
+  cursor: Scalars['String']['output'];
+  node: Namespace;
+};
+
+export type NamespaceFilter = {
+  parentId?: InputMaybe<Scalars['ID']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
+  types?: InputMaybe<Array<NamespaceType>>;
+  username?: InputMaybe<Scalars['String']['input']>;
+  visibility?: InputMaybe<Visibility>;
+};
+
+export type NamespaceOrder = {
+  direction: OrderDirection;
+  field: NamespaceOrderField;
+};
+
+export enum NamespaceOrderField {
+  CreatedAt = 'CREATED_AT',
+  Path = 'PATH',
+  UpdatedAt = 'UPDATED_AT'
+}
+
+/**  namespace */
+export enum NamespaceType {
+  Group = 'GROUP',
+  Project = 'PROJECT',
+  User = 'USER'
+}
 
 export type Node = {
   id: Scalars['ID']['output'];
@@ -452,6 +544,61 @@ export type Policy = Node & {
   id: Scalars['ID']['output'];
 };
 
+/**  project */
+export type Project = Node & {
+  __typename?: 'Project';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  fullName?: Maybe<Scalars['String']['output']>;
+  fullPath?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  members?: Maybe<MemberConnection>;
+  name?: Maybe<Scalars['String']['output']>;
+  path?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  visibility: Visibility;
+};
+
+
+/**  project */
+export type ProjectMembersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<MemberFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<MemberOrder>;
+};
+
+export type ProjectConnection = {
+  __typename?: 'ProjectConnection';
+  edges?: Maybe<Array<ProjectEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type ProjectEdge = {
+  __typename?: 'ProjectEdge';
+  cursor: Scalars['String']['output'];
+  node: Project;
+};
+
+export type ProjectFilter = {
+  parentId?: InputMaybe<Scalars['ID']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+  recursive?: InputMaybe<Scalars['Boolean']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
+  visibility?: InputMaybe<Visibility>;
+};
+
+export type ProjectOrder = {
+  direction: OrderDirection;
+  field: ProjectOrderField;
+};
+
+export enum ProjectOrderField {
+  CreatedAt = 'CREATED_AT',
+  Path = 'PATH',
+  UpdatedAt = 'UPDATED_AT'
+}
+
 export type Query = {
   __typename?: 'Query';
   existEmail: Scalars['Boolean']['output'];
@@ -461,7 +608,11 @@ export type Query = {
   groups?: Maybe<GroupConnection>;
   namespace: Namespace;
   namespacePolicy: Policy;
+  namespaces?: Maybe<NamespaceConnection>;
   ping: Scalars['String']['output'];
+  project: Project;
+  projectPolicy: Policy;
+  projects?: Maybe<ProjectConnection>;
   user: User;
   users?: Maybe<UserConnection>;
   viewer: User;
@@ -503,6 +654,32 @@ export type QueryNamespaceArgs = {
 
 export type QueryNamespacePolicyArgs = {
   fullPath: Scalars['String']['input'];
+};
+
+
+export type QueryNamespacesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<NamespaceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<NamespaceOrder>;
+};
+
+
+export type QueryProjectArgs = {
+  fullPath: Scalars['String']['input'];
+};
+
+
+export type QueryProjectPolicyArgs = {
+  fullPath: Scalars['String']['input'];
+};
+
+
+export type QueryProjectsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<ProjectFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<ProjectOrder>;
 };
 
 
@@ -631,6 +808,37 @@ export type UpdatePasswordPayload = {
   user?: Maybe<User>;
 };
 
+export type UpdateProjectInput = {
+  description: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
+export type UpdateProjectPathInput = {
+  id: Scalars['ID']['input'];
+  path: Scalars['String']['input'];
+};
+
+export type UpdateProjectPathPayload = {
+  __typename?: 'UpdateProjectPathPayload';
+  project?: Maybe<Project>;
+};
+
+export type UpdateProjectPayload = {
+  __typename?: 'UpdateProjectPayload';
+  project?: Maybe<Project>;
+};
+
+export type UpdateProjectVisibilityInput = {
+  id: Scalars['ID']['input'];
+  visibility: Visibility;
+};
+
+export type UpdateProjectVisibilityPayload = {
+  __typename?: 'UpdateProjectVisibilityPayload';
+  project?: Maybe<Project>;
+};
+
 export type UpdateUserInput = {
   bio: Scalars['String']['input'];
   location: Scalars['String']['input'];
@@ -736,7 +944,14 @@ export type CreateMemberMutationVariables = Exact<{
 }>;
 
 
-export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } | null } | null };
+export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null } | null };
+
+export type CreateProjectMutationVariables = Exact<{
+  input: CreateProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
 
 export type CreateSessionMutationVariables = Exact<{
   input: CreateSessionInput;
@@ -764,7 +979,7 @@ export type DeleteMemberMutationVariables = Exact<{
 }>;
 
 
-export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } | null } | null };
+export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null } | null };
 
 export type DeleteSessionMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -812,7 +1027,7 @@ export type GroupMembersQueryVariables = Exact<{
 }>;
 
 
-export type GroupMembersQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
+export type GroupMembersQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
 
 export type GroupPolicyQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -831,16 +1046,26 @@ export type GroupsQueryVariables = Exact<{
 
 export type GroupsQuery = { __typename?: 'Query', groups?: { __typename?: 'GroupConnection', edges?: Array<{ __typename?: 'GroupEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
-export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null };
+export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null };
 
-export type NamespaceFragmentFragment = { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null };
+export type NamespaceFragmentFragment = { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null };
 
 export type NamespaceQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
 }>;
 
 
-export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+
+export type NamespacesQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<NamespaceFilter>;
+  orderBy?: InputMaybe<NamespaceOrder>;
+}>;
+
+
+export type NamespacesQuery = { __typename?: 'Query', namespaces?: { __typename?: 'NamespaceConnection', edges?: Array<{ __typename?: 'NamespaceEdge', cursor: string, node: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type PageInfoFragmentFragment = { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null };
 
@@ -850,6 +1075,36 @@ export type PingQueryVariables = Exact<{ [key: string]: never; }>;
 export type PingQuery = { __typename?: 'Query', ping: string };
 
 export type PolicyFragmentFragment = { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> };
+
+export type ProjectFragmentFragment = { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null };
+
+export type ProjectQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+}>;
+
+
+export type ProjectQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, projectPolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+
+export type ProjectMembersQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<MemberFilter>;
+  orderBy?: InputMaybe<MemberOrder>;
+}>;
+
+
+export type ProjectMembersQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
+
+export type ProjectsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<ProjectFilter>;
+  orderBy?: InputMaybe<ProjectOrder>;
+}>;
+
+
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', edges?: Array<{ __typename?: 'ProjectEdge', cursor: string, node: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
@@ -914,7 +1169,7 @@ export type UpdateMemberMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility?: Visibility | null, description?: string | null } | null } | null } | null };
+export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null } | null };
 
 export type UpdatePasswordMutationVariables = Exact<{
   input: UpdatePasswordInput;
@@ -922,6 +1177,27 @@ export type UpdatePasswordMutationVariables = Exact<{
 
 
 export type UpdatePasswordMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdatePasswordPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+
+export type UpdateProjectMutationVariables = Exact<{
+  input: UpdateProjectInput;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type UpdateProjectPathMutationVariables = Exact<{
+  input: UpdateProjectPathInput;
+}>;
+
+
+export type UpdateProjectPathMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPathPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type UpdateProjectVisibilityMutationVariables = Exact<{
+  input: UpdateProjectVisibilityInput;
+}>;
+
+
+export type UpdateProjectVisibilityMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectVisibilityPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   input: UpdateUserInput;
@@ -1016,6 +1292,7 @@ export const NamespaceFragmentFragmentDoc = gql`
   id
   createdAt
   updatedAt
+  type
   name
   path
   fullName
@@ -1052,6 +1329,19 @@ export const PolicyFragmentFragmentDoc = gql`
   id
   access
   actions
+}
+    `;
+export const ProjectFragmentFragmentDoc = gql`
+    fragment ProjectFragment on Project {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
 }
     `;
 export const SessionFragmentFragmentDoc = gql`
@@ -1249,6 +1539,41 @@ export function useCreateMemberMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateMemberMutationHookResult = ReturnType<typeof useCreateMemberMutation>;
 export type CreateMemberMutationResult = Apollo.MutationResult<CreateMemberMutation>;
 export type CreateMemberMutationOptions = Apollo.BaseMutationOptions<CreateMemberMutation, CreateMemberMutationVariables>;
+export const CreateProjectDocument = gql`
+    mutation CreateProject($input: CreateProjectInput!) {
+  payload: createProject(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}`;
+export type CreateProjectMutationFn = Apollo.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
+      }
+export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
+export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
 export const CreateSessionDocument = gql`
     mutation CreateSession($input: CreateSessionInput!) {
   payload: createSession(input: $input) {
@@ -1733,6 +2058,53 @@ export function useNamespaceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type NamespaceQueryHookResult = ReturnType<typeof useNamespaceQuery>;
 export type NamespaceLazyQueryHookResult = ReturnType<typeof useNamespaceLazyQuery>;
 export type NamespaceQueryResult = Apollo.QueryResult<NamespaceQuery, NamespaceQueryVariables>;
+export const NamespacesDocument = gql`
+    query Namespaces($first: Int!, $after: String, $filterBy: NamespaceFilter, $orderBy: NamespaceOrder) {
+  namespaces(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...NamespaceFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}
+    ${NamespaceFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useNamespacesQuery__
+ *
+ * To run a query within a React component, call `useNamespacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNamespacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNamespacesQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useNamespacesQuery(baseOptions: Apollo.QueryHookOptions<NamespacesQuery, NamespacesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NamespacesQuery, NamespacesQueryVariables>(NamespacesDocument, options);
+      }
+export function useNamespacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NamespacesQuery, NamespacesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NamespacesQuery, NamespacesQueryVariables>(NamespacesDocument, options);
+        }
+export type NamespacesQueryHookResult = ReturnType<typeof useNamespacesQuery>;
+export type NamespacesLazyQueryHookResult = ReturnType<typeof useNamespacesLazyQuery>;
+export type NamespacesQueryResult = Apollo.QueryResult<NamespacesQuery, NamespacesQueryVariables>;
 export const PingDocument = gql`
     query Ping {
   ping
@@ -1765,6 +2137,143 @@ export function usePingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PingQ
 export type PingQueryHookResult = ReturnType<typeof usePingQuery>;
 export type PingLazyQueryHookResult = ReturnType<typeof usePingLazyQuery>;
 export type PingQueryResult = Apollo.QueryResult<PingQuery, PingQueryVariables>;
+export const ProjectDocument = gql`
+    query Project($fullPath: String!) {
+  project(fullPath: $fullPath) {
+    ...ProjectFragment
+  }
+  projectPolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}
+    ${ProjectFragmentFragmentDoc}
+${PolicyFragmentFragmentDoc}`;
+
+/**
+ * __useProjectQuery__
+ *
+ * To run a query within a React component, call `useProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *   },
+ * });
+ */
+export function useProjectQuery(baseOptions: Apollo.QueryHookOptions<ProjectQuery, ProjectQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectQuery, ProjectQueryVariables>(ProjectDocument, options);
+      }
+export function useProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectQuery, ProjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectQuery, ProjectQueryVariables>(ProjectDocument, options);
+        }
+export type ProjectQueryHookResult = ReturnType<typeof useProjectQuery>;
+export type ProjectLazyQueryHookResult = ReturnType<typeof useProjectLazyQuery>;
+export type ProjectQueryResult = Apollo.QueryResult<ProjectQuery, ProjectQueryVariables>;
+export const ProjectMembersDocument = gql`
+    query ProjectMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {
+  project(fullPath: $fullPath) {
+    id
+    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+      edges {
+        node {
+          ...MemberFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+}
+    ${MemberFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useProjectMembersQuery__
+ *
+ * To run a query within a React component, call `useProjectMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectMembersQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useProjectMembersQuery(baseOptions: Apollo.QueryHookOptions<ProjectMembersQuery, ProjectMembersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectMembersQuery, ProjectMembersQueryVariables>(ProjectMembersDocument, options);
+      }
+export function useProjectMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectMembersQuery, ProjectMembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectMembersQuery, ProjectMembersQueryVariables>(ProjectMembersDocument, options);
+        }
+export type ProjectMembersQueryHookResult = ReturnType<typeof useProjectMembersQuery>;
+export type ProjectMembersLazyQueryHookResult = ReturnType<typeof useProjectMembersLazyQuery>;
+export type ProjectMembersQueryResult = Apollo.QueryResult<ProjectMembersQuery, ProjectMembersQueryVariables>;
+export const ProjectsDocument = gql`
+    query Projects($first: Int!, $after: String, $filterBy: ProjectFilter, $orderBy: ProjectOrder) {
+  projects(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...ProjectFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useProjectsQuery__
+ *
+ * To run a query within a React component, call `useProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useProjectsQuery(baseOptions: Apollo.QueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
+      }
+export function useProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
+        }
+export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
+export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
+export type ProjectsQueryResult = Apollo.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: ResetPasswordInput!) {
   payload: resetPassword(input: $input) {
@@ -2107,6 +2616,111 @@ export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
 export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
 export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+export const UpdateProjectDocument = gql`
+    mutation UpdateProject($input: UpdateProjectInput!) {
+  payload: updateProject(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}`;
+export type UpdateProjectMutationFn = Apollo.MutationFunction<UpdateProjectMutation, UpdateProjectMutationVariables>;
+
+/**
+ * __useUpdateProjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectMutation, { data, loading, error }] = useUpdateProjectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectMutation, UpdateProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, options);
+      }
+export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
+export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
+export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export const UpdateProjectPathDocument = gql`
+    mutation UpdateProjectPath($input: UpdateProjectPathInput!) {
+  payload: updateProjectPath(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}`;
+export type UpdateProjectPathMutationFn = Apollo.MutationFunction<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>;
+
+/**
+ * __useUpdateProjectPathMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectPathMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectPathMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectPathMutation, { data, loading, error }] = useUpdateProjectPathMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProjectPathMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>(UpdateProjectPathDocument, options);
+      }
+export type UpdateProjectPathMutationHookResult = ReturnType<typeof useUpdateProjectPathMutation>;
+export type UpdateProjectPathMutationResult = Apollo.MutationResult<UpdateProjectPathMutation>;
+export type UpdateProjectPathMutationOptions = Apollo.BaseMutationOptions<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>;
+export const UpdateProjectVisibilityDocument = gql`
+    mutation UpdateProjectVisibility($input: UpdateProjectVisibilityInput!) {
+  payload: updateProjectVisibility(input: $input) {
+    project {
+      ...ProjectFragment
+    }
+  }
+}
+    ${ProjectFragmentFragmentDoc}`;
+export type UpdateProjectVisibilityMutationFn = Apollo.MutationFunction<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>;
+
+/**
+ * __useUpdateProjectVisibilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectVisibilityMutation, { data, loading, error }] = useUpdateProjectVisibilityMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProjectVisibilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>(UpdateProjectVisibilityDocument, options);
+      }
+export type UpdateProjectVisibilityMutationHookResult = ReturnType<typeof useUpdateProjectVisibilityMutation>;
+export type UpdateProjectVisibilityMutationResult = Apollo.MutationResult<UpdateProjectVisibilityMutation>;
+export type UpdateProjectVisibilityMutationOptions = Apollo.BaseMutationOptions<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($input: UpdateUserInput!) {
   payload: updateUser(input: $input) {

@@ -1,3 +1,4 @@
+import CodeIcon from "@mui/icons-material/Code";
 import GroupIcon from "@mui/icons-material/Group";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -18,6 +19,12 @@ const items = (fullPath: string, actions: Array<Action>) => [
     icon: <GroupIcon />,
     text: "概览",
     to: `/${fullPath}`,
+  },
+  {
+    key: `/${fullPath}/-/projects`,
+    icon: <CodeIcon />,
+    text: "项目",
+    to: `/${fullPath}/-/projects`,
   },
   {
     key: `/${fullPath}/-/members`,
@@ -44,13 +51,17 @@ const breadcrumbItems = (paths: Array<string>): BreadcrumbItems => {
 
   return {
     [`/${fullPath}`]: fullPathItems,
+    [`/${fullPath}/-/projects`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/projects`, text: "项目" },
+    ],
     [`/${fullPath}/-/members`]: [
       ...fullPathItems,
-      { to: `/${fullPath}/-/members`, text: "组织成员" },
+      { to: `/${fullPath}/-/members`, text: "成员" },
     ],
     [`/${fullPath}/-/settings`]: [
       ...fullPathItems,
-      { to: `/${fullPath}/-/settings`, text: "组织设置" },
+      { to: `/${fullPath}/-/settings`, text: "设置" },
     ],
   };
 };

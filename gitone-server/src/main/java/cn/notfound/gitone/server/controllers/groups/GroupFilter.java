@@ -2,8 +2,11 @@ package cn.notfound.gitone.server.controllers.groups;
 
 import cn.notfound.gitone.server.controllers.Relay;
 import cn.notfound.gitone.server.entities.GroupEntity;
+import cn.notfound.gitone.server.entities.NamespaceType;
 import cn.notfound.gitone.server.entities.Visibility;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class GroupFilter {
@@ -36,6 +39,8 @@ public class GroupFilter {
             return filter;
         }
     }
+
+    private final Set<NamespaceType> types = Set.of(NamespaceType.GROUP);
 
     private Integer parentId;
 
