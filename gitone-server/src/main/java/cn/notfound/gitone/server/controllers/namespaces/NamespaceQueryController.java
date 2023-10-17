@@ -5,9 +5,7 @@ import cn.notfound.gitone.server.config.exception.NotFound;
 import cn.notfound.gitone.server.daos.MemberDao;
 import cn.notfound.gitone.server.daos.NamespaceDao;
 import cn.notfound.gitone.server.daos.UserDao;
-import cn.notfound.gitone.server.entities.NamespaceEntity;
-import cn.notfound.gitone.server.entities.UserEntity;
-import cn.notfound.gitone.server.entities.Visibility;
+import cn.notfound.gitone.server.entities.*;
 import cn.notfound.gitone.server.policies.Action;
 import cn.notfound.gitone.server.policies.NamespacePolicy;
 import cn.notfound.gitone.server.policies.Policy;
@@ -43,13 +41,20 @@ public class NamespaceQueryController extends ViewerContext {
         NotFound.notNull(namespaceEntity, fullPath);
 
         if (!namespacePolicy.policy(namespaceEntity).getActions().contains(Action.READ)) {
-            NamespaceEntity entity = namespaceEntity;
-            namespaceEntity = new NamespaceEntity();
-            namespaceEntity.setId(entity.getId());
-            namespaceEntity.setType(entity.getType());
-            namespaceEntity.setFullPath(entity.getFullPath());
+            namespaceEntity.setCreatedAt(null);
+            namespaceEntity.setUpdatedAt(null);
+            namespaceEntity.setName(null);
+            namespaceEntity.setPath(null);
+            namespaceEntity.setFullName(null);
+            namespaceEntity.setDescription("");
         }
         return namespaceEntity;
+    }
+
+    @QueryMapping
+    public Policy namespacePolicy(@Argument String fullPath) {
+        NamespaceEntity namespaceEntity = namespaceDao.findByFullPath(fullPath);
+        return namespacePolicy.policy(namespaceEntity);
     }
 
     @QueryMapping
@@ -76,12 +81,6 @@ public class NamespaceQueryController extends ViewerContext {
         NamespacePage page = new NamespacePage(first, after, orderBy).validate();
         List<NamespaceEntity> namespaces = namespaceDao.findAll(filter, page);
         return new NamespaceConnection(namespaces, page);
-    }
-
-    @QueryMapping
-    public Policy namespacePolicy(@Argument String fullPath) {
-        NamespaceEntity namespaceEntity = namespaceDao.findByFullPath(fullPath);
-        return namespacePolicy.policy(namespaceEntity);
     }
 
     private void root(NamespaceFilter filter) {

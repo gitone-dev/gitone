@@ -11,11 +11,7 @@ import java.util.List;
 @Mapper
 public interface UserMapper extends NodeMapper<Integer, UserEntity> {
 
-    UserEntity findByEmail(String email);
-
     UserEntity findByUsername(String username);
-
-    UserEntity findByResetPasswordToken(String resetPasswordToken);
 
     List<UserEntity> findAll(@Param("filter") UserFilter filter, @Param("page") UserPage page);
 }

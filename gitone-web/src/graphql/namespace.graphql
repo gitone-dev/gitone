@@ -1,19 +1,8 @@
-fragment NamespaceFragment on Namespace {
-  id
-  createdAt
-  updatedAt
-  type
-  name
-  path
-  fullName
-  fullPath
-  visibility
-  description
-}
-
 query Namespace($fullPath: String!) {
   namespace(fullPath: $fullPath) {
-    ...NamespaceFragment
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
   }
   namespacePolicy(fullPath: $fullPath) {
     ...PolicyFragment

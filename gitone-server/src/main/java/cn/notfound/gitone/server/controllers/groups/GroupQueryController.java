@@ -5,10 +5,11 @@ import cn.notfound.gitone.server.config.exception.NotFound;
 import cn.notfound.gitone.server.daos.GroupDao;
 import cn.notfound.gitone.server.daos.MemberDao;
 import cn.notfound.gitone.server.daos.UserDao;
-import cn.notfound.gitone.server.entities.*;
+import cn.notfound.gitone.server.entities.GroupEntity;
+import cn.notfound.gitone.server.entities.UserEntity;
+import cn.notfound.gitone.server.entities.Visibility;
 import cn.notfound.gitone.server.policies.Action;
-import cn.notfound.gitone.server.policies.GroupPolicy;
-import cn.notfound.gitone.server.policies.Policy;
+import cn.notfound.gitone.server.policies.NamespacePolicy;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -22,18 +23,18 @@ import java.util.Objects;
 @Controller
 public class GroupQueryController extends ViewerContext {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    private GroupDao groupDao;
+    private final GroupDao groupDao;
 
-    private GroupPolicy groupPolicy;
+    private final NamespacePolicy namespacePolicy;
 
-    private MemberDao memberDao;
+    private final MemberDao memberDao;
 
     @QueryMapping
     public GroupEntity group(@Argument String fullPath) {
         GroupEntity groupEntity = groupDao.findByFullPath(fullPath);
-        groupPolicy.assertPermission(groupEntity, Action.READ);
+        namespacePolicy.assertPermission(groupEntity, Action.READ);
         return groupEntity;
     }
 
@@ -61,12 +62,6 @@ public class GroupQueryController extends ViewerContext {
         GroupPage page = new GroupPage(first, after, orderBy).validate();
         List<GroupEntity> groups = groupDao.findAll(filter, page);
         return new GroupConnection(groups, page);
-    }
-
-    @QueryMapping
-    public Policy groupPolicy(@Argument String fullPath) {
-        GroupEntity groupEntity= groupDao.findByFullPath(fullPath);
-        return groupPolicy.policy(groupEntity);
     }
 
     private void root(GroupFilter filter) {

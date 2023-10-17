@@ -4,6 +4,11 @@ fragment UserFragment on User {
   updatedAt
   name
   username
+  description
+  active
+  role
+  location
+  websiteUrl
 }
 
 query Viewer {

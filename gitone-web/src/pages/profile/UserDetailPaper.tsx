@@ -61,15 +61,15 @@ function UserDetailPaper(props: Props) {
         />
       </Stack>
       <TextField
-        defaultValue={viewer.bio}
-        error={Boolean(errors.bio)}
+        defaultValue={viewer.description}
+        error={Boolean(errors.description)}
         fullWidth
-        helperText={errors.bio?.message || pattern.bio.helper}
+        helperText={errors.description?.message || pattern.bio.helper}
         margin="dense"
         label="个人简介"
         multiline
         minRows={3}
-        {...register("bio", { ...pattern.bio.rules })}
+        {...register("description", { ...pattern.bio.rules })}
       />
       <TextField
         defaultValue={viewer.location}

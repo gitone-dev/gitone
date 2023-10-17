@@ -1,6 +1,7 @@
 package cn.notfound.gitone.server.controllers.users;
 
 import cn.notfound.gitone.server.ViewerContext;
+import cn.notfound.gitone.server.config.exception.Forbidden;
 import cn.notfound.gitone.server.controllers.users.inputs.*;
 import cn.notfound.gitone.server.controllers.users.payloads.*;
 import cn.notfound.gitone.server.entities.Role;
@@ -34,7 +35,7 @@ public class UserMutationController extends ViewerContext {
     @MutationMapping
     @Secured({ Role.ROLE_USER })
     public DeleteUserPayload deleteUser(@Valid @Argument DeleteUserInput input) {
-        Assert.isTrue(viewerId().equals(input.id()), "用户 id 不匹配");
+        Forbidden.isTrue(viewerId().equals(input.id()), "用户 id 不匹配");
 
         UserEntity userEntity = userService.delete(input);
         return new DeleteUserPayload(userEntity);
@@ -79,13 +80,6 @@ public class UserMutationController extends ViewerContext {
     public UpdateNamePayload updateUser(@Valid @Argument UpdateUserInput input) {
         UserEntity userEntity = userService.update(input);
         return new UpdateNamePayload(userEntity);
-    }
-
-    @MutationMapping
-    @Secured({ Role.ROLE_USER })
-    public UpdateUsernamePayload updateUsername(@Valid @Argument UpdateUsernameInput input) {
-        UserEntity userEntity = userService.updateUsername(input);
-        return new UpdateUsernamePayload(userEntity);
     }
 
     @MutationMapping

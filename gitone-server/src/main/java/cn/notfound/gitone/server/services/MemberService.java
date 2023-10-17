@@ -2,6 +2,7 @@ package cn.notfound.gitone.server.services;
 
 import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.config.exception.Forbidden;
+import cn.notfound.gitone.server.config.exception.NotFound;
 import cn.notfound.gitone.server.controllers.members.MemberFilter;
 import cn.notfound.gitone.server.controllers.members.MemberPage;
 import cn.notfound.gitone.server.controllers.members.inputs.CreateMemberInput;
@@ -13,8 +14,7 @@ import cn.notfound.gitone.server.entities.Access;
 import cn.notfound.gitone.server.entities.MemberEntity;
 import cn.notfound.gitone.server.entities.NamespaceEntity;
 import cn.notfound.gitone.server.policies.Action;
-import cn.notfound.gitone.server.policies.GroupPolicy;
-import cn.notfound.gitone.server.policies.ProjectPolicy;
+import cn.notfound.gitone.server.policies.NamespacePolicy;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -29,34 +29,36 @@ public class MemberService extends ViewerContext {
 
     private NamespaceDao namespaceDao;
 
-    private GroupPolicy groupPolicy;
-
-    private ProjectPolicy projectPolicy;
+    private NamespacePolicy namespacePolicy;
 
     public MemberEntity create(CreateMemberInput input) {
-        MemberEntity memberEntity = input.entity(viewerId());
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setCreatedById(viewerId());
 
-        NamespaceEntity namespaceEntity = namespaceDao.find(memberEntity.getNamespaceId());
-        switch (namespaceEntity.getType()) {
-            case GROUP -> {
-                MemberEntity memberViewer = groupPolicy.assertPermission(namespaceEntity, Action.CREATE_MEMBER);
-                Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
-            }
-            case PROJECT -> {
-                MemberEntity memberViewer = projectPolicy.assertPermission(namespaceEntity, Action.CREATE_MEMBER);
-                Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
-            }
-            default -> throw new IllegalArgumentException("命名空间类型错误");
-        }
+        NamespaceEntity namespaceEntity = namespaceDao.findByFullPath(input.getFullPath());
+        NotFound.notNull(namespaceEntity, input.getFullPath());
+        Assert.isTrue(MemberEntity.namespaceTypes.contains(namespaceEntity.getType()), "命名空间类型错误");
+        MemberEntity memberViewer = namespacePolicy.assertPermission(namespaceEntity, Action.CREATE_MEMBER);
+        memberEntity.setNamespaceId(namespaceEntity.getId());
+
+        Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
+        memberEntity.setAccess(input.getAccess());
+
+        NamespaceEntity userEntity = namespaceDao.find(input.userId());
+        NotFound.notNull(userEntity, input.getUserId());
+        Assert.isTrue(userEntity.isUser(), "用户类型错误");
+        memberEntity.setUserId(userEntity.getId());
 
         return memberDao.create(memberEntity);
     }
 
     public MemberEntity update(UpdateMemberInput input) {
         MemberEntity memberEntity = memberDao.find(input.id());
+        NotFound.notNull(memberEntity, input.getId());
 
         NamespaceEntity namespaceEntity = namespaceDao.find(memberEntity.getNamespaceId());
-        MemberEntity memberViewer = groupPolicy.assertPermission(namespaceEntity, Action.UPDATE_MEMBER);
+        MemberEntity memberViewer = namespacePolicy.assertPermission(namespaceEntity, Action.UPDATE_MEMBER);
+        Assert.isTrue(!memberEntity.getUserId().equals(namespaceEntity.getParentId()), "项目在用户名下，无法修改");
 
         Forbidden.isTrue(memberViewer.getAccess().ge(memberEntity.getAccess()), "无权限");
         Forbidden.isTrue(memberViewer.getAccess().ge(input.getAccess()), "无权限");
@@ -76,9 +78,10 @@ public class MemberService extends ViewerContext {
 
     public MemberEntity delete(DeleteMemberInput input) {
         MemberEntity memberEntity = memberDao.find(input.id());
+        NotFound.notNull(memberEntity, input.getId());
 
         NamespaceEntity namespaceEntity = namespaceDao.find(memberEntity.getNamespaceId());
-        MemberEntity memberViewer = groupPolicy.assertPermission(namespaceEntity, Action.DELETE_MEMBER);
+        MemberEntity memberViewer = namespacePolicy.assertPermission(namespaceEntity, Action.DELETE_MEMBER);
         Forbidden.isTrue(memberViewer.getAccess().ge(memberEntity.getAccess()), "无权限");
 
         if (memberEntity.getAccess().equals(Access.OWNER) && memberEntity.getId().equals(memberViewer.getId())) {

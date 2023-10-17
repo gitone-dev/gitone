@@ -17,6 +17,13 @@
         <result property="visibility" column="visibility" jdbcType="INTEGER" />
         <result property="description" column="description" jdbcType="VARCHAR" />
     </resultMap>
+    <resultMap id="namespaceResult" type="cn.notfound.gitone.server.entities.NamespaceEntity">
+        <discriminator javaType="java.lang.Integer" column="type">
+            <case value="1" resultMap="cn.notfound.gitone.server.mappers.UserMapper.userMap" />
+            <case value="2" resultMap="cn.notfound.gitone.server.mappers.GroupMapper.groupMap" />
+            <case value="3" resultMap="cn.notfound.gitone.server.mappers.ProjectMapper.projectMap" />
+        </discriminator>
+    </resultMap>
     <sql id="namespaceColumns">
         ns.id,
         ns.created_at,
@@ -44,8 +51,8 @@
                     <otherwise>
                         UNION
                         SELECT ns.*
-                        FROM namespaces AS ns INNER JOIN users AS u ON ns.id = u.namespace_id
-                        WHERE u.id = #{filter.userId,jdbcType=INTEGER}
+                        FROM namespaces AS ns
+                        WHERE ns.id = #{filter.userId,jdbcType=INTEGER} AND type = 1
                     </otherwise>
                 </choose>
             )
@@ -64,8 +71,8 @@
                     <otherwise>
                         UNION
                         SELECT ns.*
-                        FROM namespaces AS ns INNER JOIN users AS u ON ns.id = u.namespace_id
-                        WHERE u.id = #{filter.viewerId,jdbcType=INTEGER}
+                        FROM namespaces AS ns
+                        WHERE ns.id = #{filter.userId,jdbcType=INTEGER} AND type = 1
                     </otherwise>
                 </choose>
             )
@@ -252,12 +259,12 @@
             description = #{description,jdbcType=VARCHAR}
         WHERE id = #{id,jdbcType=INTEGER}
     </sql>
-    <select id="find" parameterType="java.lang.Integer" resultMap="namespaceMap">
+    <select id="find" parameterType="java.lang.Integer" resultMap="namespaceResult">
         SELECT <include refid="namespaceColumns" />
         FROM namespaces AS ns
         WHERE ns.id = #{id,jdbcType=INTEGER}
     </select>
-    <select id="findByIds" parameterType="java.util.Collection" resultMap="namespaceMap">
+    <select id="findByIds" parameterType="java.util.Collection" resultMap="namespaceResult">
         SELECT <include refid="namespaceColumns" />
         FROM namespaces AS ns
         WHERE ns.id IN
@@ -265,12 +272,17 @@
             #{id,jdbcType=INTEGER}
         </foreach>
     </select>
-    <select id="findByFullPath" parameterType="java.lang.String" resultMap="namespaceMap">
+    <select id="findByFullPath" parameterType="java.lang.String" resultMap="namespaceResult">
         SELECT <include refid="namespaceColumns" />
         FROM namespaces AS ns
         WHERE ns.full_path = #{fullPath,jdbcType=VARCHAR}
     </select>
-    <select id="findAll" resultMap="namespaceMap">
+    <select id="findByDescendants" resultMap="namespaceMap">
+        SELECT <include refid="namespaceColumns" />
+        FROM namespaces AS ns
+        WHERE #{namespaceId,jdbcType=INTEGER} = ANY(ns.traversal_ids)
+    </select>
+    <select id="findAll" resultMap="namespaceResult">
         SELECT <include refid="namespaceColumns" />
         FROM (
             <include refid="allWithViewer" />

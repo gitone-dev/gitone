@@ -2,9 +2,9 @@ package cn.notfound.gitone.server.services;
 
 import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.daos.EmailDao;
-import cn.notfound.gitone.server.daos.UserDao;
+import cn.notfound.gitone.server.daos.UserDetailDao;
 import cn.notfound.gitone.server.entities.EmailEntity;
-import cn.notfound.gitone.server.entities.UserEntity;
+import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.jobs.UserMailJob;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,50 +16,50 @@ public class EmailService extends ViewerContext {
 
     private static final int MAX_EMAILS = 10;
 
-    private UserDao userDao;
+    private UserDetailDao userDetailDao;
 
     private EmailDao emailDao;
 
     private UserMailJob userMailJob;
 
-    public void createUser(UserEntity userEntity) {
+    public void createUser(UserDetailEntity userDetailEntity) {
         EmailEntity emailEntity = new EmailEntity();
-        emailEntity.setUserId(userEntity.getId());
-        emailEntity.setEmail(userEntity.getEmail());
+        emailEntity.setUserId(userDetailEntity.getId());
+        emailEntity.setEmail(userDetailEntity.getEmail());
         emailDao.create(emailEntity);
 
         UserMailJob.Input input = new UserMailJob.Input();
         input.setType(UserMailJob.Type.CREATE_USER);
-        input.setUserId(userEntity.getId());
+        input.setUserId(userDetailEntity.getId());
         input.setEmail(emailEntity.getEmail());
         input.setToken(emailEntity.getConfirmationToken());
         userMailJob.enqueue(input);
     }
 
-    public void updateEmail(UserEntity userEntity, String oldEmail) {
+    public void updateEmail(UserDetailEntity userDetailEntity, String oldEmail) {
         EmailEntity emailEntity = emailDao.findByEmail(oldEmail);
         Assert.notNull(emailEntity, "邮箱不存在");
-        Assert.isTrue(userEntity.getId().equals(emailEntity.getUserId()), "数据状态不一致");
-        emailEntity.setEmail(userEntity.getEmail());
+        Assert.isTrue(userDetailEntity.getId().equals(emailEntity.getUserId()), "数据状态不一致");
+        emailEntity.setEmail(userDetailEntity.getEmail());
         emailDao.updateToken(emailEntity);
 
         UserMailJob.Input input = new UserMailJob.Input();
         input.setType(UserMailJob.Type.CREATE_USER);
-        input.setUserId(userEntity.getId());
+        input.setUserId(userDetailEntity.getId());
         input.setEmail(emailEntity.getEmail());
         input.setToken(emailEntity.getConfirmationToken());
         userMailJob.enqueue(input);
     }
 
-    public void updateToken(UserEntity userEntity) {
-        EmailEntity emailEntity = emailDao.findByEmail(userEntity.getEmail());
+    public void updateToken(UserDetailEntity userDetailEntity) {
+        EmailEntity emailEntity = emailDao.findByEmail(userDetailEntity.getEmail());
         Assert.notNull(emailEntity, "邮箱不存在");
-        Assert.isTrue(userEntity.getId().equals(emailEntity.getUserId()), "数据状态不一致");
+        Assert.isTrue(userDetailEntity.getId().equals(emailEntity.getUserId()), "数据状态不一致");
         emailDao.updateToken(emailEntity);
 
         UserMailJob.Input input = new UserMailJob.Input();
         input.setType(UserMailJob.Type.CREATE_USER);
-        input.setUserId(userEntity.getId());
+        input.setUserId(userDetailEntity.getId());
         input.setEmail(emailEntity.getEmail());
         input.setToken(emailEntity.getConfirmationToken());
         userMailJob.enqueue(input);
@@ -100,22 +100,22 @@ public class EmailService extends ViewerContext {
     }
 
     public EmailEntity setPrimary(String email) {
-        UserEntity userEntity = userDao.find(viewerId());
+        UserDetailEntity userDetailEntity = userDetailDao.find(viewerId());
 
         EmailEntity emailEntity = emailDao.findByEmail(email);
         Assert.notNull(emailEntity, "邮箱不存在");
         Assert.isTrue(viewerId().equals(emailEntity.getUserId()), "邮箱不存在");
         Assert.isTrue(emailEntity.isConfirmed(), "邮箱未激活");
 
-        userEntity.setEmail(email);
-        userDao.update(userEntity);
+        userDetailEntity.setEmail(email);
+        userDetailDao.update(userDetailEntity);
 
         return emailEntity;
     }
 
     public EmailEntity delete(String email) {
-        UserEntity userEntity = userDao.find(viewerId());
-        Assert.isTrue(!userEntity.getEmail().equals(email), "无法删除主邮箱");
+        UserDetailEntity userDetailEntity = userDetailDao.find(viewerId());
+        Assert.isTrue(!userDetailEntity.getEmail().equals(email), "无法删除主邮箱");
 
         EmailEntity emailEntity = emailDao.findByEmail(email);
         Assert.notNull(emailEntity, "邮箱不存在");

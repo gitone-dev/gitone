@@ -1,10 +1,9 @@
 package cn.notfound.gitone.server.controllers.namespaces;
 
 import cn.notfound.gitone.server.controllers.Relay;
-import cn.notfound.gitone.server.entities.NamespaceEntity;
-import cn.notfound.gitone.server.entities.NamespaceType;
-import cn.notfound.gitone.server.entities.Visibility;
+import cn.notfound.gitone.server.entities.*;
 import lombok.Data;
+import org.springframework.util.Assert;
 
 import java.util.Set;
 
@@ -12,6 +11,7 @@ import java.util.Set;
 public class NamespaceFilter {
     @Data
     public static class By {
+        private static final Set<String> allowTypes = Set.of(UserEntity.TYPE, GroupEntity.TYPE);
 
         private Set<NamespaceType> types;
 
@@ -28,7 +28,10 @@ public class NamespaceFilter {
         private Integer parentId() {
             if (parentId == null || parentId.isBlank()) return null;
 
-            return Relay.fromGlobalId(NamespaceEntity.TYPE, parentId).id();
+            Relay.ResolvedGlobalId globalId = Relay.fromGlobalId(parentId);
+            Assert.isTrue(allowTypes.contains(globalId.type()), parentId);
+            return globalId.id();
+
         }
 
         public NamespaceFilter filter(Integer viewerId) {

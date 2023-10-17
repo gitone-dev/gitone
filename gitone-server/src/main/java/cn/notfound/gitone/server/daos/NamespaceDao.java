@@ -22,4 +22,22 @@ public class NamespaceDao extends TimestampDao<Integer, NamespaceEntity, Namespa
     public List<NamespaceEntity> findAll(NamespaceFilter filter, NamespacePage page) {
         return mapper.findAll(filter, page);
     }
+
+    public NamespaceEntity updatePath(NamespaceEntity namespaceEntity, String oldFullPath) {
+        super.update(namespaceEntity);
+        renameDescendants(namespaceEntity, oldFullPath, namespaceEntity.getFullName());
+        return namespaceEntity;
+    }
+
+    // TODO N+1
+    private void renameDescendants(NamespaceEntity namespaceEntity, String oldFullPath, String oldFullName) {
+        List<NamespaceEntity> entities = mapper.findByDescendants(namespaceEntity.getId());
+        for (NamespaceEntity entity : entities) {
+            if (entity.getId().equals(namespaceEntity.getId())) continue;
+
+            entity.setFullPath(entity.getFullPath().replaceFirst(oldFullPath, namespaceEntity.getFullPath()));
+            entity.setFullName(entity.getFullName().replaceFirst(oldFullName, namespaceEntity.getFullName()));
+            mapper.update(entity);
+        }
+    }
 }

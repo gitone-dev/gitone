@@ -4,29 +4,17 @@ fragment UserFragment on User {
   updatedAt
   name
   username
+  description
   active
   role
-}
-
-fragment NamespaceFragment on Namespace {
-  id
-  createdAt
-  updatedAt
-  name
-  path
-  fullName
-  fullPath
-  visibility
-  description
+  location
+  websiteUrl
 }
 
 mutation CreateUser($input: CreateUserInput!) {
   payload: createUser(input: $input) {
     user {
       ...UserFragment
-      namespace {
-        ...NamespaceFragment
-      }
     }
   }
 }

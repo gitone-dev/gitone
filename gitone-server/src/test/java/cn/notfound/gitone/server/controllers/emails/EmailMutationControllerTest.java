@@ -7,13 +7,18 @@ import cn.notfound.gitone.server.controllers.emails.inputs.SetPrimaryEmailInput;
 import cn.notfound.gitone.server.factories.BaseFactory;
 import cn.notfound.gitone.server.factories.UserFactory;
 import cn.notfound.gitone.server.faker.Faker;
+import cn.notfound.gitone.server.results.EmailResult;
 import cn.notfound.gitone.server.results.SessionResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.graphql.execution.ErrorType;
+import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AutoConfigureHttpGraphQlTester
 @SpringBootTest
@@ -29,117 +34,171 @@ class EmailMutationControllerTest extends BaseFactory {
 
     @Test
     void createEmail() {
-        SessionResult session = userFactory.viewer();
+        SessionResult session1 = userFactory.session();
+        SessionResult session2 = userFactory.session();
 
-        CreateEmailInput createEmailInput = new CreateEmailInput();
-        createEmailInput.setEmail(Faker.email());
+        CreateEmailInput input = new CreateEmailInput();
+        input.setEmail(Faker.email());
+        mutationCreateEmail(null, input, ErrorType.UNAUTHORIZED);
+        mutationCreateEmail(session1, input, null);
+        mutationCreateEmail(session1, input, null);
+        queryUnconfirmedEmails(session1, List.of(input.getEmail()));
 
-        mutate("createEmail", createEmailInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-        mutate("createEmail", session, createEmailInput)
-                .path("payload.email.email").entity(String.class).isEqualTo(createEmailInput.getEmail())
-                .path("payload.email.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE);
-        mutate("createEmail", session, createEmailInput).errors().verify();
-
-        query("viewerEmails", session)
-                .execute()
-                .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(1)
-                .path("viewer.unconfirmedEmails.edges[0].node.email").entity(String.class).isEqualTo(createEmailInput.getEmail())
-                .path("viewer.unconfirmedEmails.edges[0].node.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE);
-
-        createEmailInput.setEmail(session.getEmail());
-        mutate("createEmail", session, createEmailInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.BAD_REQUEST));
-
+        mutationCreateEmail(session2, input, ErrorType.BAD_REQUEST);
     }
 
     @Test
     void confirmEmail() {
-        SessionResult session = userFactory.viewer();
+        SessionResult session = userFactory.session();
 
         CreateEmailInput createEmailInput = new CreateEmailInput();
         createEmailInput.setEmail(Faker.email());
-        mutate("createEmail", session, createEmailInput).errors().verify();
+        mutationCreateEmail(session, createEmailInput, null);
+        queryUnconfirmedEmails(session, List.of(createEmailInput.getEmail()));
 
-        query("viewerEmails", session)
-                .execute()
-                .path("viewer.emails.edges").entityList(Object.class).hasSize(1)
-                .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(1);
+        List<EmailResult> results = queryEmails(session);
 
-        String token = userFactory.getConfirmationToken(createEmailInput.getEmail());
-        ConfirmEmailInput confirmEmailInput = new ConfirmEmailInput();
-        confirmEmailInput.setToken(token);
-        mutate("confirmEmail", confirmEmailInput)
-                .path("payload.email.email").entity(String.class).isEqualTo(createEmailInput.getEmail())
-                .path("payload.email.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE);
+        ConfirmEmailInput input = new ConfirmEmailInput();
+        input.setToken("01234567890123456789012345678901");
+        mutationConfirmEmail(input, createEmailInput.getEmail(), ErrorType.BAD_REQUEST);
 
-        query("viewerEmails", session)
-                .execute()
-                .path("viewer.emails.edges").entityList(Object.class).hasSize(2)
-                .path("viewer.emails.edges[0].node.email").entity(String.class).isEqualTo(createEmailInput.getEmail())
-                .path("viewer.emails.edges[0].node.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE)
-                .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(0);
+        input.setToken(userFactory.getConfirmationToken(createEmailInput.getEmail()));
+        mutationConfirmEmail(input, createEmailInput.getEmail(), null);
+        mutationConfirmEmail(input, createEmailInput.getEmail(), ErrorType.BAD_REQUEST);
+
+        queryEmails(session, List.of(new EmailResult(createEmailInput.getEmail(), false), results.get(0)));
+        queryUnconfirmedEmails(session, List.of());
     }
 
     @Test
     void setPrimaryEmail() {
-        SessionResult session = userFactory.viewer();
+        SessionResult session1 = userFactory.session();
+        SessionResult session2 = userFactory.session();
+
+        List<EmailResult> results = queryEmails(session1);
 
         CreateEmailInput createEmailInput = new CreateEmailInput();
         createEmailInput.setEmail(Faker.email());
-        mutate("createEmail", session, createEmailInput).errors().verify();
+        mutationCreateEmail(session1, createEmailInput, null);
 
-        SetPrimaryEmailInput setPrimaryEmailInput = new SetPrimaryEmailInput();
-        setPrimaryEmailInput.setEmail(createEmailInput.getEmail());
-        mutate("setPrimaryEmail", setPrimaryEmailInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-        mutate("setPrimaryEmail", session, setPrimaryEmailInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.BAD_REQUEST));
+        SetPrimaryEmailInput input = new SetPrimaryEmailInput();
+        input.setEmail(createEmailInput.getEmail());
+        mutationSetPrimaryEmail(session1, input, ErrorType.BAD_REQUEST);
 
-        String token = userFactory.getConfirmationToken(createEmailInput.getEmail());
         ConfirmEmailInput confirmEmailInput = new ConfirmEmailInput();
-        confirmEmailInput.setToken(token);
-        mutate("confirmEmail", confirmEmailInput).errors().verify();
+        confirmEmailInput.setToken(userFactory.getConfirmationToken(createEmailInput.getEmail()));
+        mutationConfirmEmail(confirmEmailInput, createEmailInput.getEmail(), null);
 
-        mutate("setPrimaryEmail", session, setPrimaryEmailInput)
-                .path("payload.email.email").entity(String.class).isEqualTo(createEmailInput.getEmail())
-                .path("payload.email.primary").entity(Boolean.class).isEqualTo(Boolean.TRUE);
+        mutationSetPrimaryEmail(null, input, ErrorType.UNAUTHORIZED);
+        mutationSetPrimaryEmail(session2, input, ErrorType.BAD_REQUEST);
+        mutationSetPrimaryEmail(session1, input, null);
+        mutationSetPrimaryEmail(session1, input, null);
 
-        query("viewerEmails", session)
-                .execute()
-                .path("viewer.emails.edges").entityList(Object.class).hasSize(2)
-                .path("viewer.emails.edges[0].node.email").entity(String.class).isEqualTo(createEmailInput.getEmail())
-                .path("viewer.emails.edges[0].node.primary").entity(Boolean.class).isEqualTo(Boolean.TRUE)
-                .path("viewer.emails.edges[1].node.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE)
-                .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(0);
+        results.get(0).setPrimary(false);
+
+        queryEmails(session1, List.of(new EmailResult(input.getEmail(), true), results.get(0)));
+        queryUnconfirmedEmails(session1, List.of());
     }
 
     @Test
     void deleteEmail() {
-        SessionResult session = userFactory.viewer();
+        SessionResult session1 = userFactory.session();
+        SessionResult session2 = userFactory.session();
 
         CreateEmailInput createEmailInput = new CreateEmailInput();
         createEmailInput.setEmail(Faker.email());
-        mutate("createEmail", session, createEmailInput).errors().verify();
-
-        query("viewerEmails", session)
-                .execute()
-                .path("viewer.emails.edges").entityList(Object.class).hasSize(1)
-                .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(1);
+        mutationCreateEmail(session1, createEmailInput, null);
+        queryUnconfirmedEmails(session1, List.of(createEmailInput.getEmail()));
 
         DeleteEmailInput deleteEmailInput = new DeleteEmailInput();
         deleteEmailInput.setEmail(createEmailInput.getEmail());
-        mutate("deleteEmail", deleteEmailInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
-        mutate("deleteEmail", session, deleteEmailInput)
-                .path("payload.email.email").entity(String.class).isEqualTo(deleteEmailInput.getEmail())
-                .path("payload.email.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE);
-        mutate("deleteEmail", session, deleteEmailInput)
-                .errors().expect(e -> e.getErrorType().equals(ErrorType.BAD_REQUEST));
+        mutationDeleteEmail(null, deleteEmailInput, ErrorType.UNAUTHORIZED);
+        mutationDeleteEmail(session2, deleteEmailInput, ErrorType.BAD_REQUEST);
+        mutationDeleteEmail(session1, deleteEmailInput, null);
+        mutationDeleteEmail(session1, deleteEmailInput, ErrorType.BAD_REQUEST);
+        queryUnconfirmedEmails(session1, List.of());
 
-        query("viewerEmails", session)
-                .execute()
-                .path("viewer.emails.edges").entityList(Object.class).hasSize(1)
-                .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(0);
+        List<EmailResult> emails = queryEmails(session1);
+        deleteEmailInput.setEmail(emails.get(0).getEmail());
+        mutationDeleteEmail(session1, deleteEmailInput, ErrorType.BAD_REQUEST);
+        mutationDeleteEmail(session2, deleteEmailInput, ErrorType.BAD_REQUEST);
+    }
+
+    private void mutationCreateEmail(SessionResult session, CreateEmailInput input, ErrorType errorType) {
+        GraphQlTester.Response response = mutate("createEmail", session, input);
+        if (errorType != null) {
+            response.errors()
+                    .expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+
+        response.path("payload.email.email").entity(String.class).isEqualTo(input.getEmail())
+                .path("payload.email.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE);
+    }
+
+    private void mutationConfirmEmail(ConfirmEmailInput input, String email, ErrorType errorType) {
+        GraphQlTester.Response response = mutate("confirmEmail", input);
+        if (errorType != null) {
+            response.errors()
+                    .expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+        response.path("payload.email.email").entity(String.class).isEqualTo(email)
+                .path("payload.email.primary").entity(Boolean.class).isEqualTo(Boolean.FALSE);
+    }
+
+    private void mutationSetPrimaryEmail(SessionResult session, SetPrimaryEmailInput input, ErrorType errorType) {
+        GraphQlTester.Response response = mutate("setPrimaryEmail", session,  input);
+        if (errorType != null) {
+            response.errors()
+                    .expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+
+        response.path("payload.email.email").entity(String.class).isEqualTo(input.getEmail())
+                .path("payload.email.primary").entity(Boolean.class).isEqualTo(Boolean.TRUE);
+    }
+
+    private void mutationDeleteEmail(SessionResult session, DeleteEmailInput input, ErrorType errorType) {
+        GraphQlTester.Response response = mutate("deleteEmail", session, input);
+        if (errorType != null) {
+            response.errors()
+                    .expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+        response.path("payload.email.email").entity(String.class).isEqualTo(input.getEmail());
+    }
+
+    private void queryUnconfirmedEmails(SessionResult session, List<String> emails) {
+        GraphQlTester.Response response = query("viewerEmails", session)
+                .execute();
+        response.path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(emails.size());
+        for (int i = 0; i < emails.size(); i++) {
+            response.path(String.format("viewer.unconfirmedEmails.edges[%d].node.email", i)).entity(String.class).isEqualTo(emails.get(i))
+                    .path(String.format("viewer.unconfirmedEmails.edges[%d].node.primary", i)).entity(Boolean.class).isEqualTo(Boolean.FALSE);
+        }
+    }
+
+    private void queryEmails(SessionResult session, List<EmailResult> result) {
+        GraphQlTester.Response response = query("viewerEmails", session)
+                .execute();
+        response.path("viewer.emails.edges").entityList(Object.class).hasSize(result.size());
+        for (int i = 0; i < result.size(); i++) {
+            response.path(String.format("viewer.emails.edges[%d].node.email", i)).entity(String.class).isEqualTo(result.get(i).getEmail())
+                    .path(String.format("viewer.emails.edges[%d].node.primary", i)).entity(Boolean.class).isEqualTo(result.get(i).getPrimary());
+        }
+    }
+
+    private List<EmailResult> queryEmails(SessionResult session) {
+        List<EmailResult> emails = new ArrayList<>();
+
+        GraphQlTester.Response response = query("viewerEmails", session)
+                .execute();
+        int size = response.path("viewer.emails.edges").entityList(Object.class).get().size();
+        for (int i = 0; i < size; i++) {
+            EmailResult result = response.path(String.format("viewer.emails.edges[%d].node", i)).entity(EmailResult.class).get();
+            emails.add(result);
+        }
+        return emails;
     }
 }

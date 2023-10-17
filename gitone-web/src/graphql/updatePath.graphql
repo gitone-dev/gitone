@@ -1,0 +1,9 @@
+mutation UpdatePath($input: UpdatePathInput!) {
+  payload: updatePath(input: $input) {
+    namespace {
+      ...UserFragment
+      ...GroupFragment
+      ...ProjectFragment
+    }
+  }
+}

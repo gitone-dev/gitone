@@ -12,7 +12,7 @@ public class UpdateUserInput {
     private String name;
 
     @NotNull @Size(max = 255)
-    private String bio;
+    private String description;
 
     @NotNull @Size(max = 255)
     private String location;

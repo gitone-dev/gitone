@@ -3,9 +3,14 @@ fragment UserDetailFragment on User {
   createdAt
   updatedAt
   name
+  path
+  fullName
+  fullPath
   username
+  visibility
+  description
   avatarUrl
-  bio
+
   location
   websiteUrl
 }

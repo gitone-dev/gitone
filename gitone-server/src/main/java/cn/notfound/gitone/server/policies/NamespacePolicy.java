@@ -3,6 +3,7 @@ package cn.notfound.gitone.server.policies;
 import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.config.exception.Forbidden;
 import cn.notfound.gitone.server.config.exception.NotFound;
+import cn.notfound.gitone.server.config.exception.Unauthorized;
 import cn.notfound.gitone.server.daos.MemberDao;
 import cn.notfound.gitone.server.entities.Access;
 import cn.notfound.gitone.server.entities.MemberEntity;
@@ -30,13 +31,16 @@ public class NamespacePolicy extends ViewerContext {
     public static Set<Action> forAccess(Access access) {
         return switch (access) {
             case OWNER -> Set.of(
-                    READ, UPDATE, DELETE
+                    READ, UPDATE, DELETE,
+                    READ_MEMBER, CREATE_MEMBER, UPDATE_MEMBER, DELETE_MEMBER
             );
             case MAINTAINER -> Set.of(
-                    READ, UPDATE
+                    READ, UPDATE,
+                    READ_MEMBER, CREATE_MEMBER, UPDATE_MEMBER, DELETE_MEMBER
             );
             case REPORTER, MIN_ACCESS -> Set.of(
-                    READ
+                    READ,
+                    READ_MEMBER
             );
             default -> Set.of();
         };
@@ -100,7 +104,7 @@ public class NamespacePolicy extends ViewerContext {
             Forbidden.notNull(memberDao.findByDescendants(namespaceEntity.getId(), viewerId()), "无权限");
             return null;
         }
-
+        Unauthorized.isTrue(isAuthenticated(), "未登录");
         Forbidden.notNull(memberEntity, "无权限");
         Forbidden.isTrue(accessActionsMap.get(memberEntity.getAccess()).contains(action), "无权限");
 

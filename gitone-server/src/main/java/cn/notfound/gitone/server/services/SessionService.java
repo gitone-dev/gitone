@@ -3,7 +3,9 @@ package cn.notfound.gitone.server.services;
 import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.controllers.session.inputs.CreateSessionInput;
 import cn.notfound.gitone.server.daos.UserDao;
+import cn.notfound.gitone.server.daos.UserDetailDao;
 import cn.notfound.gitone.server.entities.SessionEntity;
+import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +39,8 @@ public class SessionService extends ViewerContext {
 
     private UserDao userDao;
 
+    private UserDetailDao userDetailDao;
+
     private PasswordEncoder passwordEncoder;
 
     /* 修改自 AbstractAuthenticationProcessingFilter.java UsernamePasswordAuthenticationFilter.java */
@@ -55,13 +59,14 @@ public class SessionService extends ViewerContext {
             securityContextRepository.saveContext(context, request, response);
         } catch (DisabledException e) {
             UserEntity userEntity = userDao.findByUsername(input.getUsername());
-            if (!passwordEncoder.matches(input.getPassword(), userEntity.getPassword())) {
+            UserDetailEntity userDetailEntity = userDetailDao.find(userEntity.getId());
+            if (!passwordEncoder.matches(input.getPassword(), userDetailEntity.getPassword())) {
                 throw new BadCredentialsException(e.getMessage());
             }
 
             request.getSession(true).setAttribute(ACTIVATE_USER_KEY, userEntity.getId());
-            sessionEntity.setEmail(userEntity.getEmail());
-            sessionEntity.setActive(false);
+            sessionEntity.setEmail(userDetailEntity.getEmail());
+            sessionEntity.setActive(userDetailEntity.getActive());
         }
 
         sessionEntity.setHeader(HEADER_X_AUTH_TOKEN);

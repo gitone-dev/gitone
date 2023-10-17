@@ -72,7 +72,7 @@ function Group() {
   const { data, loading, error } = useGroupQuery({
     variables: { fullPath },
   });
-  const actions = data?.groupPolicy.actions;
+  const actions = data?.namespacePolicy.actions;
 
   if (loading || loadingViewer) {
     return <LoadingPage />;

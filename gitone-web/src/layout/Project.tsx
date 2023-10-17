@@ -61,7 +61,7 @@ function Project() {
   const { data, loading, error } = useProjectQuery({
     variables: { fullPath },
   });
-  const actions = data?.projectPolicy.actions;
+  const actions = data?.namespacePolicy.actions;
 
   if (loading || loadingViewer) {
     return <LoadingPage />;

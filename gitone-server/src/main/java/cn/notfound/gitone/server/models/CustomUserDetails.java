@@ -1,6 +1,7 @@
 package cn.notfound.gitone.server.models;
 
 import cn.notfound.gitone.server.entities.Role;
+import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -27,14 +28,14 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     private final List<GrantedAuthority> authorities;
 
-    public CustomUserDetails(UserEntity userEntity) {
+    public CustomUserDetails(UserEntity userEntity, UserDetailEntity userDetailEntity) {
         this.id = userEntity.getId();
-        this.namespaceId = userEntity.getNamespaceId();
+        this.namespaceId = userEntity.getId();
         this.name = userEntity.getName();
-        this.username = userEntity.getUsername();
-        this.password = userEntity.getPassword();
-        this.enabled = userEntity.getActive();
-        if (userEntity.getRole().equals(Role.ADMIN)) {
+        this.username = userEntity.getFullPath();
+        this.password = userDetailEntity.getPassword();
+        this.enabled = userDetailEntity.getActive();
+        if (userDetailEntity.getRole().equals(Role.ADMIN)) {
             authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER, Role.ROLE_ADMIN);
         } else {
             authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER);

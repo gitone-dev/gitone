@@ -1,7 +1,11 @@
 package cn.notfound.gitone.server.controllers.groups;
 
-import cn.notfound.gitone.server.controllers.groups.inputs.*;
-import cn.notfound.gitone.server.controllers.groups.payloads.*;
+import cn.notfound.gitone.server.controllers.groups.inputs.CreateGroupInput;
+import cn.notfound.gitone.server.controllers.groups.inputs.DeleteGroupInput;
+import cn.notfound.gitone.server.controllers.groups.inputs.UpdateGroupInput;
+import cn.notfound.gitone.server.controllers.groups.payloads.CreateGroupPayload;
+import cn.notfound.gitone.server.controllers.groups.payloads.DeleteGroupPayload;
+import cn.notfound.gitone.server.controllers.groups.payloads.UpdateGroupPayload;
 import cn.notfound.gitone.server.entities.GroupEntity;
 import cn.notfound.gitone.server.entities.Role;
 import cn.notfound.gitone.server.services.GroupService;
@@ -37,19 +41,5 @@ public class GroupMutationController {
     public UpdateGroupPayload updateGroup(@Valid @Argument UpdateGroupInput input) {
         GroupEntity groupEntity = groupService.update(input);
         return new UpdateGroupPayload(groupEntity);
-    }
-
-    @MutationMapping
-    @Secured({ Role.ROLE_USER })
-    public UpdateGroupPathPayload updateGroupPath(@Valid @Argument UpdateGroupPathInput input) {
-        GroupEntity groupEntity = groupService.updatePath(input);
-        return new UpdateGroupPathPayload(groupEntity);
-    }
-
-    @MutationMapping
-    @Secured({ Role.ROLE_USER })
-    public UpdateGroupVisibilityPayload updateGroupVisibility(@Valid @Argument UpdateGroupVisibilityInput input) {
-        GroupEntity groupEntity = groupService.updateVisibility(input);
-        return new UpdateGroupVisibilityPayload(groupEntity);
     }
 }

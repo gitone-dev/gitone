@@ -12,6 +12,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Controller
@@ -28,9 +29,7 @@ public class UserQueryController extends ViewerContext {
     @QueryMapping
     public UserEntity user(@Argument String username) {
         UserEntity userEntity = userDao.findByUsername(username);
-        if (userEntity == null) {
-            throw new NotFound(username);
-        }
+        NotFound.notNull(userEntity, username);
         return userEntity;
     }
 
@@ -38,11 +37,13 @@ public class UserQueryController extends ViewerContext {
     public UserConnection users(
             @Argument Integer first,
             @Argument String after,
-            @Argument UserFilter filterBy,
+            @Argument UserFilter.By filterBy,
             @Argument UserOrder orderBy) {
 
+        filterBy = Objects.requireNonNullElse(filterBy, new UserFilter.By());
+        UserFilter filter = filterBy.filter();
         UserPage page = new UserPage(first, after, orderBy).validate();
-        List<UserEntity> users = userDao.findAll(filterBy, page);
+        List<UserEntity> users = userDao.findAll(filter, page);
         return new UserConnection(users, page);
     }
 }

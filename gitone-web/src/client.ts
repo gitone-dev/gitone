@@ -42,18 +42,17 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
+        users: relayStylePagination(),
+        members: relayStylePagination(),
+        namespaces: relayStylePagination(),
         groups: relayStylePagination(),
+        projects: relayStylePagination(),
       },
     },
     User: {
       fields: {
         emails: relayStylePagination(),
         unconfirmedEmails: relayStylePagination(),
-      },
-    },
-    Group: {
-      fields: {
-        members: relayStylePagination(),
       },
     },
   },

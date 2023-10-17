@@ -1,6 +1,9 @@
 package cn.notfound.gitone.server.controllers.projects;
 
-import cn.notfound.gitone.server.controllers.projects.inputs.*;
+import cn.notfound.gitone.server.controllers.namespaces.inputs.UpdatePathInput;
+import cn.notfound.gitone.server.controllers.projects.inputs.CreateProjectInput;
+import cn.notfound.gitone.server.controllers.projects.inputs.DeleteProjectInput;
+import cn.notfound.gitone.server.controllers.projects.inputs.UpdateProjectInput;
 import cn.notfound.gitone.server.entities.Access;
 import cn.notfound.gitone.server.entities.Visibility;
 import cn.notfound.gitone.server.factories.BaseFactory;
@@ -41,8 +44,8 @@ class ProjectMutationControllerTest extends BaseFactory {
 
     @Test
     void createProject() {
-        SessionResult session1 = userFactory.viewer();
-        SessionResult session2 = userFactory.viewer();
+        SessionResult session1 = userFactory.session();
+        SessionResult session2 = userFactory.session();
 
         // user namespace
         NamespaceResult namespace1 = queryNamespace(session1, session1.getUsername());
@@ -50,20 +53,20 @@ class ProjectMutationControllerTest extends BaseFactory {
         mutationCreateProject(null, input, ErrorType.UNAUTHORIZED);
         mutationCreateProject(session2, input, ErrorType.FORBIDDEN);
         ProjectResult project1 = projectFactory.create(session1, input, namespace1);
-        queryProjectMembers(session1, project1);
+        queryMembers(session1, project1.getFullPath());
         mutationCreateProject(session1, input, ErrorType.INTERNAL_ERROR);
 
         // group
         GroupResult group = groupFactory.create(session2);
         input = projectFactory.createProjectInput(group.getId());
         ProjectResult project2 = projectFactory.create(session2, input, group);
-        queryProjectMembers(session2, project2);
+        queryMembers(session2, project2.getFullPath());
     }
 
     @Test
     void deleteProject() {
-        SessionResult session1 = userFactory.viewer();
-        SessionResult session2 = userFactory.viewer();
+        SessionResult session1 = userFactory.session();
+        SessionResult session2 = userFactory.session();
 
         // user namespace
         ProjectResult project1 = projectFactory.create(session1);
@@ -83,9 +86,9 @@ class ProjectMutationControllerTest extends BaseFactory {
 
     @Test
     void updateProject() {
-        SessionResult session1 = userFactory.viewer();
-        SessionResult session2 = userFactory.viewer();
-        UserResult user1 = userFactory.queryViewer(session1);
+        SessionResult session1 = userFactory.session();
+        SessionResult session2 = userFactory.session();
+        UserResult user1 = userFactory.viewer(session1);
 
         // user namespace
 
@@ -119,69 +122,35 @@ class ProjectMutationControllerTest extends BaseFactory {
 
     @Test
     void updateProjectPath() {
-        SessionResult session1 = userFactory.viewer();
-        SessionResult session2 = userFactory.viewer();
-        UserResult user1 = userFactory.queryViewer(session1);
+        SessionResult session1 = userFactory.session();
+        SessionResult session2 = userFactory.session();
+        UserResult user1 = userFactory.viewer(session1);
 
         // user namespace
 
         ProjectResult project1 = projectFactory.create(session1);
-        UpdateProjectPathInput input = new UpdateProjectPathInput();
-        input.setId(project1.getId());
+        UpdatePathInput input = new UpdatePathInput();
+        input.setFullPath(project1.getFullPath());
         input.setPath("project1");
         project1.setPath(input.getPath());
         project1.setFullPath(String.join("/", user1.getUsername(), input.getPath()));
-        mutationUpdateProjectPath(session1, input, project1);
-        mutationUpdateProjectPath(null, input, ErrorType.UNAUTHORIZED);
-        mutationUpdateProjectPath(session2, input, ErrorType.FORBIDDEN);
+        mutationUpdatePath(session1, input, project1, null);
+        mutationUpdatePath(null, input, null, ErrorType.UNAUTHORIZED);
+        input.setFullPath(project1.getFullPath());
+        mutationUpdatePath(session2, input, null, ErrorType.FORBIDDEN);
 
         // group
 
         GroupResult group = groupFactory.create(session1);
         ProjectResult project2 = projectFactory.create(session1, group);
-        input.setId(project2.getId());
+        input.setFullPath(project2.getFullPath());
         input.setPath("project2");
         project2.setPath(input.getPath());
         project2.setFullPath(String.join("/", group.getFullPath(), input.getPath()));
-        mutationUpdateProjectPath(session1, input, project2);
-        mutationUpdateProjectPath(null, input, ErrorType.UNAUTHORIZED);
-        mutationUpdateProjectPath(session2, input, ErrorType.FORBIDDEN);
-    }
-
-    @Test
-    void updateProjectVisibility() {
-        SessionResult session1 = userFactory.viewer();
-        SessionResult session2 = userFactory.viewer();
-
-        // user namespace
-
-        ProjectResult project1 = projectFactory.create(session1);
-        UpdateProjectVisibilityInput input = new UpdateProjectVisibilityInput();
-        input.setId(project1.getId());
-        input.setVisibility(Visibility.PUBLIC);
-        project1.setVisibility(input.getVisibility());
-        mutationUpdateProjectVisibility(session1, input, project1);
-        mutationUpdateProjectVisibility(null, input, ErrorType.UNAUTHORIZED);
-        mutationUpdateProjectVisibility(session2, input, ErrorType.FORBIDDEN);
-
-        // group public
-
-        GroupResult group = groupFactory.create(session1, Visibility.PUBLIC);
-        ProjectResult project2 = projectFactory.create(session1, group);
-        input.setId(project2.getId());
-        input.setVisibility(Visibility.PUBLIC);
-        project2.setVisibility(input.getVisibility());
-        mutationUpdateProjectVisibility(session1, input, project2);
-        mutationUpdateProjectVisibility(null, input, ErrorType.UNAUTHORIZED);
-        mutationUpdateProjectVisibility(session2, input, ErrorType.FORBIDDEN);
-
-        // group private
-
-        GroupResult group2 = groupFactory.create(session1, Visibility.PRIVATE);
-        ProjectResult project3 = projectFactory.create(session1, group2);
-        input.setId(project3.getId());
-        input.setVisibility(Visibility.PUBLIC);
-        mutationUpdateProjectVisibility(session1, input, ErrorType.BAD_REQUEST);
+        mutationUpdatePath(session1, input, project2, null);
+        mutationUpdatePath(null, input, null, ErrorType.UNAUTHORIZED);
+        input.setFullPath(project2.getFullPath());
+        mutationUpdatePath(session2, input, null, ErrorType.FORBIDDEN);
     }
 
     private void mutationCreateProject(SessionResult session, CreateProjectInput input, ErrorType errorType) {
@@ -201,35 +170,30 @@ class ProjectMutationControllerTest extends BaseFactory {
         projectResponse(response, result);
     }
 
-    private void mutationUpdateProjectPath(SessionResult session, UpdateProjectPathInput input, ErrorType errorType) {
-        mutate("updateProjectPath", session, input)
-                .errors()
-                .expect(e -> e.getErrorType().equals(errorType));
+    private void mutationUpdatePath(SessionResult session, UpdatePathInput input, ProjectResult result, ErrorType errorType) {
+        GraphQlTester.Response response = mutate("updatePath", session, input);
+        if (errorType != null) {
+            response.errors()
+                    .expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+
+        response.path("payload.namespace.id").entity(String.class).isEqualTo(result.getId())
+                .path("payload.namespace.name").entity(String.class).isEqualTo(result.getName())
+                .path("payload.namespace.fullName").entity(String.class).isEqualTo(result.getFullName())
+                .path("payload.namespace.path").entity(String.class).isEqualTo(result.getPath())
+                .path("payload.namespace.fullPath").entity(String.class).isEqualTo(result.getFullPath())
+                .path("payload.namespace.visibility").entity(Visibility.class).isEqualTo(result.getVisibility())
+                .path("payload.namespace.description").entity(String.class).isEqualTo(result.getDescription());
     }
 
-    private void mutationUpdateProjectPath(SessionResult session, UpdateProjectPathInput input, ProjectResult result) {
-        GraphQlTester.Response response = mutate("updateProjectPath", session, input);
-        projectResponse(response, result);
-    }
-
-    private void mutationUpdateProjectVisibility(SessionResult session, UpdateProjectVisibilityInput input, ErrorType errorType) {
-        mutate("updateProjectVisibility", session, input)
-                .errors()
-                .expect(e -> e.getErrorType().equals(errorType));
-    }
-
-    private void mutationUpdateProjectVisibility(SessionResult session, UpdateProjectVisibilityInput input, ProjectResult result) {
-        GraphQlTester.Response response = mutate("updateProjectVisibility", session, input);
-        projectResponse(response, result);
-    }
-
-    private void queryProjectMembers(SessionResult session, ProjectResult project) {
-        query("projectMembers", session)
-                .variable("fullPath", project.getFullPath()).variable("first", 10)
+    private void queryMembers(SessionResult session, String fullPath) {
+        query("members", session)
+                .variable("fullPath", fullPath).variable("first", 10)
                 .execute()
-                .path("project.members.edges").entityList(Object.class).hasSize(1)
-                .path("project.members.edges[0].node.access").entity(Access.class).isEqualTo(Access.OWNER)
-                .path("project.members.edges[0].node.user.username").entity(String.class).isEqualTo(session.getUsername());
+                .path("members.edges").entityList(Object.class).hasSize(1)
+                .path("members.edges[0].node.access").entity(Access.class).isEqualTo(Access.OWNER)
+                .path("members.edges[0].node.user.username").entity(String.class).isEqualTo(session.getUsername());
     }
 
     private void mutationDeleteProject(SessionResult session, ProjectResult project, ErrorType errorType) {

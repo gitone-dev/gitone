@@ -1,6 +1,8 @@
 package cn.notfound.gitone.server.services;
 
 import cn.notfound.gitone.server.ViewerContext;
+import cn.notfound.gitone.server.config.exception.Forbidden;
+import cn.notfound.gitone.server.config.exception.Unauthorized;
 import cn.notfound.gitone.server.controllers.users.inputs.*;
 import cn.notfound.gitone.server.daos.UserDao;
 import cn.notfound.gitone.server.daos.UserDetailDao;
@@ -33,128 +35,118 @@ public class UserService extends ViewerContext {
     private UserMailJob userMailJob;
 
     public UserEntity create(CreateUserInput input) {
-        UserEntity userEntity = input.entity(passwordEncoder);
+        UserEntity userEntity = input.user();
         userEntity = userDao.create(userEntity);
 
-        UserDetailEntity userDetailEntity = new UserDetailEntity();
+        UserDetailEntity userDetailEntity = input.userDetail(passwordEncoder);
         userDetailEntity.setId(userEntity.getId());
         userDetailDao.create(userDetailEntity);
 
-        emailService.createUser(userEntity);
+        emailService.createUser(userDetailEntity);
         return userEntity;
     }
 
     public UserEntity delete(DeleteUserInput input) {
         UserEntity userEntity = userDao.find(input.id());
         emailService.deleteByUserId(userEntity.getId());
-
+        userDetailDao.delete(userEntity.getId());
         userDao.delete(userEntity);
         return userEntity;
     }
 
     public void updateActivationEmail(HttpServletRequest request, UpdateActivationEmailInput input) {
         HttpSession httpSession = request.getSession(false);
-        Assert.notNull(httpSession, "请先登录");
+        Unauthorized.notNull(httpSession, "请先登录");
 
         Integer userId = (Integer) httpSession.getAttribute(SessionService.ACTIVATE_USER_KEY);
-        Assert.notNull(userId, "请重新登录");
+        Forbidden.notNull(userId, "请重新登录");
         httpSession.removeAttribute(SessionService.ACTIVATE_USER_KEY);
 
-        UserEntity userEntity = userDao.find(userId);
-        Assert.notNull(userEntity, "请重新登录");
-        Assert.isTrue(!userEntity.getActive(), "用户已激活");
+        UserDetailEntity userDetailEntity = userDetailDao.find(userId);
+        Assert.notNull(userDetailEntity, "请重新登录");
+        Assert.isTrue(!userDetailEntity.getActive(), "用户已激活");
 
-        String oldEmail = userEntity.getEmail();
-        userEntity.setEmail(input.getEmail());
-        userDao.update(userEntity);
+        String oldEmail = userDetailEntity.getEmail();
+        userDetailEntity.setEmail(input.getEmail());
+        userDetailDao.update(userDetailEntity);
 
-        emailService.updateEmail(userEntity, oldEmail);
+        emailService.updateEmail(userDetailEntity, oldEmail);
     }
 
     public void sendActivationEmail(HttpServletRequest request, SendActivationEmailInput input) {
         HttpSession httpSession = request.getSession(false);
-        Assert.notNull(httpSession, "请先登录");
+        Unauthorized.notNull(httpSession, "请先登录");
 
         Integer userId = (Integer) httpSession.getAttribute(SessionService.ACTIVATE_USER_KEY);
-        Assert.notNull(userId, "请重新登录");
+        Forbidden.notNull(userId, "请重新登录");
         httpSession.removeAttribute(SessionService.ACTIVATE_USER_KEY);
 
-        UserEntity userEntity = userDao.find(userId);
-        Assert.notNull(userEntity, "请重新登录");
-        Assert.isTrue(userEntity.getEmail().equals(input.getEmail()), "请重新登录");
-        Assert.isTrue(!userEntity.getActive(), "用户已激活");
+        UserDetailEntity userDetailEntity = userDetailDao.find(userId);
+        Forbidden.notNull(userDetailEntity, "请重新登录");
+        Forbidden.isTrue(userDetailEntity.getEmail().equals(input.getEmail()), "请重新登录");
+        Assert.isTrue(!userDetailEntity.getActive(), "用户已激活");
 
-        emailService.updateToken(userEntity);
+        emailService.updateToken(userDetailEntity);
     }
 
     public void activate(ActivateUserInput input) {
         EmailEntity emailEntity = emailService.confirm(input.getToken());
         Assert.notNull(emailEntity, "token 不合规");
 
-        UserEntity userEntity = userDao.find(emailEntity.getUserId());
-        Assert.notNull(userEntity, "token 不合规");
+        UserDetailEntity userDetailEntity = userDetailDao.find(emailEntity.getUserId());
+        Assert.notNull(userDetailEntity, "token 不合规");
 
-        userEntity.setActive(true);
-        userDao.update(userEntity);
+        userDetailEntity.setActive(true);
+        userDetailDao.update(userDetailEntity);
     }
 
     public void sendPasswordResetEmail(SendPasswordResetEmailInput input) {
-        UserEntity userEntity = userDao.findByEmail(input.getEmail());
-        Assert.notNull(userEntity, "用户不存在或者非主邮箱");
+        UserDetailEntity userDetailEntity = userDetailDao.findByEmail(input.getEmail());
+        Assert.notNull(userDetailEntity, "用户不存在或者非主邮箱");
 
-        userDao.updateResetPasswordToken(userEntity);
+        userDetailDao.updateResetPasswordToken(userDetailEntity);
 
         UserMailJob.Input jobInput = new UserMailJob.Input();
         jobInput.setType(UserMailJob.Type.RESET_PASSWORD);
-        jobInput.setUserId(userEntity.getId());
-        jobInput.setEmail(userEntity.getEmail());
-        jobInput.setToken(userEntity.getResetPasswordToken());
+        jobInput.setUserId(userDetailEntity.getId());
+        jobInput.setEmail(userDetailEntity.getEmail());
+        jobInput.setToken(userDetailEntity.getResetPasswordToken());
         userMailJob.enqueue(jobInput);
     }
 
     public void resetPassword(ResetPasswordInput input) {
-        UserEntity userEntity = userDao.findByResetPasswordToken(input.getToken());
-        Assert.notNull(userEntity, "密码重置令牌已失效");
+        UserDetailEntity userDetailEntity = userDetailDao.findByResetPasswordToken(input.getToken());
+        Assert.notNull(userDetailEntity, "密码重置令牌已失效");
 
-        OffsetDateTime resetPasswordSentAt = userEntity.getResetPasswordSentAt();
+        OffsetDateTime resetPasswordSentAt = userDetailEntity.getResetPasswordSentAt();
         Assert.notNull(resetPasswordSentAt, "密码重置令牌已失效");
         Assert.isTrue(Duration.between(resetPasswordSentAt, OffsetDateTime.now()).getSeconds() <= 500, "密码重置令牌已失效");
 
-        userEntity.setResetPasswordToken(null);
-        userEntity.setResetPasswordSentAt(null);
-        userEntity.setPassword(passwordEncoder.encode(input.getPassword()));
-        userDao.update(userEntity);
+        userDetailEntity.setResetPasswordToken(null);
+        userDetailEntity.setResetPasswordSentAt(null);
+        userDetailEntity.setPassword(passwordEncoder.encode(input.getPassword()));
+        userDetailDao.update(userDetailEntity);
     }
 
     public UserEntity update(UpdateUserInput input) {
-        UserEntity userEntity = userDao.find(viewerId());
-
-        UserDetailEntity userDetailEntity = new UserDetailEntity();
-        userDetailEntity.setId(userEntity.getId());
-        userDetailEntity.setBio(input.getBio());
+        UserDetailEntity userDetailEntity = userDetailDao.find(viewerId());
         userDetailEntity.setLocation(input.getLocation());
         userDetailEntity.setWebsiteUrl(input.getWebsiteUrl());
         userDetailDao.update(userDetailEntity);
 
-        if (userEntity.getName().equals(input.getName())) {
-            return userDao.update(userEntity);
-        } else {
-            userEntity.setName(input.getName());
-            return userDao.updateName(userEntity);
-        }
-    }
-
-    public UserEntity updateUsername(UpdateUsernameInput input) {
         UserEntity userEntity = userDao.find(viewerId());
-        userEntity.setUsername(input.getUsername());
-        return userDao.updateUsername(userEntity);
+        userEntity.setName(input.getName());
+        userEntity.setFullName(input.getName());
+        userEntity.setDescription(input.getDescription());
+        return userDao.update(userEntity);
     }
 
     public UserEntity updatePassword(UpdatePasswordInput input) {
-        UserEntity userEntity = userDao.find(viewerId());
-        input.validate(passwordEncoder, userEntity.getPassword());
+        UserDetailEntity userDetailEntity = userDetailDao.find(viewerId());
+        input.validate(passwordEncoder, userDetailEntity.getPassword());
 
-        userEntity.setPassword(passwordEncoder.encode(input.getPassword()));
-        return userDao.update(userEntity);
+        userDetailEntity.setPassword(passwordEncoder.encode(input.getPassword()));
+        userDetailDao.update(userDetailEntity);
+        return userDao.find(viewerId());
     }
 }

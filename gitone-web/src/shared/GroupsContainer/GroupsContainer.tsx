@@ -7,8 +7,8 @@ import {
   useGroupsQuery,
 } from "../../generated/types";
 import ErrorBox from "../ErrorBox";
-import ListGroup from "../ListGroup";
 import LoadingBox from "../LoadingBox";
+import ListGroup from "./ListGroup";
 
 interface Props {
   parentId?: string;

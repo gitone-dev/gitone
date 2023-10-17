@@ -27,7 +27,7 @@ function Show() {
         <Item label="ID">{user.id}</Item>
         <Item label="昵称">{user.name}</Item>
         <Item label="用户名">{user.username}</Item>
-        <Item label="自我介绍">{user.bio}</Item>
+        <Item label="自我介绍">{user.description}</Item>
         <Item label="创建时间">
           <RelativeTime date={user.createdAt} />
         </Item>

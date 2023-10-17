@@ -1,16 +1,20 @@
 package cn.notfound.gitone.server.controllers.projects.inputs;
 
 import cn.notfound.gitone.server.controllers.Relay;
-import cn.notfound.gitone.server.entities.ProjectEntity;
-import cn.notfound.gitone.server.entities.Visibility;
+import cn.notfound.gitone.server.entities.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.util.Assert;
+
+import java.util.Set;
 
 @Data
 public class CreateProjectInput {
+
+    private static final Set<String> types = Set.of(UserEntity.TYPE, GroupEntity.TYPE);
 
     @NotBlank
     private String parentId;
@@ -27,17 +31,14 @@ public class CreateProjectInput {
     @NotNull @Size(max = 255)
     private String description;
 
-    private Integer parentId() {
-        return Relay.fromGlobalId(parentId).id();
-    }
-
-    public String parentType() {
-        return Relay.fromGlobalId(parentId).type();
+    public Integer parentId() {
+        Relay.ResolvedGlobalId globalId = Relay.fromGlobalId(parentId);
+        Assert.isTrue(types.contains(globalId.type()), "上级类型不正确");
+        return globalId.id();
     }
 
     public ProjectEntity entity() {
         ProjectEntity entity = new ProjectEntity();
-        entity.setParentId(parentId());
         entity.setName(name);
         entity.setPath(path);
         entity.setFullName(name);

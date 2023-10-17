@@ -4,9 +4,9 @@ fragment UserDetailFragment on User {
   updatedAt
   name
   username
+  description
   active
   role
-  bio
   location
   websiteUrl
 }

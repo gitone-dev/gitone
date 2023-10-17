@@ -79,7 +79,7 @@ export type CreateGroupPayload = {
 
 export type CreateMemberInput = {
   access: Access;
-  namespaceId: Scalars['String']['input'];
+  fullPath: Scalars['String']['input'];
   userId: Scalars['String']['input'];
 };
 
@@ -196,27 +196,17 @@ export type EmailEdge = {
 };
 
 /**  group */
-export type Group = Node & {
+export type Group = Namespace & Node & {
   __typename?: 'Group';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   fullName?: Maybe<Scalars['String']['output']>;
   fullPath?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  members?: Maybe<MemberConnection>;
   name?: Maybe<Scalars['String']['output']>;
   path?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   visibility: Visibility;
-};
-
-
-/**  group */
-export type GroupMembersArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  filterBy?: InputMaybe<MemberFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<MemberOrder>;
 };
 
 export type GroupConnection = {
@@ -316,15 +306,13 @@ export type Mutation = {
   setPrimaryEmail?: Maybe<SetPrimaryEmailPayload>;
   updateActivationEmail?: Maybe<UpdateActivationEmailPayload>;
   updateGroup?: Maybe<UpdateGroupPayload>;
-  updateGroupPath?: Maybe<UpdateGroupPathPayload>;
-  updateGroupVisibility?: Maybe<UpdateGroupVisibilityPayload>;
   updateMember?: Maybe<UpdateMemberPayload>;
   updatePassword?: Maybe<UpdatePasswordPayload>;
+  updatePath?: Maybe<UpdatePathPayload>;
   updateProject?: Maybe<UpdateProjectPayload>;
-  updateProjectPath?: Maybe<UpdateProjectPathPayload>;
-  updateProjectVisibility?: Maybe<UpdateProjectVisibilityPayload>;
   updateUser?: Maybe<UpdateUserPayload>;
-  updateUsername?: Maybe<UpdateUsernamePayload>;
+  /**  namespaces */
+  updateVisibility?: Maybe<UpdateVisibilityPayload>;
 };
 
 
@@ -423,16 +411,6 @@ export type MutationUpdateGroupArgs = {
 };
 
 
-export type MutationUpdateGroupPathArgs = {
-  input: UpdateGroupPathInput;
-};
-
-
-export type MutationUpdateGroupVisibilityArgs = {
-  input: UpdateGroupVisibilityInput;
-};
-
-
 export type MutationUpdateMemberArgs = {
   input: UpdateMemberInput;
 };
@@ -443,18 +421,13 @@ export type MutationUpdatePasswordArgs = {
 };
 
 
+export type MutationUpdatePathArgs = {
+  input: UpdatePathInput;
+};
+
+
 export type MutationUpdateProjectArgs = {
   input: UpdateProjectInput;
-};
-
-
-export type MutationUpdateProjectPathArgs = {
-  input: UpdateProjectPathInput;
-};
-
-
-export type MutationUpdateProjectVisibilityArgs = {
-  input: UpdateProjectVisibilityInput;
 };
 
 
@@ -463,12 +436,11 @@ export type MutationUpdateUserArgs = {
 };
 
 
-export type MutationUpdateUsernameArgs = {
-  input: UpdateUsernameInput;
+export type MutationUpdateVisibilityArgs = {
+  input: UpdateVisibilityInput;
 };
 
-export type Namespace = Node & {
-  __typename?: 'Namespace';
+export type Namespace = {
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   fullName?: Maybe<Scalars['String']['output']>;
@@ -476,7 +448,6 @@ export type Namespace = Node & {
   id: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   path?: Maybe<Scalars['String']['output']>;
-  type?: Maybe<NamespaceType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   visibility: Visibility;
 };
@@ -545,27 +516,17 @@ export type Policy = Node & {
 };
 
 /**  project */
-export type Project = Node & {
+export type Project = Namespace & Node & {
   __typename?: 'Project';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   fullName?: Maybe<Scalars['String']['output']>;
   fullPath?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
-  members?: Maybe<MemberConnection>;
   name?: Maybe<Scalars['String']['output']>;
   path?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   visibility: Visibility;
-};
-
-
-/**  project */
-export type ProjectMembersArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  filterBy?: InputMaybe<MemberFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<MemberOrder>;
 };
 
 export type ProjectConnection = {
@@ -604,14 +565,13 @@ export type Query = {
   existEmail: Scalars['Boolean']['output'];
   existFullPath: Scalars['Boolean']['output'];
   group: Group;
-  groupPolicy: Policy;
   groups?: Maybe<GroupConnection>;
+  members?: Maybe<MemberConnection>;
   namespace: Namespace;
   namespacePolicy: Policy;
   namespaces?: Maybe<NamespaceConnection>;
   ping: Scalars['String']['output'];
   project: Project;
-  projectPolicy: Policy;
   projects?: Maybe<ProjectConnection>;
   user: User;
   users?: Maybe<UserConnection>;
@@ -634,16 +594,20 @@ export type QueryGroupArgs = {
 };
 
 
-export type QueryGroupPolicyArgs = {
-  fullPath: Scalars['String']['input'];
-};
-
-
 export type QueryGroupsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   filterBy?: InputMaybe<GroupFilter>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<GroupOrder>;
+};
+
+
+export type QueryMembersArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<MemberFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  fullPath: Scalars['String']['input'];
+  orderBy?: InputMaybe<MemberOrder>;
 };
 
 
@@ -666,11 +630,6 @@ export type QueryNamespacesArgs = {
 
 
 export type QueryProjectArgs = {
-  fullPath: Scalars['String']['input'];
-};
-
-
-export type QueryProjectPolicyArgs = {
   fullPath: Scalars['String']['input'];
 };
 
@@ -762,28 +721,8 @@ export type UpdateGroupInput = {
   name: Scalars['String']['input'];
 };
 
-export type UpdateGroupPathInput = {
-  id: Scalars['ID']['input'];
-  path: Scalars['String']['input'];
-};
-
-export type UpdateGroupPathPayload = {
-  __typename?: 'UpdateGroupPathPayload';
-  group?: Maybe<Group>;
-};
-
 export type UpdateGroupPayload = {
   __typename?: 'UpdateGroupPayload';
-  group?: Maybe<Group>;
-};
-
-export type UpdateGroupVisibilityInput = {
-  id: Scalars['ID']['input'];
-  visibility: Visibility;
-};
-
-export type UpdateGroupVisibilityPayload = {
-  __typename?: 'UpdateGroupVisibilityPayload';
   group?: Maybe<Group>;
 };
 
@@ -808,20 +747,20 @@ export type UpdatePasswordPayload = {
   user?: Maybe<User>;
 };
 
+export type UpdatePathInput = {
+  fullPath: Scalars['String']['input'];
+  path: Scalars['String']['input'];
+};
+
+export type UpdatePathPayload = {
+  __typename?: 'UpdatePathPayload';
+  namespace?: Maybe<Namespace>;
+};
+
 export type UpdateProjectInput = {
   description: Scalars['String']['input'];
   id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
-};
-
-export type UpdateProjectPathInput = {
-  id: Scalars['ID']['input'];
-  path: Scalars['String']['input'];
-};
-
-export type UpdateProjectPathPayload = {
-  __typename?: 'UpdateProjectPathPayload';
-  project?: Maybe<Project>;
 };
 
 export type UpdateProjectPayload = {
@@ -829,18 +768,8 @@ export type UpdateProjectPayload = {
   project?: Maybe<Project>;
 };
 
-export type UpdateProjectVisibilityInput = {
-  id: Scalars['ID']['input'];
-  visibility: Visibility;
-};
-
-export type UpdateProjectVisibilityPayload = {
-  __typename?: 'UpdateProjectVisibilityPayload';
-  project?: Maybe<Project>;
-};
-
 export type UpdateUserInput = {
-  bio: Scalars['String']['input'];
+  description: Scalars['String']['input'];
   location: Scalars['String']['input'];
   name: Scalars['String']['input'];
   websiteUrl: Scalars['String']['input'];
@@ -851,31 +780,35 @@ export type UpdateUserPayload = {
   user?: Maybe<User>;
 };
 
-export type UpdateUsernameInput = {
-  username: Scalars['String']['input'];
+export type UpdateVisibilityInput = {
+  fullPath: Scalars['String']['input'];
+  visibility: Visibility;
 };
 
-export type UpdateUsernamePayload = {
-  __typename?: 'UpdateUsernamePayload';
-  user?: Maybe<User>;
+export type UpdateVisibilityPayload = {
+  __typename?: 'UpdateVisibilityPayload';
+  namespace?: Maybe<Namespace>;
 };
 
 /**  user */
-export type User = Node & {
+export type User = Namespace & Node & {
   __typename?: 'User';
   active?: Maybe<Scalars['Boolean']['output']>;
   avatarUrl?: Maybe<Scalars['String']['output']>;
-  bio?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
   emails?: Maybe<EmailConnection>;
+  fullName?: Maybe<Scalars['String']['output']>;
+  fullPath?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   location?: Maybe<Scalars['String']['output']>;
   name?: Maybe<Scalars['String']['output']>;
-  namespace?: Maybe<Namespace>;
+  path?: Maybe<Scalars['String']['output']>;
   role?: Maybe<Role>;
   unconfirmedEmails?: Maybe<EmailConnection>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
   username?: Maybe<Scalars['String']['output']>;
+  visibility: Visibility;
   websiteUrl?: Maybe<Scalars['String']['output']>;
 };
 
@@ -944,7 +877,7 @@ export type CreateMemberMutationVariables = Exact<{
 }>;
 
 
-export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null } | null };
+export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
@@ -958,14 +891,14 @@ export type CreateSessionMutationVariables = Exact<{
 }>;
 
 
-export type CreateSessionMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateSessionPayload', session?: { __typename?: 'Session', email?: string | null, username: string, active: boolean, header: string, token: string } | null } | null };
+export type CreateSessionMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateSessionPayload', session?: { __typename?: 'Session', username: string, email?: string | null, active: boolean, header: string, token: string } | null } | null };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type DeleteEmailMutationVariables = Exact<{
   input: DeleteEmailInput;
@@ -979,7 +912,7 @@ export type DeleteMemberMutationVariables = Exact<{
 }>;
 
 
-export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null } | null };
+export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type DeleteSessionMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -991,7 +924,7 @@ export type DeleteUserMutationVariables = Exact<{
 }>;
 
 
-export type DeleteUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+export type DeleteUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type EmailFragmentFragment = { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean };
 
@@ -1016,25 +949,7 @@ export type GroupQueryVariables = Exact<{
 }>;
 
 
-export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, groupPolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
-
-export type GroupMembersQueryVariables = Exact<{
-  fullPath: Scalars['String']['input'];
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  filterBy?: InputMaybe<MemberFilter>;
-  orderBy?: InputMaybe<MemberOrder>;
-}>;
-
-
-export type GroupMembersQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
-
-export type GroupPolicyQueryVariables = Exact<{
-  fullPath: Scalars['String']['input'];
-}>;
-
-
-export type GroupPolicyQuery = { __typename?: 'Query', groupPolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type GroupsQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1046,16 +961,25 @@ export type GroupsQueryVariables = Exact<{
 
 export type GroupsQuery = { __typename?: 'Query', groups?: { __typename?: 'GroupConnection', edges?: Array<{ __typename?: 'GroupEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
-export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null };
+export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
 
-export type NamespaceFragmentFragment = { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null };
+export type MembersQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<MemberFilter>;
+  orderBy?: InputMaybe<MemberOrder>;
+}>;
+
+
+export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type NamespaceQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
 }>;
 
 
-export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type NamespacesQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1065,7 +989,7 @@ export type NamespacesQueryVariables = Exact<{
 }>;
 
 
-export type NamespacesQuery = { __typename?: 'Query', namespaces?: { __typename?: 'NamespaceConnection', edges?: Array<{ __typename?: 'NamespaceEdge', cursor: string, node: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+export type NamespacesQuery = { __typename?: 'Query', namespaces?: { __typename?: 'NamespaceConnection', edges?: Array<{ __typename?: 'NamespaceEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type PageInfoFragmentFragment = { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null };
 
@@ -1083,18 +1007,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, projectPolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
-
-export type ProjectMembersQueryVariables = Exact<{
-  fullPath: Scalars['String']['input'];
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  filterBy?: InputMaybe<MemberFilter>;
-  orderBy?: InputMaybe<MemberOrder>;
-}>;
-
-
-export type ProjectMembersQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
+export type ProjectQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type ProjectsQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1127,7 +1040,7 @@ export type SendPasswordResetEmailMutationVariables = Exact<{
 
 export type SendPasswordResetEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'SendPasswordResetEmailPayload', message?: string | null } | null };
 
-export type SessionFragmentFragment = { __typename?: 'Session', email?: string | null, username: string, active: boolean, header: string, token: string };
+export type SessionFragmentFragment = { __typename?: 'Session', username: string, email?: string | null, active: boolean, header: string, token: string };
 
 export type SetPrimaryEmailMutationVariables = Exact<{
   input: SetPrimaryEmailInput;
@@ -1150,33 +1063,26 @@ export type UpdateGroupMutationVariables = Exact<{
 
 export type UpdateGroupMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
 
-export type UpdateGroupPathMutationVariables = Exact<{
-  input: UpdateGroupPathInput;
-}>;
-
-
-export type UpdateGroupPathMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupPathPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
-
-export type UpdateGroupVisibilityMutationVariables = Exact<{
-  input: UpdateGroupVisibilityInput;
-}>;
-
-
-export type UpdateGroupVisibilityMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupVisibilityPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
-
 export type UpdateMemberMutationVariables = Exact<{
   input: UpdateMemberInput;
 }>;
 
 
-export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Namespace', id: string, createdAt?: any | null, updatedAt?: any | null, type?: NamespaceType | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null } | null };
+export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type UpdatePasswordMutationVariables = Exact<{
   input: UpdatePasswordInput;
 }>;
 
 
-export type UpdatePasswordMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdatePasswordPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+export type UpdatePasswordMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdatePasswordPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
+
+export type UpdatePathMutationVariables = Exact<{
+  input: UpdatePathInput;
+}>;
+
+
+export type UpdatePathMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdatePathPayload', namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   input: UpdateProjectInput;
@@ -1185,51 +1091,37 @@ export type UpdateProjectMutationVariables = Exact<{
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
 
-export type UpdateProjectPathMutationVariables = Exact<{
-  input: UpdateProjectPathInput;
-}>;
-
-
-export type UpdateProjectPathMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPathPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
-
-export type UpdateProjectVisibilityMutationVariables = Exact<{
-  input: UpdateProjectVisibilityInput;
-}>;
-
-
-export type UpdateProjectVisibilityMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectVisibilityPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
-
 export type UpdateUserMutationVariables = Exact<{
   input: UpdateUserInput;
 }>;
 
 
-export type UpdateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null } | null } | null };
+export type UpdateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null, location?: string | null, websiteUrl?: string | null } | null } | null };
 
-export type UpdateUsernameMutationVariables = Exact<{
-  input: UpdateUsernameInput;
+export type UpdateVisibilityMutationVariables = Exact<{
+  input: UpdateVisibilityInput;
 }>;
 
 
-export type UpdateUsernameMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateUsernamePayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } | null } | null };
+export type UpdateVisibilityMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateVisibilityPayload', namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
-export type UserFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null };
+export type UserFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null };
 
 export type UserQueryVariables = Exact<{
   username: Scalars['String']['input'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } };
 
-export type UserDetailFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null };
+export type UserDetailFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null, location?: string | null, websiteUrl?: string | null };
 
 export type UserDetailQueryVariables = Exact<{
   username: Scalars['String']['input'];
 }>;
 
 
-export type UserDetailQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null } };
+export type UserDetailQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null, location?: string | null, websiteUrl?: string | null } };
 
 export type UsersQueryVariables = Exact<{
   after?: InputMaybe<Scalars['String']['input']>;
@@ -1238,17 +1130,17 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users?: { __typename?: 'UserConnection', edges?: Array<{ __typename?: 'UserEdge', cursor: string, node: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+export type UsersQuery = { __typename?: 'Query', users?: { __typename?: 'UserConnection', edges?: Array<{ __typename?: 'UserEdge', cursor: string, node: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type ViewerQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ViewerQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null } };
+export type ViewerQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } };
 
 export type ViewerDetailQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ViewerDetailQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, username?: string | null, avatarUrl?: string | null, bio?: string | null, location?: string | null, websiteUrl?: string | null } };
+export type ViewerDetailQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null, location?: string | null, websiteUrl?: string | null } };
 
 export type ViewerEmailsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1264,6 +1156,21 @@ export const EmailFragmentFragmentDoc = gql`
   primary
 }
     `;
+export const UserFragmentFragmentDoc = gql`
+    fragment UserFragment on User {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  username
+  visibility
+  description
+  avatarUrl
+}
+    `;
 export const GroupFragmentFragmentDoc = gql`
     fragment GroupFragment on Group {
   id
@@ -1277,22 +1184,11 @@ export const GroupFragmentFragmentDoc = gql`
   description
 }
     `;
-export const UserFragmentFragmentDoc = gql`
-    fragment UserFragment on User {
+export const ProjectFragmentFragmentDoc = gql`
+    fragment ProjectFragment on Project {
   id
   createdAt
   updatedAt
-  name
-  username
-  avatarUrl
-}
-    `;
-export const NamespaceFragmentFragmentDoc = gql`
-    fragment NamespaceFragment on Namespace {
-  id
-  createdAt
-  updatedAt
-  type
   name
   path
   fullName
@@ -1311,11 +1207,14 @@ export const MemberFragmentFragmentDoc = gql`
     ...UserFragment
   }
   namespace {
-    ...NamespaceFragment
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
   }
 }
     ${UserFragmentFragmentDoc}
-${NamespaceFragmentFragmentDoc}`;
+${GroupFragmentFragmentDoc}
+${ProjectFragmentFragmentDoc}`;
 export const PageInfoFragmentFragmentDoc = gql`
     fragment PageInfoFragment on PageInfo {
   hasPreviousPage
@@ -1331,23 +1230,10 @@ export const PolicyFragmentFragmentDoc = gql`
   actions
 }
     `;
-export const ProjectFragmentFragmentDoc = gql`
-    fragment ProjectFragment on Project {
-  id
-  createdAt
-  updatedAt
-  name
-  path
-  fullName
-  fullPath
-  visibility
-  description
-}
-    `;
 export const SessionFragmentFragmentDoc = gql`
     fragment SessionFragment on Session {
-  email
   username
+  email
   active
   header
   token
@@ -1359,9 +1245,13 @@ export const UserDetailFragmentFragmentDoc = gql`
   createdAt
   updatedAt
   name
+  path
+  fullName
+  fullPath
   username
+  visibility
+  description
   avatarUrl
-  bio
   location
   websiteUrl
 }
@@ -1852,7 +1742,7 @@ export const GroupDocument = gql`
   group(fullPath: $fullPath) {
     ...GroupFragment
   }
-  groupPolicy(fullPath: $fullPath) {
+  namespacePolicy(fullPath: $fullPath) {
     ...PolicyFragment
   }
 }
@@ -1886,92 +1776,6 @@ export function useGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Grou
 export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
 export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
 export type GroupQueryResult = Apollo.QueryResult<GroupQuery, GroupQueryVariables>;
-export const GroupMembersDocument = gql`
-    query GroupMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {
-  group(fullPath: $fullPath) {
-    id
-    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
-      edges {
-        node {
-          ...MemberFragment
-        }
-        cursor
-      }
-      pageInfo {
-        ...PageInfoFragment
-      }
-    }
-  }
-}
-    ${MemberFragmentFragmentDoc}
-${PageInfoFragmentFragmentDoc}`;
-
-/**
- * __useGroupMembersQuery__
- *
- * To run a query within a React component, call `useGroupMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGroupMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGroupMembersQuery({
- *   variables: {
- *      fullPath: // value for 'fullPath'
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filterBy: // value for 'filterBy'
- *      orderBy: // value for 'orderBy'
- *   },
- * });
- */
-export function useGroupMembersQuery(baseOptions: Apollo.QueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, options);
-      }
-export function useGroupMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupMembersQuery, GroupMembersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GroupMembersQuery, GroupMembersQueryVariables>(GroupMembersDocument, options);
-        }
-export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery>;
-export type GroupMembersLazyQueryHookResult = ReturnType<typeof useGroupMembersLazyQuery>;
-export type GroupMembersQueryResult = Apollo.QueryResult<GroupMembersQuery, GroupMembersQueryVariables>;
-export const GroupPolicyDocument = gql`
-    query GroupPolicy($fullPath: String!) {
-  groupPolicy(fullPath: $fullPath) {
-    ...PolicyFragment
-  }
-}
-    ${PolicyFragmentFragmentDoc}`;
-
-/**
- * __useGroupPolicyQuery__
- *
- * To run a query within a React component, call `useGroupPolicyQuery` and pass it any options that fit your needs.
- * When your component renders, `useGroupPolicyQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGroupPolicyQuery({
- *   variables: {
- *      fullPath: // value for 'fullPath'
- *   },
- * });
- */
-export function useGroupPolicyQuery(baseOptions: Apollo.QueryHookOptions<GroupPolicyQuery, GroupPolicyQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GroupPolicyQuery, GroupPolicyQueryVariables>(GroupPolicyDocument, options);
-      }
-export function useGroupPolicyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GroupPolicyQuery, GroupPolicyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GroupPolicyQuery, GroupPolicyQueryVariables>(GroupPolicyDocument, options);
-        }
-export type GroupPolicyQueryHookResult = ReturnType<typeof useGroupPolicyQuery>;
-export type GroupPolicyLazyQueryHookResult = ReturnType<typeof useGroupPolicyLazyQuery>;
-export type GroupPolicyQueryResult = Apollo.QueryResult<GroupPolicyQuery, GroupPolicyQueryVariables>;
 export const GroupsDocument = gql`
     query Groups($first: Int!, $after: String, $filterBy: GroupFilter, $orderBy: GroupOrder) {
   groups(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
@@ -2019,16 +1823,78 @@ export function useGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Gro
 export type GroupsQueryHookResult = ReturnType<typeof useGroupsQuery>;
 export type GroupsLazyQueryHookResult = ReturnType<typeof useGroupsLazyQuery>;
 export type GroupsQueryResult = Apollo.QueryResult<GroupsQuery, GroupsQueryVariables>;
-export const NamespaceDocument = gql`
-    query Namespace($fullPath: String!) {
-  namespace(fullPath: $fullPath) {
-    ...NamespaceFragment
+export const MembersDocument = gql`
+    query Members($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {
+  members(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...MemberFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
   }
   namespacePolicy(fullPath: $fullPath) {
     ...PolicyFragment
   }
 }
-    ${NamespaceFragmentFragmentDoc}
+    ${MemberFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}
+${PolicyFragmentFragmentDoc}`;
+
+/**
+ * __useMembersQuery__
+ *
+ * To run a query within a React component, call `useMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMembersQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useMembersQuery(baseOptions: Apollo.QueryHookOptions<MembersQuery, MembersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
+      }
+export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MembersQuery, MembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
+        }
+export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
+export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
+export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
+export const NamespaceDocument = gql`
+    query Namespace($fullPath: String!) {
+  namespace(fullPath: $fullPath) {
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
+  }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}
+    ${UserFragmentFragmentDoc}
+${GroupFragmentFragmentDoc}
+${ProjectFragmentFragmentDoc}
 ${PolicyFragmentFragmentDoc}`;
 
 /**
@@ -2063,7 +1929,9 @@ export const NamespacesDocument = gql`
   namespaces(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
     edges {
       node {
-        ...NamespaceFragment
+        ...UserFragment
+        ...GroupFragment
+        ...ProjectFragment
       }
       cursor
     }
@@ -2072,7 +1940,9 @@ export const NamespacesDocument = gql`
     }
   }
 }
-    ${NamespaceFragmentFragmentDoc}
+    ${UserFragmentFragmentDoc}
+${GroupFragmentFragmentDoc}
+${ProjectFragmentFragmentDoc}
 ${PageInfoFragmentFragmentDoc}`;
 
 /**
@@ -2142,7 +2012,7 @@ export const ProjectDocument = gql`
   project(fullPath: $fullPath) {
     ...ProjectFragment
   }
-  projectPolicy(fullPath: $fullPath) {
+  namespacePolicy(fullPath: $fullPath) {
     ...PolicyFragment
   }
 }
@@ -2176,57 +2046,6 @@ export function useProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pr
 export type ProjectQueryHookResult = ReturnType<typeof useProjectQuery>;
 export type ProjectLazyQueryHookResult = ReturnType<typeof useProjectLazyQuery>;
 export type ProjectQueryResult = Apollo.QueryResult<ProjectQuery, ProjectQueryVariables>;
-export const ProjectMembersDocument = gql`
-    query ProjectMembers($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {
-  project(fullPath: $fullPath) {
-    id
-    members(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
-      edges {
-        node {
-          ...MemberFragment
-        }
-        cursor
-      }
-      pageInfo {
-        ...PageInfoFragment
-      }
-    }
-  }
-}
-    ${MemberFragmentFragmentDoc}
-${PageInfoFragmentFragmentDoc}`;
-
-/**
- * __useProjectMembersQuery__
- *
- * To run a query within a React component, call `useProjectMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useProjectMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useProjectMembersQuery({
- *   variables: {
- *      fullPath: // value for 'fullPath'
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filterBy: // value for 'filterBy'
- *      orderBy: // value for 'orderBy'
- *   },
- * });
- */
-export function useProjectMembersQuery(baseOptions: Apollo.QueryHookOptions<ProjectMembersQuery, ProjectMembersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<ProjectMembersQuery, ProjectMembersQueryVariables>(ProjectMembersDocument, options);
-      }
-export function useProjectMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProjectMembersQuery, ProjectMembersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<ProjectMembersQuery, ProjectMembersQueryVariables>(ProjectMembersDocument, options);
-        }
-export type ProjectMembersQueryHookResult = ReturnType<typeof useProjectMembersQuery>;
-export type ProjectMembersLazyQueryHookResult = ReturnType<typeof useProjectMembersLazyQuery>;
-export type ProjectMembersQueryResult = Apollo.QueryResult<ProjectMembersQuery, ProjectMembersQueryVariables>;
 export const ProjectsDocument = gql`
     query Projects($first: Int!, $after: String, $filterBy: ProjectFilter, $orderBy: ProjectOrder) {
   projects(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
@@ -2476,76 +2295,6 @@ export function useUpdateGroupMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateGroupMutationHookResult = ReturnType<typeof useUpdateGroupMutation>;
 export type UpdateGroupMutationResult = Apollo.MutationResult<UpdateGroupMutation>;
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<UpdateGroupMutation, UpdateGroupMutationVariables>;
-export const UpdateGroupPathDocument = gql`
-    mutation UpdateGroupPath($input: UpdateGroupPathInput!) {
-  payload: updateGroupPath(input: $input) {
-    group {
-      ...GroupFragment
-    }
-  }
-}
-    ${GroupFragmentFragmentDoc}`;
-export type UpdateGroupPathMutationFn = Apollo.MutationFunction<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>;
-
-/**
- * __useUpdateGroupPathMutation__
- *
- * To run a mutation, you first call `useUpdateGroupPathMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateGroupPathMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateGroupPathMutation, { data, loading, error }] = useUpdateGroupPathMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateGroupPathMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>(UpdateGroupPathDocument, options);
-      }
-export type UpdateGroupPathMutationHookResult = ReturnType<typeof useUpdateGroupPathMutation>;
-export type UpdateGroupPathMutationResult = Apollo.MutationResult<UpdateGroupPathMutation>;
-export type UpdateGroupPathMutationOptions = Apollo.BaseMutationOptions<UpdateGroupPathMutation, UpdateGroupPathMutationVariables>;
-export const UpdateGroupVisibilityDocument = gql`
-    mutation UpdateGroupVisibility($input: UpdateGroupVisibilityInput!) {
-  payload: updateGroupVisibility(input: $input) {
-    group {
-      ...GroupFragment
-    }
-  }
-}
-    ${GroupFragmentFragmentDoc}`;
-export type UpdateGroupVisibilityMutationFn = Apollo.MutationFunction<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>;
-
-/**
- * __useUpdateGroupVisibilityMutation__
- *
- * To run a mutation, you first call `useUpdateGroupVisibilityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateGroupVisibilityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateGroupVisibilityMutation, { data, loading, error }] = useUpdateGroupVisibilityMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateGroupVisibilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>(UpdateGroupVisibilityDocument, options);
-      }
-export type UpdateGroupVisibilityMutationHookResult = ReturnType<typeof useUpdateGroupVisibilityMutation>;
-export type UpdateGroupVisibilityMutationResult = Apollo.MutationResult<UpdateGroupVisibilityMutation>;
-export type UpdateGroupVisibilityMutationOptions = Apollo.BaseMutationOptions<UpdateGroupVisibilityMutation, UpdateGroupVisibilityMutationVariables>;
 export const UpdateMemberDocument = gql`
     mutation UpdateMember($input: UpdateMemberInput!) {
   payload: updateMember(input: $input) {
@@ -2616,6 +2365,45 @@ export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
 export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
 export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+export const UpdatePathDocument = gql`
+    mutation UpdatePath($input: UpdatePathInput!) {
+  payload: updatePath(input: $input) {
+    namespace {
+      ...UserFragment
+      ...GroupFragment
+      ...ProjectFragment
+    }
+  }
+}
+    ${UserFragmentFragmentDoc}
+${GroupFragmentFragmentDoc}
+${ProjectFragmentFragmentDoc}`;
+export type UpdatePathMutationFn = Apollo.MutationFunction<UpdatePathMutation, UpdatePathMutationVariables>;
+
+/**
+ * __useUpdatePathMutation__
+ *
+ * To run a mutation, you first call `useUpdatePathMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePathMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePathMutation, { data, loading, error }] = useUpdatePathMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePathMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePathMutation, UpdatePathMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePathMutation, UpdatePathMutationVariables>(UpdatePathDocument, options);
+      }
+export type UpdatePathMutationHookResult = ReturnType<typeof useUpdatePathMutation>;
+export type UpdatePathMutationResult = Apollo.MutationResult<UpdatePathMutation>;
+export type UpdatePathMutationOptions = Apollo.BaseMutationOptions<UpdatePathMutation, UpdatePathMutationVariables>;
 export const UpdateProjectDocument = gql`
     mutation UpdateProject($input: UpdateProjectInput!) {
   payload: updateProject(input: $input) {
@@ -2651,76 +2439,6 @@ export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
 export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
 export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
-export const UpdateProjectPathDocument = gql`
-    mutation UpdateProjectPath($input: UpdateProjectPathInput!) {
-  payload: updateProjectPath(input: $input) {
-    project {
-      ...ProjectFragment
-    }
-  }
-}
-    ${ProjectFragmentFragmentDoc}`;
-export type UpdateProjectPathMutationFn = Apollo.MutationFunction<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>;
-
-/**
- * __useUpdateProjectPathMutation__
- *
- * To run a mutation, you first call `useUpdateProjectPathMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProjectPathMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProjectPathMutation, { data, loading, error }] = useUpdateProjectPathMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateProjectPathMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>(UpdateProjectPathDocument, options);
-      }
-export type UpdateProjectPathMutationHookResult = ReturnType<typeof useUpdateProjectPathMutation>;
-export type UpdateProjectPathMutationResult = Apollo.MutationResult<UpdateProjectPathMutation>;
-export type UpdateProjectPathMutationOptions = Apollo.BaseMutationOptions<UpdateProjectPathMutation, UpdateProjectPathMutationVariables>;
-export const UpdateProjectVisibilityDocument = gql`
-    mutation UpdateProjectVisibility($input: UpdateProjectVisibilityInput!) {
-  payload: updateProjectVisibility(input: $input) {
-    project {
-      ...ProjectFragment
-    }
-  }
-}
-    ${ProjectFragmentFragmentDoc}`;
-export type UpdateProjectVisibilityMutationFn = Apollo.MutationFunction<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>;
-
-/**
- * __useUpdateProjectVisibilityMutation__
- *
- * To run a mutation, you first call `useUpdateProjectVisibilityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProjectVisibilityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProjectVisibilityMutation, { data, loading, error }] = useUpdateProjectVisibilityMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateProjectVisibilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>(UpdateProjectVisibilityDocument, options);
-      }
-export type UpdateProjectVisibilityMutationHookResult = ReturnType<typeof useUpdateProjectVisibilityMutation>;
-export type UpdateProjectVisibilityMutationResult = Apollo.MutationResult<UpdateProjectVisibilityMutation>;
-export type UpdateProjectVisibilityMutationOptions = Apollo.BaseMutationOptions<UpdateProjectVisibilityMutation, UpdateProjectVisibilityMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($input: UpdateUserInput!) {
   payload: updateUser(input: $input) {
@@ -2756,41 +2474,45 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
-export const UpdateUsernameDocument = gql`
-    mutation UpdateUsername($input: UpdateUsernameInput!) {
-  payload: updateUsername(input: $input) {
-    user {
+export const UpdateVisibilityDocument = gql`
+    mutation UpdateVisibility($input: UpdateVisibilityInput!) {
+  payload: updateVisibility(input: $input) {
+    namespace {
       ...UserFragment
+      ...GroupFragment
+      ...ProjectFragment
     }
   }
 }
-    ${UserFragmentFragmentDoc}`;
-export type UpdateUsernameMutationFn = Apollo.MutationFunction<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
+    ${UserFragmentFragmentDoc}
+${GroupFragmentFragmentDoc}
+${ProjectFragmentFragmentDoc}`;
+export type UpdateVisibilityMutationFn = Apollo.MutationFunction<UpdateVisibilityMutation, UpdateVisibilityMutationVariables>;
 
 /**
- * __useUpdateUsernameMutation__
+ * __useUpdateVisibilityMutation__
  *
- * To run a mutation, you first call `useUpdateUsernameMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateUsernameMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVisibilityMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateUsernameMutation, { data, loading, error }] = useUpdateUsernameMutation({
+ * const [updateVisibilityMutation, { data, loading, error }] = useUpdateVisibilityMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateUsernameMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUsernameMutation, UpdateUsernameMutationVariables>) {
+export function useUpdateVisibilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVisibilityMutation, UpdateVisibilityMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateUsernameMutation, UpdateUsernameMutationVariables>(UpdateUsernameDocument, options);
+        return Apollo.useMutation<UpdateVisibilityMutation, UpdateVisibilityMutationVariables>(UpdateVisibilityDocument, options);
       }
-export type UpdateUsernameMutationHookResult = ReturnType<typeof useUpdateUsernameMutation>;
-export type UpdateUsernameMutationResult = Apollo.MutationResult<UpdateUsernameMutation>;
-export type UpdateUsernameMutationOptions = Apollo.BaseMutationOptions<UpdateUsernameMutation, UpdateUsernameMutationVariables>;
+export type UpdateVisibilityMutationHookResult = ReturnType<typeof useUpdateVisibilityMutation>;
+export type UpdateVisibilityMutationResult = Apollo.MutationResult<UpdateVisibilityMutation>;
+export type UpdateVisibilityMutationOptions = Apollo.BaseMutationOptions<UpdateVisibilityMutation, UpdateVisibilityMutationVariables>;
 export const UserDocument = gql`
     query User($username: String!) {
   user(username: $username) {

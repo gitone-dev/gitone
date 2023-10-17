@@ -19,8 +19,8 @@ public class UserCursor extends CustomCursor {
         cursor.setId(node.getId());
         switch (order.getField()) {
             case CREATED_AT -> cursor.setCreatedAt(node.getCreatedAt());
-            case UPDATED_At -> cursor.setUpdatedAt(node.getUpdatedAt());
-            case USERNAME -> cursor.setUsername(node.getUsername());
+            case UPDATED_AT -> cursor.setUpdatedAt(node.getUpdatedAt());
+            case USERNAME -> cursor.setUsername(node.getFullPath());
         }
         return cursor;
     }

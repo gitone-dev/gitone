@@ -3,7 +3,7 @@ package cn.notfound.gitone.server.controllers.projects;
 import cn.notfound.gitone.server.controllers.Relay;
 import cn.notfound.gitone.server.entities.GroupEntity;
 import cn.notfound.gitone.server.entities.NamespaceType;
-import cn.notfound.gitone.server.entities.UserNamespaceEntity;
+import cn.notfound.gitone.server.entities.UserEntity;
 import cn.notfound.gitone.server.entities.Visibility;
 import lombok.Data;
 import org.springframework.util.Assert;
@@ -16,7 +16,7 @@ public class ProjectFilter {
     @Data
     public static class By {
 
-        private final List<String> types = List.of(GroupEntity.TYPE, UserNamespaceEntity.TYPE);
+        private final List<String> types = List.of(GroupEntity.TYPE, UserEntity.TYPE);
 
         private String parentId;
 

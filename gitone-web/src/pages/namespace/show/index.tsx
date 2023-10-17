@@ -1,8 +1,4 @@
-import {
-  Action,
-  NamespaceType,
-  useNamespaceQuery,
-} from "../../../generated/types";
+import { Action, useNamespaceQuery } from "../../../generated/types";
 import { useFullPath } from "../../../utils/router";
 import ErrorPage from "../../ErrorPage";
 import LoadingPage from "../../LoadingPage";
@@ -26,15 +22,15 @@ function Show() {
     return <ErrorPage message="无权限" />;
   }
 
-  switch (data.namespace.type) {
-    case NamespaceType.Group:
+  switch (data.namespace.__typename) {
+    case "Group":
       return <Groups.Show />;
-    case NamespaceType.Project:
+    case "Project":
       return <Projects.Show />;
-    case NamespaceType.User:
+    case "User":
       return <Users.Show />;
     default:
-      return <ErrorPage message={`未知类型：${data.namespace.type}`} />;
+      return <ErrorPage message={`未知类型：${data.namespace.__typename}`} />;
   }
 }
 

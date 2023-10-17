@@ -14,7 +14,7 @@ query Group($fullPath: String!) {
   group(fullPath: $fullPath) {
     ...GroupFragment
   }
-  groupPolicy(fullPath: $fullPath) {
+  namespacePolicy(fullPath: $fullPath) {
     ...PolicyFragment
   }
 }

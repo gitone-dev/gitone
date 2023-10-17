@@ -13,7 +13,7 @@
         <result property="createdById" column="created_by_id" jdbcType="INTEGER" />
     </resultMap>
     <resultMap id="memberUserMap" type="cn.notfound.gitone.server.entities.MemberEntity" extends="memberMap">
-        <result property="username" column="username" jdbcType="VARCHAR" />
+        <result property="username" column="full_path" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="memberColumns">
         mb.id,
@@ -26,7 +26,7 @@
     </sql>
     <sql id="memberUserColumns">
         <include refid="memberColumns" />,
-        u.username
+        u.full_path
     </sql>
     <sql id="filter">
         <if test="filter.traversalIds != null and !filter.traversalIds.empty ">
@@ -62,8 +62,8 @@
             </when>
             <when test="cursor.username != null">
                 AND (
-                    u.username = #{cursor.username,jdbcType=INTEGER} AND mb.id &gt; #{cursor.id,jdbcType=INTEGER}
-                    OR u.username <include refid="direction" /> #{cursor.username,jdbcType=INTEGER}
+                    u.full_path = #{cursor.username,jdbcType=INTEGER} AND mb.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR u.full_path <include refid="direction" /> #{cursor.username,jdbcType=INTEGER}
                 )
             </when>
         </choose>
@@ -103,11 +103,11 @@
             </where>
             ORDER BY mb.user_id DESC, mb.access DESC
         ) AS mb
-        inner join users AS u ON mb.user_id = u.id
+        inner join namespaces AS u ON mb.user_id = u.id
         <where>
             <include refid="page" />
             <if test="filter.query != null">
-                AND u.username LIKE '%' || #{filter.query,jdbcType=VARCHAR} || '%'
+                AND u.full_path LIKE '%' || #{filter.query,jdbcType=VARCHAR} || '%'
             </if>
         </where>
         <choose>

@@ -12,7 +12,9 @@ query Namespaces(
   ) {
     edges {
       node {
-        ...NamespaceFragment
+        ...UserFragment
+        ...GroupFragment
+        ...ProjectFragment
       }
       cursor
     }

@@ -11,8 +11,7 @@ import cn.notfound.gitone.server.entities.ProjectEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
 import cn.notfound.gitone.server.entities.Visibility;
 import cn.notfound.gitone.server.policies.Action;
-import cn.notfound.gitone.server.policies.Policy;
-import cn.notfound.gitone.server.policies.ProjectPolicy;
+import cn.notfound.gitone.server.policies.NamespacePolicy;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -30,9 +29,9 @@ public class ProjectQueryController extends ViewerContext {
 
     private final ProjectDao projectDao;
 
-    private final ProjectPolicy projectPolicy;
-
     private final NamespaceDao namespaceDao;
+
+    private final NamespacePolicy namespacePolicy;
 
     private final MemberDao memberDao;
 
@@ -40,7 +39,7 @@ public class ProjectQueryController extends ViewerContext {
     public ProjectEntity project(@Argument String fullPath) {
         ProjectEntity projectEntity  = projectDao.findByFullPath(fullPath);
         NotFound.notNull(projectEntity, fullPath);
-        projectPolicy.assertPermission(projectEntity, Action.READ);
+        namespacePolicy.assertPermission(projectEntity, Action.READ);
         return projectEntity;
     }
 
@@ -68,12 +67,6 @@ public class ProjectQueryController extends ViewerContext {
         ProjectPage page = new ProjectPage(first, after, orderBy).validate();
         List<ProjectEntity> groups = projectDao.findAll(filter, page);
         return new ProjectConnection(groups, page);
-    }
-
-    @QueryMapping
-    public Policy projectPolicy(@Argument String fullPath) {
-        ProjectEntity projectEntity  = projectDao.findByFullPath(fullPath);
-        return projectPolicy.policy(projectEntity);
     }
 
     private void root(ProjectFilter filter) {

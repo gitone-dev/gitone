@@ -1,0 +1,28 @@
+query Members(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: MemberFilter
+  $orderBy: MemberOrder
+) {
+  members(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...MemberFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}

@@ -1,9 +1,9 @@
 package cn.notfound.gitone.server.controllers.emails;
 
 import cn.notfound.gitone.server.controllers.Relay;
-import cn.notfound.gitone.server.daos.UserDao;
+import cn.notfound.gitone.server.daos.UserDetailDao;
 import cn.notfound.gitone.server.entities.EmailEntity;
-import cn.notfound.gitone.server.entities.UserEntity;
+import cn.notfound.gitone.server.entities.UserDetailEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @SchemaMapping(typeName = EmailEntity.TYPE)
 public class EmailTypeController {
 
-    private UserDao userDao;
+    private UserDetailDao userDetailDao;
 
     @SchemaMapping
     public String id(EmailEntity emailEntity) {
@@ -38,12 +38,12 @@ public class EmailTypeController {
                 .map(EmailEntity::getUserId)
                 .collect(Collectors.toSet());
 
-        Map<Integer, UserEntity> userMap = userDao.findByIds(userIds)
+        Map<Integer, UserDetailEntity> userMap = userDetailDao.findByIds(userIds)
                 .stream()
-                .collect(Collectors.toMap(UserEntity::getId, Function.identity()));
+                .collect(Collectors.toMap(UserDetailEntity::getId, Function.identity()));
         for (EmailEntity email : emails) {
-            UserEntity userEntity = userMap.get(email.getUserId());
-            result.put(email, email.getEmail().equals(userEntity.getEmail()));
+            UserDetailEntity userDetailEntity = userMap.get(email.getUserId());
+            result.put(email, email.getEmail().equals(userDetailEntity.getEmail()));
         }
         return result;
     }

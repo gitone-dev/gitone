@@ -1,0 +1,9 @@
+mutation UpdateVisibility($input: UpdateVisibilityInput!) {
+  payload: updateVisibility(input: $input) {
+    namespace {
+      ...UserFragment
+      ...GroupFragment
+      ...ProjectFragment
+    }
+  }
+}

@@ -42,24 +42,33 @@
     <sql id="page">
         <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.page" />
     </sql>
+    <sql id="byType">AND ns.type = 2</sql>
     <select id="find" parameterType="java.lang.Integer" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
         FROM namespaces AS ns
-        WHERE ns.id = #{id,jdbcType=INTEGER} AND ns.type = 2
+        <where>
+            ns.id = #{id,jdbcType=INTEGER}
+            <include refid="byType"/>
+        </where>
     </select>
     <select id="findByIds" parameterType="java.util.Collection" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
         FROM namespaces AS ns
-        WHERE ns.id IN
-        <foreach collection="ids" open="(" item="id" separator="," close=")">
-            #{id,jdbcType=INTEGER}
-        </foreach>
-        AND ns.type = 2
+        <where>
+            ns.id IN
+            <foreach collection="ids" open="(" item="id" separator="," close=")">
+                #{id,jdbcType=INTEGER}
+            </foreach>
+            <include refid="byType"/>
+        </where>
     </select>
     <select id="findByFullPath" parameterType="java.lang.String" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
         FROM namespaces AS ns
-        WHERE ns.full_path = #{fullPath,jdbcType=VARCHAR} AND ns.type = 2
+        <where>
+            ns.full_path = #{fullPath,jdbcType=VARCHAR}
+            <include refid="byType"/>
+        </where>
     </select>
     <select id="findByDescendants" resultMap="groupMap">
         SELECT <include refid="groupColumns" />
@@ -85,7 +94,10 @@
         <include refid="cn.notfound.gitone.server.mappers.NamespaceMapper.update" />
     </update>
     <delete id="delete" parameterType="cn.notfound.gitone.server.entities.GroupEntity">
-        DELETE FROM namespaces
-        WHERE id = #{id,jdbcType=INTEGER} AND type = 2
+        DELETE FROM namespaces AS ns
+        <where>
+            id = #{id,jdbcType=INTEGER}
+            <include refid="byType"/>
+        </where>
     </delete>
 </mapper>

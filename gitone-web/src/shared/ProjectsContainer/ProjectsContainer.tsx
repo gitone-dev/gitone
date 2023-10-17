@@ -7,7 +7,7 @@ import {
   useProjectsQuery,
 } from "../../generated/types";
 import ErrorBox from "../ErrorBox";
-import ListProject from "../ListProject";
+import ListProject from "./ListProject";
 import LoadingBox from "../LoadingBox";
 
 interface Props {

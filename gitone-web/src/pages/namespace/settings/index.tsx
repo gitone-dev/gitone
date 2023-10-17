@@ -1,8 +1,4 @@
-import {
-  Action,
-  NamespaceType,
-  useNamespaceQuery,
-} from "../../../generated/types";
+import { Action, useNamespaceQuery } from "../../../generated/types";
 import ErrorBox from "../../../shared/ErrorBox";
 import { useFullPath } from "../../../utils/router";
 import LoadingPage from "../../LoadingPage";
@@ -25,13 +21,13 @@ function Settings() {
     return <ErrorBox message="无权限" />;
   }
 
-  switch (data.namespace.type) {
-    case NamespaceType.Group:
+  switch (data.namespace.__typename) {
+    case "Group":
       return <Groups.Settings />;
-    case NamespaceType.Project:
+    case "Project":
       return <Projects.Settings />;
     default:
-      return <ErrorBox message={`未知类型：${data.namespace.type}`} />;
+      return <ErrorBox message={`未知类型：${data.namespace.__typename}`} />;
   }
 }
 

@@ -1,0 +1,64 @@
+fragment UserFragment on User {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  username
+  visibility
+  description
+}
+
+fragment GroupFragment on Group {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+fragment ProjectFragment on Project {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+fragment PageInfoFragment on PageInfo {
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
+}
+
+query Namespaces(
+  $first: Int!
+  $after: String
+  $filterBy: NamespaceFilter
+  $orderBy: NamespaceOrder
+) {
+  namespaces(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+    edges {
+      node {
+        ...UserFragment
+        ...GroupFragment
+        ...ProjectFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

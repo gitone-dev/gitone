@@ -14,4 +14,6 @@ public interface NamespaceMapper extends NodeMapper<Integer, NamespaceEntity> {
     NamespaceEntity findByFullPath(String fullPath);
 
     List<NamespaceEntity> findAll(@Param("filter") NamespaceFilter filter, @Param("page") NamespacePage page);
+
+    List<NamespaceEntity> findByDescendants(Integer id);
 }

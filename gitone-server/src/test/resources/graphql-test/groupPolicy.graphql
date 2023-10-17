@@ -1,7 +1,0 @@
-query GroupPolicy($fullPath: String!) {
-  groupPolicy(fullPath: $fullPath) {
-    id
-    access
-    actions
-  }
-}

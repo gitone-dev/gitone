@@ -1,10 +1,8 @@
 package cn.notfound.gitone.server.factories;
 
 import cn.notfound.gitone.server.controllers.session.inputs.CreateSessionInput;
-import cn.notfound.gitone.server.entities.SessionEntity;
 import cn.notfound.gitone.server.results.NamespaceResult;
 import cn.notfound.gitone.server.results.SessionResult;
-import cn.notfound.gitone.server.results.UserResult;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
 
@@ -55,13 +53,6 @@ public class BaseFactory {
                 .execute();
     }
 
-    public SessionResult createSession(String username, String password) {
-        CreateSessionInput createSessionInput = new CreateSessionInput();
-        createSessionInput.setUsername(username);
-        createSessionInput.setPassword(password);
-        return createSession(createSessionInput);
-    }
-
     public SessionResult createSession(CreateSessionInput input) {
         GraphQlTester.Response response = graphQlTester
                 .mutate()
@@ -70,21 +61,7 @@ public class BaseFactory {
                 .variable("input", input)
                 .execute();
 
-        SessionEntity sessionEntity = response.path("payload.session").entity(SessionEntity.class).get();
-        SessionResult session = new SessionResult();
-        session.setUsername(sessionEntity.getUsername());
-        session.setEmail(sessionEntity.getEmail());
-        session.setHeader(sessionEntity.getHeader());
-        session.setToken(sessionEntity.getToken());
-        session.setActive(sessionEntity.isActive());
-        session.setPassword(input.getPassword());
-        return session;
-    }
-
-    public UserResult queryViewer(SessionResult session) {
-        return query("viewer", session)
-                .execute()
-                .path("viewer").entity(UserResult.class).get();
+        return response.path("payload.session").entity(SessionResult.class).get();
     }
 
     public NamespaceResult queryNamespace(SessionResult session, String fullPath) {

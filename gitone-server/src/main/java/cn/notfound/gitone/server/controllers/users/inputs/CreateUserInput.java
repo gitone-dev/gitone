@@ -1,5 +1,6 @@
 package cn.notfound.gitone.server.controllers.users.inputs;
 
+import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -23,12 +24,19 @@ public class CreateUserInput {
     @NotBlank @Size(min = 6, max = 32)
     private String password;
 
-    public UserEntity entity(PasswordEncoder passwordEncoder) {
+    public UserEntity user() {
         UserEntity userEntity = new UserEntity();
-        userEntity.setEmail(email);
         userEntity.setName(name);
-        userEntity.setUsername(username);
-        userEntity.setPassword(passwordEncoder.encode(password));
+        userEntity.setFullName(name);
+        userEntity.setPath(username);
+        userEntity.setFullPath(username);
         return userEntity;
+    }
+
+    public UserDetailEntity userDetail(PasswordEncoder passwordEncoder) {
+        UserDetailEntity userDetail = new UserDetailEntity();
+        userDetail.setEmail(email);
+        userDetail.setPassword(passwordEncoder.encode(password));
+        return userDetail;
     }
 }

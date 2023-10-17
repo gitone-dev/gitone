@@ -18,7 +18,7 @@ function Projects() {
   });
 
   const group = data?.group;
-  const policy = data?.groupPolicy;
+  const policy = data?.namespacePolicy;
   if (loading) {
     return <LoadingBox />;
   } else if (error) {

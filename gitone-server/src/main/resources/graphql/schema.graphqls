@@ -40,7 +40,6 @@ type Query {
   ping: String!
 
   existEmail(email: String!): Boolean!
-  existFullPath(fullPath: String!): Boolean!
 
   viewer: User!
   user(username: String!): User!
@@ -51,6 +50,15 @@ type Query {
     orderBy: UserOrder = { field: CREATED_AT, direction: ASC }
   ): UserConnection
 
+  members(
+    fullPath: String!
+    first: Int = 20
+    after: String
+    filterBy: MemberFilter
+    orderBy: MemberOrder = { field: CREATED_AT, direction: DESC }
+  ): MemberConnection
+
+  existFullPath(fullPath: String!): Boolean!
   namespace(fullPath: String!): Namespace!
   namespacePolicy(fullPath: String!): Policy!
   namespaces(
@@ -61,7 +69,6 @@ type Query {
   ): NamespaceConnection
 
   group(fullPath: String!): Group!
-  groupPolicy(fullPath: String!): Policy!
   groups(
     first: Int = 20
     after: String
@@ -70,7 +77,6 @@ type Query {
   ): GroupConnection
 
   project(fullPath: String!): Project!
-  projectPolicy(fullPath: String!): Policy!
   projects(
     first: Int = 20
     after: String
@@ -108,7 +114,6 @@ type Mutation {
   resetPassword(input: ResetPasswordInput!): ResetPasswordPayload
 
   updateUser(input: UpdateUserInput!): UpdateUserPayload
-  updateUsername(input: UpdateUsernameInput!): UpdateUsernamePayload
   updatePassword(input: UpdatePasswordInput!): UpdatePasswordPayload
 
   createEmail(input: CreateEmailInput!): CreateEmailPayload
@@ -121,8 +126,6 @@ type Mutation {
   createGroup(input: CreateGroupInput!): CreateGroupPayload
   deleteGroup(input: DeleteGroupInput!): DeleteGroupPayload
   updateGroup(input: UpdateGroupInput!): UpdateGroupPayload
-  updateGroupPath(input: UpdateGroupPathInput!): UpdateGroupPathPayload
-  updateGroupVisibility(input: UpdateGroupVisibilityInput!): UpdateGroupVisibilityPayload
 
   # member
 
@@ -135,15 +138,18 @@ type Mutation {
   createProject(input: CreateProjectInput!): CreateProjectPayload
   deleteProject(input: DeleteProjectInput!): DeleteProjectPayload
   updateProject(input: UpdateProjectInput!): UpdateProjectPayload
-  updateProjectPath(input: UpdateProjectPathInput!): UpdateProjectPathPayload
-  updateProjectVisibility(input: UpdateProjectVisibilityInput!): UpdateProjectVisibilityPayload
+
+  # namespaces
+
+  updateVisibility(input: UpdateVisibilityInput!): UpdateVisibilityPayload
+  updatePath(input: UpdatePathInput!): UpdatePathPayload
 }
 
 # session
 
 type Session {
-  email: String
   username: String!
+  email: String
   header: String!
   token: String!
   active: Boolean!
@@ -170,11 +176,10 @@ enum NamespaceType {
   PROJECT
 }
 
-type Namespace implements Node {
+interface Namespace implements Node {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
-  type: NamespaceType
   name: String
   path: String
   fullName: String
@@ -213,9 +218,27 @@ enum NamespaceOrderField {
   PATH
 }
 
+input UpdateVisibilityInput {
+  fullPath: String!
+  visibility: Visibility!
+}
+
+type UpdateVisibilityPayload {
+  namespace: Namespace
+}
+
+input UpdatePathInput {
+  fullPath: String!
+  path: String!
+}
+
+type UpdatePathPayload {
+  namespace: Namespace
+}
+
 # group
 
-type Group implements Node {
+type Group implements Node & Namespace {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
@@ -225,12 +248,6 @@ type Group implements Node {
   fullPath: String
   visibility: Visibility!
   description: String
-  members(
-    first: Int = 20
-    after: String
-    filterBy: MemberFilter
-    orderBy: MemberOrder = { field: CREATED_AT, direction: DESC }
-  ): MemberConnection
 }
 
 type GroupEdge {
@@ -292,27 +309,9 @@ type UpdateGroupPayload {
   group: Group
 }
 
-input UpdateGroupPathInput {
-  id: ID!
-  path: String!
-}
-
-type UpdateGroupPathPayload {
-  group: Group
-}
-
-input UpdateGroupVisibilityInput {
-  id: ID!
-  visibility: Visibility!
-}
-
-type UpdateGroupVisibilityPayload {
-  group: Group
-}
-
 # project
 
-type Project implements Node {
+type Project implements Node & Namespace {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
@@ -322,12 +321,6 @@ type Project implements Node {
   fullPath: String
   visibility: Visibility!
   description: String
-  members(
-    first: Int = 20
-    after: String
-    filterBy: MemberFilter
-    orderBy: MemberOrder = { field: CREATED_AT, direction: DESC }
-  ): MemberConnection
 }
 
 type ProjectEdge {
@@ -389,40 +382,25 @@ type UpdateProjectPayload {
   project: Project
 }
 
-input UpdateProjectPathInput {
-  id: ID!
-  path: String!
-}
-
-type UpdateProjectPathPayload {
-  project: Project
-}
-
-input UpdateProjectVisibilityInput {
-  id: ID!
-  visibility: Visibility!
-}
-
-type UpdateProjectVisibilityPayload {
-  project: Project
-}
-
 # user
 
-type User implements Node {
+type User implements Node & Namespace {
   id: ID!
   createdAt: DateTime
   updatedAt: DateTime
   name: String
+  path: String
+  fullName: String
+  fullPath: String
   username: String
+  visibility: Visibility!
+  description: String
+
   active: Boolean
   role: Role
   avatarUrl: String
-  bio: String
   location: String
   websiteUrl: String
-
-  namespace: Namespace
 
   emails: EmailConnection
   unconfirmedEmails: EmailConnection
@@ -520,20 +498,12 @@ type ResetPasswordPayload {
 
 input UpdateUserInput {
   name: String!
-  bio: String!
+  description: String!
   location: String!
   websiteUrl: String!
 }
 
 type UpdateUserPayload {
-  user: User
-}
-
-input UpdateUsernameInput {
-  username: String!
-}
-
-type UpdateUsernamePayload {
   user: User
 }
 
@@ -610,9 +580,9 @@ enum Access {
 
 type Member {
   id: ID!
-  access: Access
   createdAt: DateTime
   updatedAt: DateTime
+  access: Access
   namespace: Namespace
   user: User
 }
@@ -645,7 +615,7 @@ input MemberOrder {
 }
 
 input CreateMemberInput {
-  namespaceId: String!
+  fullPath: String!
   userId: String!
   access: Access!
 }

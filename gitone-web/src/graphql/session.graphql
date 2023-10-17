@@ -1,6 +1,6 @@
 fragment SessionFragment on Session {
-  email
   username
+  email
   active
   header
   token

@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class SessionEntity {
 
-    private String email;
-
     private String username;
+
+    private  String email;
 
     private boolean active;
 

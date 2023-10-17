@@ -1,14 +1,20 @@
 package cn.notfound.gitone.server.controllers.users;
 
 import cn.notfound.gitone.server.OrderDirection;
+import cn.notfound.gitone.server.entities.Role;
 import cn.notfound.gitone.server.factories.BaseFactory;
+import cn.notfound.gitone.server.factories.GroupFactory;
+import cn.notfound.gitone.server.factories.ProjectFactory;
 import cn.notfound.gitone.server.factories.UserFactory;
+import cn.notfound.gitone.server.results.GroupResult;
+import cn.notfound.gitone.server.results.ProjectResult;
 import cn.notfound.gitone.server.results.SessionResult;
 import cn.notfound.gitone.server.results.UserResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.graphql.execution.ErrorType;
 import org.springframework.graphql.test.tester.GraphQlTester;
 import org.springframework.graphql.test.tester.WebGraphQlTester;
 
@@ -20,36 +26,35 @@ class UserQueryControllerTest extends BaseFactory {
 
     private final UserFactory userFactory;
 
+    private final GroupFactory groupFactory;
+
+    private final ProjectFactory projectFactory;
+
     @Autowired
-    public UserQueryControllerTest(WebGraphQlTester graphQlTester, UserFactory userFactory) {
+    public UserQueryControllerTest(
+            WebGraphQlTester graphQlTester,
+            UserFactory userFactory,
+            GroupFactory groupFactory,
+            ProjectFactory projectFactory) {
+
         super(graphQlTester);
         this.userFactory = userFactory;
+        this.groupFactory = groupFactory;
+        this.projectFactory = projectFactory;
     }
 
     @Test
     void viewer() {
-        SessionResult session = userFactory.viewer();
-        query("viewer", session)
-                .execute()
-                .path("viewer.username").entity(String.class).isEqualTo(session.getUsername());
-        query("viewerEmails", session)
-                .execute()
-                .path("viewer.emails.edges").entityList(Object.class).hasSize(1)
-                .path("viewer.unconfirmedEmails.edges").entityList(Object.class).hasSize(0);
+        SessionResult session = userFactory.session();
+        queryViewer(null, ErrorType.UNAUTHORIZED);
+        queryViewer(session, null);
     }
 
     @Test
     void user() {
-        SessionResult session = userFactory.viewer();
-        query("user")
-                .variable("username", session.getUsername())
-                .execute()
-                .path("user.username").entity(String.class).isEqualTo(session.getUsername());
-        query("userEmails")
-                .variable("username", session.getUsername())
-                .execute()
-                .path("user.emails.edges").entityList(Object.class).hasSize(0)
-                .path("user.unconfirmedEmails.edges").entityList(Object.class).hasSize(0);
+        UserResult user = userFactory.create();
+        queryUser("notfound", null, ErrorType.NOT_FOUND);
+        queryUser(user.getUsername(), user, null);
     }
 
     @Test
@@ -61,7 +66,7 @@ class UserQueryControllerTest extends BaseFactory {
         UserOrder orderBy = new UserOrder();
         orderBy.setField(UserOrderField.CREATED_AT);
         orderBy.setDirection(OrderDirection.DESC);
-        UserFilter filterBy = new UserFilter();
+        UserFilter.By filterBy = new UserFilter.By();
 
         /*
          * 分页
@@ -82,9 +87,54 @@ class UserQueryControllerTest extends BaseFactory {
         orderBy.setDirection(OrderDirection.DESC);
         filterBy.setQuery(user1.getUsername());
         queryUsers(after, filterBy, orderBy, List.of(user1.getId()));
+
+        filterBy.setQuery("notfound");
+        queryUsers(after, filterBy, orderBy, List.of());
+
+        // 组织
+
+        SessionResult session = userFactory.session();
+        GroupResult group = groupFactory.create(session);
+        ProjectResult project = projectFactory.create(session, group);
+
+        filterBy.setQuery(group.getPath());
+        queryUsers(null, filterBy, orderBy, List.of());
+
+        filterBy.setQuery(project.getPath());
+        queryUsers(null, filterBy, orderBy, List.of());
     }
 
-    private String queryUsers(String after, UserFilter filterBy, UserOrder orderBy, List<String> ids) {
+    private void queryViewer(SessionResult session, ErrorType errorType) {
+        GraphQlTester.Response response = query("viewer", session)
+                .execute();
+        if (errorType != null) {
+            response.errors()
+                    .expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+        response.path("viewer.username").entity(String.class).isEqualTo(session.getUsername());
+    }
+
+    private void queryUser(String username, UserResult result, ErrorType errorType) {
+        GraphQlTester.Response response = query("user")
+                .variable("username", username)
+                .execute();
+        if (errorType != null) {
+            response.errors()
+                    .expect(e -> e.getErrorType().equals(errorType));
+            return;
+        }
+
+        response.path("user.name").entity(String.class).isEqualTo(result.getName())
+                .path("user.username").entity(String.class).isEqualTo(result.getUsername())
+                .path("user.description").entity(String.class).isEqualTo("")
+                .path("user.active").entity(Boolean.class).isEqualTo(Boolean.TRUE)
+                .path("user.role").entity(Role.class).isEqualTo(Role.USER)
+                .path("user.location").entity(String.class).isEqualTo("")
+                .path("user.websiteUrl").entity(String.class).isEqualTo("");
+    }
+
+    private String queryUsers(String after, UserFilter.By filterBy, UserOrder orderBy, List<String> ids) {
         GraphQlTester.Response response = query("users")
                 .variable("first", ids.size())
                 .variable("after", after)
@@ -92,6 +142,8 @@ class UserQueryControllerTest extends BaseFactory {
                 .variable("orderBy", orderBy)
                 .execute();
         response.path("users.edges").entityList(Object.class).hasSize(ids.size());
+        if (ids.isEmpty()) return "";
+
         for (int i = 0; i < ids.size(); i++) {
             response.path(String.format("users.edges[%d].node.id", i)).entity(String.class).isEqualTo(ids.get(i));
         }

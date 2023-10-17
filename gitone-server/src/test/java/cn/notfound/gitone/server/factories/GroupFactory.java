@@ -77,13 +77,13 @@ public class GroupFactory extends BaseFactory {
     public GroupResult create(SessionResult session, NamespaceResult parent, String path, Visibility visibility) {
         String parentId = null;
         if (parent != null) parentId = parent.getId();
-        CreateGroupInput createGroupInput = createGroupInput();
-        createGroupInput.setParentId(parentId);
-        createGroupInput.setName(path.toUpperCase());
-        createGroupInput.setPath(path);
-        createGroupInput.setVisibility(visibility);
-        createGroupInput.setDescription(path + " description");
-        return create(session, createGroupInput);
+        CreateGroupInput input = createGroupInput();
+        input.setParentId(parentId);
+        input.setName(path.toUpperCase());
+        input.setPath(path);
+        input.setVisibility(visibility);
+        input.setDescription(path + " description");
+        return create(session, input);
     }
 
     public void queryGroup(SessionResult session, String fullPath,GroupResult group) {

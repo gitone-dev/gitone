@@ -38,18 +38,4 @@ public class ProjectMutationController {
         ProjectEntity projectEntity = projectService.update(input);
         return new UpdateProjectPayload(projectEntity);
     }
-
-    @MutationMapping
-    @Secured({ Role.ROLE_USER })
-    public UpdateProjectPathPayload updateProjectPath(@Valid @Argument UpdateProjectPathInput input) {
-        ProjectEntity projectEntity = projectService.updatePath(input);
-        return new UpdateProjectPathPayload(projectEntity);
-    }
-
-    @MutationMapping
-    @Secured({ Role.ROLE_USER })
-    public UpdateProjectVisibilityPayload updateProjectVisibility(@Valid @Argument UpdateProjectVisibilityInput input) {
-        ProjectEntity projectEntity = projectService.updateVisibility(input);
-        return new UpdateProjectVisibilityPayload(projectEntity);
-    }
 }

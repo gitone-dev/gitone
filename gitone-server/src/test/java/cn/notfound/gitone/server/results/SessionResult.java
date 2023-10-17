@@ -5,8 +5,6 @@ import lombok.Data;
 @Data
 public class SessionResult {
 
-    private String email;
-
     private String username;
 
     private boolean active;

@@ -13,7 +13,7 @@ function Show() {
   });
 
   const project = data?.project;
-  const policy = data?.projectPolicy;
+  const policy = data?.namespacePolicy;
   if (loading) {
     return <LoadingBox />;
   } else if (error) {

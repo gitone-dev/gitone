@@ -25,15 +25,15 @@ class EmailQueryControllerTest extends BaseFactory {
     void existEmail() {
         CreateUserInput createUserInput = userFactory.createUserInput();
 
-        query("existEmail")
-                .variable("email", createUserInput.getEmail())
-                .execute()
-                .path("existEmail").entity(Boolean.class).isEqualTo(Boolean.FALSE);
-
+        queryExistEmail(createUserInput.getEmail(), Boolean.FALSE);
         userFactory.create(createUserInput);
+        queryExistEmail(createUserInput.getEmail(), Boolean.TRUE);
+    }
+
+    private void queryExistEmail(String email, Boolean result) {
         query("existEmail")
-                .variable("email", createUserInput.getEmail())
+                .variable("email", email)
                 .execute()
-                .path("existEmail").entity(Boolean.class).isEqualTo(Boolean.TRUE);
+                .path("existEmail").entity(Boolean.class).isEqualTo(result);
     }
 }

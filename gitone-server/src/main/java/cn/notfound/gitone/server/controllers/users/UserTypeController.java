@@ -5,12 +5,12 @@ import cn.notfound.gitone.server.controllers.NodeConnection;
 import cn.notfound.gitone.server.controllers.NodePage;
 import cn.notfound.gitone.server.controllers.Relay;
 import cn.notfound.gitone.server.daos.EmailDao;
+import cn.notfound.gitone.server.daos.UserDao;
 import cn.notfound.gitone.server.daos.UserDetailDao;
-import cn.notfound.gitone.server.daos.UserNamespaceDao;
 import cn.notfound.gitone.server.entities.EmailEntity;
+import cn.notfound.gitone.server.entities.Role;
 import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
-import cn.notfound.gitone.server.entities.UserNamespaceEntity;
 import org.dataloader.DataLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -29,12 +29,13 @@ import java.util.stream.Collectors;
 public class UserTypeController extends ViewerContext {
 
     @Autowired
-    private UserNamespaceDao userNamespaceDao;
+    private UserDao userDao;
     @Autowired
     private EmailDao emailDao;
     @Autowired
     private UserDetailDao userDetailDao;
 
+    @Autowired
     public UserTypeController(BatchLoaderRegistry registry) {
         registry.forTypePair(Integer.class, UserDetailEntity.class).registerMappedBatchLoader((ids, env) -> {
             Map<Integer, UserDetailEntity> userDetailEntityMap = userDetailDao.findByIds(ids)
@@ -50,28 +51,38 @@ public class UserTypeController extends ViewerContext {
     }
 
     @SchemaMapping
+    public String name(UserEntity userEntity) {
+        return userEntity.getFullName();
+    }
+
+    @SchemaMapping
+    public String username(UserEntity userEntity) {
+        return userEntity.getFullPath();
+    }
+
+    @SchemaMapping
     public String avatarUrl(UserEntity userEntity) {
         return String.format("/avatars/u/%d", userEntity.getId());
     }
 
     @SchemaMapping
-    public CompletableFuture<String> bio(UserEntity userEntity, DataLoader<Integer, UserDetailEntity> loader) {
-        return loader.load(userEntity.getId()).thenApply(UserDetailEntity::getBio);
+    public CompletableFuture<Boolean> active(UserEntity userEntity, DataLoader<Integer, UserDetailEntity> loader) {
+        return loader.load(userEntity.getId()).thenApply(userDetail -> userDetail == null ? null : userDetail.getActive());
+    }
+
+    @SchemaMapping
+    public CompletableFuture<Role> role(UserEntity userEntity, DataLoader<Integer, UserDetailEntity> loader) {
+        return loader.load(userEntity.getId()).thenApply(userDetail -> userDetail == null ? null : userDetail.getRole());
     }
 
     @SchemaMapping
     public CompletableFuture<String> location(UserEntity userEntity, DataLoader<Integer, UserDetailEntity> loader) {
-        return loader.load(userEntity.getId()).thenApply(UserDetailEntity::getLocation);
+        return loader.load(userEntity.getId()).thenApply(userDetail -> userDetail == null ? null : userDetail.getLocation());
     }
 
     @SchemaMapping
     public CompletableFuture<String> websiteUrl(UserEntity userEntity, DataLoader<Integer, UserDetailEntity> loader) {
-        return loader.load(userEntity.getId()).thenApply(UserDetailEntity::getWebsiteUrl);
-    }
-
-    @SchemaMapping
-    public UserNamespaceEntity namespace(UserEntity userEntity) {
-        return userNamespaceDao.find(userEntity.getNamespaceId());
+        return loader.load(userEntity.getId()).thenApply(userDetail -> userDetail == null ? null : userDetail.getWebsiteUrl());
     }
 
     @SchemaMapping

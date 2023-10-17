@@ -21,4 +21,11 @@ public class NamespaceResult {
     private Visibility visibility;
 
     private String description;
+
+    public void reset() {
+        this.name = null;
+        this.path = null;
+        this.fullName = null;
+        this.description = "";
+    }
 }
