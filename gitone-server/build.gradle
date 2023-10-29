@@ -23,6 +23,10 @@ repositories {
 
 dependencies {
 	implementation 'com.graphql-java:graphql-java-extended-scalars:20.2'
+	implementation 'net.i2p.crypto:eddsa:0.3.0'
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:6.7.0.202309050840-r'
+	implementation 'org.apache.sshd:sshd-core:2.10.0'
+	implementation 'org.apache.sshd:sshd-git:2.10.0'
 	implementation 'org.springframework.boot:spring-boot-starter-artemis'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'

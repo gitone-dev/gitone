@@ -1,0 +1,17 @@
+fragment SshKeyFragment on SshKey {
+  id
+  createdAt
+  updatedAt
+  title
+  key
+  fingerprint
+  usages
+  lastUsedAt
+  expiresAt
+  isExpired
+  namespace {
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
+  }
+}

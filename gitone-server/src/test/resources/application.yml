@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://127.0.0.1/gitone_development
+    username: gitone
+  graphql:
+    graphiql:
+      enabled: true
+    schema:
+      printer:
+        enabled: true
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+  mail:
+    host: 127.0.0.1
+    port: 1025
+    protocol: smtp
+    username: ''
+    password: ''
+  artemis:
+    mode: embedded
+cn:
+  notfound:
+    gitone:
+      site-name: GitOne
+      base-url: http://127.0.0.1:5173
+      avatars: /srv/gitone/avatars
+      git-data: /srv/gitone/git-data
+      ssh:
+        enabled: false
+        host: 127.0.0.1
+        port: 8022
+        keys: /srv/gitone/config/id_ecdsa, /srv/gitone/config/id_ed25519, /srv/gitone/config/id_rsa
+logging:
+  level:
+    cn:
+      notfound:
+        gitone:
+          server:
+            mappers: DEBUG

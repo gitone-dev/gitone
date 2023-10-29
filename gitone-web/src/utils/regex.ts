@@ -83,33 +83,24 @@ const group = {
   },
 };
 
-const project = {
-  name: {
-    helper: "长度 2~64",
+const sshKey = {
+  title: {
+    helper: "长度 1~64",
     rules: {
-      pattern: /^.{2,64}$/,
+      pattern: /^.{1,64}$/,
       maxLength: 64,
       required: true,
     },
   },
-  path: {
-    helper: "长度 2~64，可包含字母、数字且以字母开头",
+  key: {
+    helper: "支持的公钥类型：ecdsa、ed25519、rsa",
     rules: {
-      pattern: /^[A-Za-z][A-Za-z0-9]{1,63}$/,
-      maxLength: 64,
+      maxLength: 1024,
       required: true,
     },
-  },
-  description: {
-    helper: "介绍一下组织",
-    rules: {
-      pattern: /^.{0,255}$/,
-      maxLength: 255,
-    },
-  },
-  visibility: {
-    helper: "对外是否可见",
   },
 };
 
-export { user, group, project };
+const project = group;
+
+export { group, project, sshKey, user };

@@ -39,3 +39,4 @@ function Sidebar(props: Props) {
 }
 
 export default Sidebar;
+export type SidebarItems = Array<Item>;

@@ -1,0 +1,28 @@
+query SshKeys(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: SshKeyFilter
+  $orderBy: SshKeyOrder
+) {
+  sshKeys(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...SshKeyFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}

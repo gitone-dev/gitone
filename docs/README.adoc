@@ -64,3 +64,16 @@ psql -h 127.0.0.1 -U gitone -d gitone_development
 1. 安装 `gem install mailcatcher`
 2. 启动服务 `mailcatcher`
 3. 页面访问 http://127.0.0.1:1080/
+
+=== 配置
+
+生成 ssh key：
+
+[source,bash]
+----
+sudo mkdir -p /srv/gitone/config
+sudo chown $USER:$GROUP -R /srv/gitone
+
+ssh-keygen -t ecdsa   -f /srv/gitone/config/id_ecdsa   -C "GitOne SSH Key"
+ssh-keygen -t ed25519 -f /srv/gitone/config/id_ed25519 -C "GitOne SSH Key"
+ssh-keygen -t rsa     -f /srv/gitone/config/id_rsa     -C "GitOne SSH Key"

@@ -1,10 +1,16 @@
 package cn.notfound.gitone.server.util;
 
+import cn.notfound.gitone.server.entities.ProjectEntity;
+import org.eclipse.jgit.lib.Constants;
 import org.springframework.util.Assert;
 
 import java.util.StringJoiner;
 
 public class StoragePath {
+
+    public static String get(ProjectEntity projectEntity) {
+        return get(ProjectEntity.TYPE.toLowerCase(), projectEntity.getId(), Constants.DOT_GIT_EXT);
+    }
 
     public static String get(String type, int id, String extension) {
         Assert.hasText(type, "type 不能为空");

@@ -28,5 +28,5 @@ $$
 LANGUAGE plpgsql volatile;
 
 CREATE TRIGGER trigger_namespaces_on_traversal_ids
-BEFORE INSERT OR UPDATE OF traversal_ids ON namespaces
+BEFORE INSERT ON namespaces
 FOR EACH ROW EXECUTE PROCEDURE trigger_traversal_ids();

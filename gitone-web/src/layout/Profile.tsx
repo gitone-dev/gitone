@@ -1,5 +1,6 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EmailIcon from "@mui/icons-material/Email";
+import KeyIcon from "@mui/icons-material/Key";
 import LockIcon from "@mui/icons-material/Lock";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import Box from "@mui/material/Box";
@@ -37,6 +38,12 @@ const items = [
     text: "密码管理",
     to: "/profile/password",
   },
+  {
+    key: "/profile/ssh-keys",
+    icon: <KeyIcon />,
+    text: "SSH 公钥",
+    to: "/profile/ssh-keys",
+  },
 ];
 
 const breadcrumbItems: BreadcrumbItems = {
@@ -55,6 +62,10 @@ const breadcrumbItems: BreadcrumbItems = {
   "/profile/password": [
     { to: "/profile", text: "用户设置" },
     { to: "/profile/password", text: "密码管理" },
+  ],
+  "/profile/ssh-keys": [
+    { to: "/profile", text: "用户设置" },
+    { to: "/profile/ssh-keys", text: "SSH 公钥" },
   ],
 };
 

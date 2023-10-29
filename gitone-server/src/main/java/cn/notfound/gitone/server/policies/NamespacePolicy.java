@@ -46,32 +46,37 @@ public class NamespacePolicy extends ViewerContext {
         };
     }
 
-    protected final MemberDao memberDao;
+    private final MemberDao memberDao;
 
     @Autowired
     public NamespacePolicy(MemberDao memberDao) {
         this.memberDao = memberDao;
     }
 
-    public Policy policy(NamespaceEntity namespaceEntity) {
-        NotFound.notNull(namespaceEntity, "命名空间不存在");
+    public Policy policy(NamespaceEntity targetNamespace) {
+        return policy(viewerId(), targetNamespace);
+    }
 
-        Policy policy = new Policy(this.getClass(), namespaceEntity.getId());
-        if (isAuthenticated() && namespaceEntity.isUser()) {
-            if (namespaceEntity.getId().equals(userDetails().getNamespaceId())) {
+    private Policy policy(Integer userId, NamespaceEntity targetNamespace) {
+        NotFound.notNull(targetNamespace, "命名空间不存在");
+
+        Policy policy = new Policy(this.getClass(), targetNamespace.getId());
+        if (userId != null && targetNamespace.isUser()) {
+            if (targetNamespace.getId().equals(userId)) {
                 policy.setAccess(Access.OWNER);
             } else {
                 policy.setAccess(Access.MIN_ACCESS);
             }
-        } else if (isAuthenticated()) {
-            MemberEntity memberEntity = memberDao.findByAncestors(namespaceEntity.traversalIds(), viewerId());
+        } else if (userId != null) {
+            MemberEntity memberEntity = memberDao.findByAncestors(targetNamespace.traversalIds(), userId);
             if (memberEntity != null) {
                 policy.setAccess(memberEntity.getAccess());
-            } else if (memberDao.findByDescendants(namespaceEntity.getId(), viewerId()) != null) {
+                policy.setMemberEntity(memberEntity);
+            } else if (memberDao.findByDescendants(targetNamespace.getId(), userId) != null) {
                 policy.setAccess(Access.MIN_ACCESS);
             }
         }
-        if (policy.getAccess().lt(Access.MIN_ACCESS) && namespaceEntity.isPublic()) {
+        if (policy.getAccess().lt(Access.MIN_ACCESS) && targetNamespace.isPublic()) {
             policy.setAccess(Access.MIN_ACCESS);
         }
 
@@ -86,28 +91,20 @@ public class NamespacePolicy extends ViewerContext {
 
     public MemberEntity assertPermission(NamespaceEntity namespaceEntity, Action action) {
         NotFound.notNull(namespaceEntity, "命名空间不存在");
-
-        MemberEntity memberEntity = null;
-        if (isAuthenticated() && namespaceEntity.isUser()) {
-            if (namespaceEntity.getId().equals(userDetails().getNamespaceId())) {
-                return null;
-            }
-        } else if (isAuthenticated()) {
-            memberEntity = memberDao.findByAncestors(namespaceEntity.traversalIds(), viewerId());
+        Policy policy = policy(namespaceEntity);
+        if (!policy.getActions().contains(action)) {
+            Unauthorized.isTrue(isAuthenticated(), "未登录");
+            throw new Forbidden("无权限");
         }
 
-        if (namespaceEntity.isPublic()) {
-            if (action.equals(READ)) return memberEntity;
-            if (action.equals(READ_MEMBER)) return memberEntity;
-        } else if (memberEntity == null && isAuthenticated() && !namespaceEntity.isUser()) {
-            Forbidden.isTrue(accessActionsMap.get(Access.MIN_ACCESS).contains(action), "无权限");
-            Forbidden.notNull(memberDao.findByDescendants(namespaceEntity.getId(), viewerId()), "无权限");
-            return null;
-        }
-        Unauthorized.isTrue(isAuthenticated(), "未登录");
-        Forbidden.notNull(memberEntity, "无权限");
-        Forbidden.isTrue(accessActionsMap.get(memberEntity.getAccess()).contains(action), "无权限");
+        return policy.getMemberEntity();
+    }
 
-        return memberEntity;
+    public boolean hasPermission(NamespaceEntity viewerNamespace, NamespaceEntity targetNamespace, Action action) {
+        if (viewerNamespace.isUser()) {
+            return policy(viewerNamespace.getId(), targetNamespace).getActions().contains(action);
+        } else {
+            return targetNamespace.isPublic() || targetNamespace.traversalIds().contains(viewerNamespace.getId());
+        }
     }
 }

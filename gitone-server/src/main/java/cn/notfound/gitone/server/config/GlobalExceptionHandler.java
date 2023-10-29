@@ -4,6 +4,7 @@ import cn.notfound.gitone.server.config.exception.Forbidden;
 import cn.notfound.gitone.server.config.exception.NotFound;
 import cn.notfound.gitone.server.config.exception.Unauthorized;
 import graphql.GraphQLError;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.graphql.data.method.annotation.GraphQlExceptionHandler;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.web.bind.annotation.ControllerAdvice;

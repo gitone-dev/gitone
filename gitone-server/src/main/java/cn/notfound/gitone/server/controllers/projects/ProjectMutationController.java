@@ -12,6 +12,8 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 
+import java.io.IOException;
+
 @AllArgsConstructor
 @Controller
 public class ProjectMutationController {
@@ -20,7 +22,7 @@ public class ProjectMutationController {
 
     @MutationMapping
     @Secured({ Role.ROLE_USER })
-    public CreateProjectPayload createProject(@Valid @Argument CreateProjectInput input) {
+    public CreateProjectPayload createProject(@Valid @Argument CreateProjectInput input) throws IOException {
         ProjectEntity projectEntity = projectService.create(input);
         return new CreateProjectPayload(projectEntity);
     }

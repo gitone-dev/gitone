@@ -1,5 +1,6 @@
 package cn.notfound.gitone.server.models;
 
+import cn.notfound.gitone.server.entities.Node;
 import cn.notfound.gitone.server.entities.Role;
 import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
@@ -12,11 +13,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class CustomUserDetails implements UserDetails, OAuth2User {
+public class CustomUserDetails implements UserDetails, OAuth2User, Node<Integer> {
 
     private final Integer id;
-
-    private final Integer namespaceId;
 
     private final String name;
 
@@ -30,7 +29,6 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     public CustomUserDetails(UserEntity userEntity, UserDetailEntity userDetailEntity) {
         this.id = userEntity.getId();
-        this.namespaceId = userEntity.getId();
         this.name = userEntity.getName();
         this.username = userEntity.getFullPath();
         this.password = userDetailEntity.getPassword();
@@ -42,12 +40,9 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
         }
     }
 
+    @Override
     public Integer getId() {
         return id;
-    }
-
-    public Integer getNamespaceId() {
-        return namespaceId;
     }
 
     @Override

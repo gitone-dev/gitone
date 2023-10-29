@@ -15,7 +15,9 @@ function Projects() {
   } else if (error) {
     return <ErrorBox message={error.message} />;
   } else if (!data?.namespace.fullPath) {
-    return <ErrorBox message="客户查询条件出错" />;
+    return (
+      <ErrorBox message="客户查询条件出错 src/pages/namespace/projects/index.tsx" />
+    );
   } else if (!data.namespacePolicy.actions?.includes(Action.Read)) {
     return <ErrorBox message="无权限" />;
   }

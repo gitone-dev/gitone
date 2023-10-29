@@ -58,6 +58,14 @@ type Query {
     orderBy: MemberOrder = { field: CREATED_AT, direction: DESC }
   ): MemberConnection
 
+  sshKeys(
+    fullPath: String!
+    first: Int = 20
+    after: String
+    filterBy: SshKeyFilter
+    orderBy: SshKeyOrder = { field: CREATED_AT, direction: DESC }
+  ): SshKeyConnection
+
   existFullPath(fullPath: String!): Boolean!
   namespace(fullPath: String!): Namespace!
   namespacePolicy(fullPath: String!): Policy!
@@ -83,6 +91,8 @@ type Query {
     filterBy: ProjectFilter
     orderBy: ProjectOrder = { field: CREATED_AT, direction: DESC }
   ): ProjectConnection
+
+  repository(fullPath: String!): Repository!
 }
 
 type Policy implements Node {
@@ -93,10 +103,12 @@ type Policy implements Node {
 
 type Mutation {
   # session
+
   createSession(input: CreateSessionInput!): CreateSessionPayload
   deleteSession: DeleteSessionPayload
 
   # user
+
   createUser(input: CreateUserInput!): CreateUserPayload
   deleteUser(input: DeleteUserInput!): DeleteUserPayload
 
@@ -127,12 +139,6 @@ type Mutation {
   deleteGroup(input: DeleteGroupInput!): DeleteGroupPayload
   updateGroup(input: UpdateGroupInput!): UpdateGroupPayload
 
-  # member
-
-  createMember(input: CreateMemberInput!): CreateMemberPayload
-  updateMember(input: UpdateMemberInput!): UpdateMemberPayload
-  deleteMember(input: DeleteMemberInput!): DeleteMemberPayload
-
   # project
 
   createProject(input: CreateProjectInput!): CreateProjectPayload
@@ -143,6 +149,18 @@ type Mutation {
 
   updateVisibility(input: UpdateVisibilityInput!): UpdateVisibilityPayload
   updatePath(input: UpdatePathInput!): UpdatePathPayload
+
+  # member
+
+  createMember(input: CreateMemberInput!): CreateMemberPayload
+  updateMember(input: UpdateMemberInput!): UpdateMemberPayload
+  deleteMember(input: DeleteMemberInput!): DeleteMemberPayload
+
+  # ssh key
+
+  createSshKey(input: CreateSshKeyInput!): CreateSshKeyPayload
+  updateSshKey(input: UpdateSshKeyInput!): UpdateSshKeyPayload
+  deleteSshKey(input: DeleteSshKeyInput!): DeleteSshKeyPayload
 }
 
 # session
@@ -639,4 +657,143 @@ input DeleteMemberInput {
 
 type DeleteMemberPayload {
   member: Member
+}
+
+# ssh key
+
+enum SshKeyUsage {
+  READ
+  WRITE
+}
+
+type SshKey implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  title: String
+  key: String
+  fingerprint: String
+  usages: [SshKeyUsage!]
+  lastUsedAt: DateTime
+  expiresAt: DateTime
+  isExpired: Boolean
+  namespace: Namespace
+}
+
+type SshKeyEdge {
+  node: SshKey!
+  cursor: String!
+}
+
+type SshKeyConnection {
+  edges: [SshKeyEdge!]
+  pageInfo: PageInfo
+}
+
+input SshKeyFilter {
+  query: String
+  fingerprint: String
+}
+
+enum SshKeyOrderField {
+  CREATED_AT
+  UPDATED_AT
+}
+
+input SshKeyOrder {
+  direction: OrderDirection!
+  field: SshKeyOrderField!
+}
+
+input CreateSshKeyInput {
+  fullPath: String!
+  title: String!
+  key: String!
+  usages: [SshKeyUsage!]!
+  expiresAt: DateTime
+}
+
+type CreateSshKeyPayload {
+  sshKey: SshKey
+}
+
+input UpdateSshKeyInput {
+  id: ID!
+  title: String!
+  usages: [SshKeyUsage!]!
+  expiresAt: DateTime
+}
+
+type UpdateSshKeyPayload {
+  sshKey: SshKey
+}
+
+input DeleteSshKeyInput {
+  id: ID!
+}
+
+type DeleteSshKeyPayload {
+  sshKey: SshKey
+}
+
+# repository
+
+type Repository implements Node {
+  id: ID!
+  exists: Boolean
+  branches: BranchConnection
+  tags: TagConnection
+}
+
+# branch
+
+type Branch {
+  id: ID!
+  name: String!
+  commit: Commit
+}
+
+type BranchEdge {
+  node: Branch!
+  cursor: String!
+}
+
+type BranchConnection {
+  edges: [BranchEdge!]
+  pageInfo: PageInfo
+}
+
+# tag
+
+type Tag {
+  id: ID!
+  name: String!
+  commit: Commit
+}
+
+type TagEdge {
+  node: Tag!
+  cursor: String!
+}
+
+type TagConnection {
+  edges: [TagEdge!]
+  pageInfo: PageInfo
+}
+
+# commit
+
+type Commit {
+  id: ID!
+  sha: String!
+}
+
+type CommitEdge {
+  node: Commit!
+  cursor: String!
+}
+
+type CommitConnection {
+  edges: [CommitEdge!]
+  pageInfo: PageInfo
 }

@@ -33,8 +33,10 @@ function Show() {
         <Item label="创建时间">
           <RelativeTime date={project.createdAt} />
         </Item>
-        <Item label="更新时间">
-          <RelativeTime date={project.updatedAt} />
+        <Item label="URL(TODO)">
+          <code>
+            {window.location.origin}/git/{project.fullPath}.git
+          </code>
         </Item>
       </Descriptions>
     </ChunkPaper>

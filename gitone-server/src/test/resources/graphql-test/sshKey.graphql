@@ -1,0 +1,54 @@
+fragment UserFragment on User {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  username
+  visibility
+  description
+}
+
+fragment GroupFragment on Group {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+fragment ProjectFragment on Project {
+  id
+  createdAt
+  updatedAt
+  name
+  path
+  fullName
+  fullPath
+  visibility
+  description
+}
+
+fragment SshKeyFragment on SshKey {
+  id
+  createdAt
+  updatedAt
+  title
+  key
+  fingerprint
+  usages
+  lastUsedAt
+  expiresAt
+  isExpired
+  namespace {
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
+  }
+}

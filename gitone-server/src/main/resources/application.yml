@@ -26,6 +26,12 @@ cn:
       site-name: GitOne
       base-url: http://127.0.0.1:5173
       avatars: /srv/gitone/avatars
+      git-data: /srv/gitone/git-data
+      ssh:
+        enabled: true
+        host: 127.0.0.1
+        port: 8022
+        keys: /srv/gitone/config/id_ecdsa, /srv/gitone/config/id_ed25519, /srv/gitone/config/id_rsa
 logging:
   level:
     cn:

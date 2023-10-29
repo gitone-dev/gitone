@@ -1,0 +1,7 @@
+mutation DeleteSshKey($input: DeleteSshKeyInput!) {
+  payload: deleteSshKey(input: $input) {
+    sshKey {
+      ...SshKeyFragment
+    }
+  }
+}

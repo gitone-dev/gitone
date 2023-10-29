@@ -11,9 +11,9 @@ import LoadingPage from "../pages/LoadingPage";
 import { useFullPath } from "../utils/router";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
-import Sidebar from "./Sidebar";
+import Sidebar, { SidebarItems } from "./Sidebar";
 
-const items = (fullPath: string, actions: Array<Action>) => [
+const items = (fullPath: string, actions: Array<Action>): SidebarItems => [
   {
     key: `/${fullPath}`,
     icon: <GroupIcon />,
@@ -38,6 +38,20 @@ const items = (fullPath: string, actions: Array<Action>) => [
     text: "设置",
     to: `/${fullPath}/-/settings`,
     hidden: !actions.includes(Action.Update),
+    children: [
+      {
+        key: `/${fullPath}/-/settings`,
+        text: "基本设置",
+        to: `/${fullPath}/-/settings`,
+        hidden: !actions.includes(Action.Update),
+      },
+      {
+        key: `/${fullPath}/-/settings/ssh-keys`,
+        text: "SSH 公钥",
+        to: `/${fullPath}/-/settings/ssh-keys`,
+        hidden: !actions.includes(Action.Update),
+      },
+    ],
   },
 ];
 
@@ -62,6 +76,10 @@ const breadcrumbItems = (paths: Array<string>): BreadcrumbItems => {
     [`/${fullPath}/-/settings`]: [
       ...fullPathItems,
       { to: `/${fullPath}/-/settings`, text: "设置" },
+    ],
+    [`/${fullPath}/-/settings/ssh-keys`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/settings/ssh-keys`, text: "SSH 公钥" },
     ],
   };
 };

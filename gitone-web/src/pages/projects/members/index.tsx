@@ -1,5 +1,5 @@
-import { useSearch } from "../../../shared/MembersContainer/Header";
-import MembersContainer from "../../../shared/MembersContainer/MembersContainer";
+import { useSearch } from "../../namespace/members/MembersContainer/Header";
+import MembersContainer from "../../namespace/members/MembersContainer/MembersContainer";
 import { useFullPath } from "../../../utils/router";
 
 function Members() {

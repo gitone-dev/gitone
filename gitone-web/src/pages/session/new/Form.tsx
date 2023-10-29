@@ -53,6 +53,7 @@ function Form() {
         fullWidth
         label="用户名"
         margin="dense"
+        placeholder="gitone"
         required
         size="small"
         {...register("username", { required: true })}
@@ -63,6 +64,7 @@ function Form() {
         margin="dense"
         required
         type="password"
+        placeholder="123456"
         size="small"
         helperText={
           <Link

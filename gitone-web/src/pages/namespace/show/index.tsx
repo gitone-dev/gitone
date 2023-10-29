@@ -17,7 +17,7 @@ function Show() {
   } else if (error) {
     return <ErrorPage message={error.message} />;
   } else if (!data?.namespace.fullPath) {
-    return <ErrorPage message="客户查询条件出错" />;
+    return <ErrorPage message="客户查询条件出错 src/pages/namespace/show/index.tsx" />;
   } else if (!data.namespacePolicy.actions?.includes(Action.Read)) {
     return <ErrorPage message="无权限" />;
   }

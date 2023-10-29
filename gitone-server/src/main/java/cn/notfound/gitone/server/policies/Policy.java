@@ -2,6 +2,7 @@ package cn.notfound.gitone.server.policies;
 
 import cn.notfound.gitone.server.controllers.Relay;
 import cn.notfound.gitone.server.entities.Access;
+import cn.notfound.gitone.server.entities.MemberEntity;
 import lombok.Data;
 
 import java.util.Set;
@@ -14,6 +15,8 @@ public class Policy {
     public Access access = Access.NO_ACCESS;
 
     private Set<Action> actions;
+
+    private MemberEntity memberEntity;
 
     public Policy(Class<?> klass, Integer id) {
         this.id = Relay.toGlobalId(klass.getSimpleName(), id);

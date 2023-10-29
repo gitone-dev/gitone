@@ -1,0 +1,7 @@
+mutation UpdateSshKey($input: UpdateSshKeyInput!) {
+  payload: updateSshKey(input: $input) {
+    sshKey {
+      ...SshKeyFragment
+    }
+  }
+}

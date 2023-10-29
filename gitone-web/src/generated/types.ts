@@ -46,6 +46,45 @@ export type ActivateUserPayload = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
+/**  branch */
+export type Branch = {
+  __typename?: 'Branch';
+  commit?: Maybe<Commit>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type BranchConnection = {
+  __typename?: 'BranchConnection';
+  edges?: Maybe<Array<BranchEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type BranchEdge = {
+  __typename?: 'BranchEdge';
+  cursor: Scalars['String']['output'];
+  node: Branch;
+};
+
+/**  commit */
+export type Commit = {
+  __typename?: 'Commit';
+  id: Scalars['ID']['output'];
+  sha: Scalars['String']['output'];
+};
+
+export type CommitConnection = {
+  __typename?: 'CommitConnection';
+  edges?: Maybe<Array<CommitEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type CommitEdge = {
+  __typename?: 'CommitEdge';
+  cursor: Scalars['String']['output'];
+  node: Commit;
+};
+
 export type ConfirmEmailInput = {
   token: Scalars['String']['input'];
 };
@@ -111,6 +150,19 @@ export type CreateSessionPayload = {
   session?: Maybe<Session>;
 };
 
+export type CreateSshKeyInput = {
+  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+  fullPath: Scalars['String']['input'];
+  key: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+  usages: Array<SshKeyUsage>;
+};
+
+export type CreateSshKeyPayload = {
+  __typename?: 'CreateSshKeyPayload';
+  sshKey?: Maybe<SshKey>;
+};
+
 export type CreateUserInput = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -162,6 +214,15 @@ export type DeleteProjectPayload = {
 export type DeleteSessionPayload = {
   __typename?: 'DeleteSessionPayload';
   message?: Maybe<Scalars['String']['output']>;
+};
+
+export type DeleteSshKeyInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteSshKeyPayload = {
+  __typename?: 'DeleteSshKeyPayload';
+  sshKey?: Maybe<SshKey>;
 };
 
 export type DeleteUserInput = {
@@ -292,6 +353,8 @@ export type Mutation = {
   createProject?: Maybe<CreateProjectPayload>;
   /**  session */
   createSession?: Maybe<CreateSessionPayload>;
+  /**  ssh key */
+  createSshKey?: Maybe<CreateSshKeyPayload>;
   /**  user */
   createUser?: Maybe<CreateUserPayload>;
   deleteEmail?: Maybe<DeleteEmailPayload>;
@@ -299,6 +362,7 @@ export type Mutation = {
   deleteMember?: Maybe<DeleteMemberPayload>;
   deleteProject?: Maybe<DeleteProjectPayload>;
   deleteSession?: Maybe<DeleteSessionPayload>;
+  deleteSshKey?: Maybe<DeleteSshKeyPayload>;
   deleteUser?: Maybe<DeleteUserPayload>;
   resetPassword?: Maybe<ResetPasswordPayload>;
   sendActivationEmail?: Maybe<SendActivationEmailPayload>;
@@ -310,6 +374,7 @@ export type Mutation = {
   updatePassword?: Maybe<UpdatePasswordPayload>;
   updatePath?: Maybe<UpdatePathPayload>;
   updateProject?: Maybe<UpdateProjectPayload>;
+  updateSshKey?: Maybe<UpdateSshKeyPayload>;
   updateUser?: Maybe<UpdateUserPayload>;
   /**  namespaces */
   updateVisibility?: Maybe<UpdateVisibilityPayload>;
@@ -351,6 +416,11 @@ export type MutationCreateSessionArgs = {
 };
 
 
+export type MutationCreateSshKeyArgs = {
+  input: CreateSshKeyInput;
+};
+
+
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
 };
@@ -373,6 +443,11 @@ export type MutationDeleteMemberArgs = {
 
 export type MutationDeleteProjectArgs = {
   input: DeleteProjectInput;
+};
+
+
+export type MutationDeleteSshKeyArgs = {
+  input: DeleteSshKeyInput;
 };
 
 
@@ -428,6 +503,11 @@ export type MutationUpdatePathArgs = {
 
 export type MutationUpdateProjectArgs = {
   input: UpdateProjectInput;
+};
+
+
+export type MutationUpdateSshKeyArgs = {
+  input: UpdateSshKeyInput;
 };
 
 
@@ -573,6 +653,8 @@ export type Query = {
   ping: Scalars['String']['output'];
   project: Project;
   projects?: Maybe<ProjectConnection>;
+  repository: Repository;
+  sshKeys?: Maybe<SshKeyConnection>;
   user: User;
   users?: Maybe<UserConnection>;
   viewer: User;
@@ -642,6 +724,20 @@ export type QueryProjectsArgs = {
 };
 
 
+export type QueryRepositoryArgs = {
+  fullPath: Scalars['String']['input'];
+};
+
+
+export type QuerySshKeysArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<SshKeyFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  fullPath: Scalars['String']['input'];
+  orderBy?: InputMaybe<SshKeyOrder>;
+};
+
+
 export type QueryUserArgs = {
   username: Scalars['String']['input'];
 };
@@ -652,6 +748,15 @@ export type QueryUsersArgs = {
   filterBy?: InputMaybe<UserFilter>;
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<UserOrder>;
+};
+
+/**  repository */
+export type Repository = Node & {
+  __typename?: 'Repository';
+  branches?: Maybe<BranchConnection>;
+  exists?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars['ID']['output'];
+  tags?: Maybe<TagConnection>;
 };
 
 export type ResetPasswordInput = {
@@ -704,6 +809,74 @@ export type SetPrimaryEmailInput = {
 export type SetPrimaryEmailPayload = {
   __typename?: 'SetPrimaryEmailPayload';
   email?: Maybe<Email>;
+};
+
+export type SshKey = Node & {
+  __typename?: 'SshKey';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  expiresAt?: Maybe<Scalars['DateTime']['output']>;
+  fingerprint?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  isExpired?: Maybe<Scalars['Boolean']['output']>;
+  key?: Maybe<Scalars['String']['output']>;
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  namespace?: Maybe<Namespace>;
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+  usages?: Maybe<Array<SshKeyUsage>>;
+};
+
+export type SshKeyConnection = {
+  __typename?: 'SshKeyConnection';
+  edges?: Maybe<Array<SshKeyEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type SshKeyEdge = {
+  __typename?: 'SshKeyEdge';
+  cursor: Scalars['String']['output'];
+  node: SshKey;
+};
+
+export type SshKeyFilter = {
+  fingerprint?: InputMaybe<Scalars['String']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SshKeyOrder = {
+  direction: OrderDirection;
+  field: SshKeyOrderField;
+};
+
+export enum SshKeyOrderField {
+  CreatedAt = 'CREATED_AT',
+  UpdatedAt = 'UPDATED_AT'
+}
+
+/**  ssh key */
+export enum SshKeyUsage {
+  Read = 'READ',
+  Write = 'WRITE'
+}
+
+/**  tag */
+export type Tag = {
+  __typename?: 'Tag';
+  commit?: Maybe<Commit>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type TagConnection = {
+  __typename?: 'TagConnection';
+  edges?: Maybe<Array<TagEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type TagEdge = {
+  __typename?: 'TagEdge';
+  cursor: Scalars['String']['output'];
+  node: Tag;
 };
 
 export type UpdateActivationEmailInput = {
@@ -766,6 +939,18 @@ export type UpdateProjectInput = {
 export type UpdateProjectPayload = {
   __typename?: 'UpdateProjectPayload';
   project?: Maybe<Project>;
+};
+
+export type UpdateSshKeyInput = {
+  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+  id: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+  usages: Array<SshKeyUsage>;
+};
+
+export type UpdateSshKeyPayload = {
+  __typename?: 'UpdateSshKeyPayload';
+  sshKey?: Maybe<SshKey>;
 };
 
 export type UpdateUserInput = {
@@ -893,6 +1078,13 @@ export type CreateSessionMutationVariables = Exact<{
 
 export type CreateSessionMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateSessionPayload', session?: { __typename?: 'Session', username: string, email?: string | null, active: boolean, header: string, token: string } | null } | null };
 
+export type CreateSshKeyMutationVariables = Exact<{
+  input: CreateSshKeyInput;
+}>;
+
+
+export type CreateSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
 }>;
@@ -918,6 +1110,13 @@ export type DeleteSessionMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type DeleteSessionMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteSessionPayload', message?: string | null } | null };
+
+export type DeleteSshKeyMutationVariables = Exact<{
+  input: DeleteSshKeyInput;
+}>;
+
+
+export type DeleteSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type DeleteUserMutationVariables = Exact<{
   input: DeleteUserInput;
@@ -1049,6 +1248,19 @@ export type SetPrimaryEmailMutationVariables = Exact<{
 
 export type SetPrimaryEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'SetPrimaryEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
 
+export type SshKeyFragmentFragment = { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
+
+export type SshKeysQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<SshKeyFilter>;
+  orderBy?: InputMaybe<SshKeyOrder>;
+}>;
+
+
+export type SshKeysQuery = { __typename?: 'Query', sshKeys?: { __typename?: 'SshKeyConnection', edges?: Array<{ __typename?: 'SshKeyEdge', cursor: string, node: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+
 export type UpdateActivationEmailMutationVariables = Exact<{
   input: UpdateActivationEmailInput;
 }>;
@@ -1090,6 +1302,13 @@ export type UpdateProjectMutationVariables = Exact<{
 
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type UpdateSshKeyMutationVariables = Exact<{
+  input: UpdateSshKeyInput;
+}>;
+
+
+export type UpdateSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   input: UpdateUserInput;
@@ -1239,6 +1458,27 @@ export const SessionFragmentFragmentDoc = gql`
   token
 }
     `;
+export const SshKeyFragmentFragmentDoc = gql`
+    fragment SshKeyFragment on SshKey {
+  id
+  createdAt
+  updatedAt
+  title
+  key
+  fingerprint
+  usages
+  lastUsedAt
+  expiresAt
+  isExpired
+  namespace {
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
+  }
+}
+    ${UserFragmentFragmentDoc}
+${GroupFragmentFragmentDoc}
+${ProjectFragmentFragmentDoc}`;
 export const UserDetailFragmentFragmentDoc = gql`
     fragment UserDetailFragment on User {
   id
@@ -1499,6 +1739,41 @@ export function useCreateSessionMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateSessionMutationHookResult = ReturnType<typeof useCreateSessionMutation>;
 export type CreateSessionMutationResult = Apollo.MutationResult<CreateSessionMutation>;
 export type CreateSessionMutationOptions = Apollo.BaseMutationOptions<CreateSessionMutation, CreateSessionMutationVariables>;
+export const CreateSshKeyDocument = gql`
+    mutation CreateSshKey($input: CreateSshKeyInput!) {
+  payload: createSshKey(input: $input) {
+    sshKey {
+      ...SshKeyFragment
+    }
+  }
+}
+    ${SshKeyFragmentFragmentDoc}`;
+export type CreateSshKeyMutationFn = Apollo.MutationFunction<CreateSshKeyMutation, CreateSshKeyMutationVariables>;
+
+/**
+ * __useCreateSshKeyMutation__
+ *
+ * To run a mutation, you first call `useCreateSshKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSshKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSshKeyMutation, { data, loading, error }] = useCreateSshKeyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateSshKeyMutation(baseOptions?: Apollo.MutationHookOptions<CreateSshKeyMutation, CreateSshKeyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSshKeyMutation, CreateSshKeyMutationVariables>(CreateSshKeyDocument, options);
+      }
+export type CreateSshKeyMutationHookResult = ReturnType<typeof useCreateSshKeyMutation>;
+export type CreateSshKeyMutationResult = Apollo.MutationResult<CreateSshKeyMutation>;
+export type CreateSshKeyMutationOptions = Apollo.BaseMutationOptions<CreateSshKeyMutation, CreateSshKeyMutationVariables>;
 export const CreateUserDocument = gql`
     mutation CreateUser($input: CreateUserInput!) {
   payload: createUser(input: $input) {
@@ -1636,6 +1911,41 @@ export function useDeleteSessionMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteSessionMutationHookResult = ReturnType<typeof useDeleteSessionMutation>;
 export type DeleteSessionMutationResult = Apollo.MutationResult<DeleteSessionMutation>;
 export type DeleteSessionMutationOptions = Apollo.BaseMutationOptions<DeleteSessionMutation, DeleteSessionMutationVariables>;
+export const DeleteSshKeyDocument = gql`
+    mutation DeleteSshKey($input: DeleteSshKeyInput!) {
+  payload: deleteSshKey(input: $input) {
+    sshKey {
+      ...SshKeyFragment
+    }
+  }
+}
+    ${SshKeyFragmentFragmentDoc}`;
+export type DeleteSshKeyMutationFn = Apollo.MutationFunction<DeleteSshKeyMutation, DeleteSshKeyMutationVariables>;
+
+/**
+ * __useDeleteSshKeyMutation__
+ *
+ * To run a mutation, you first call `useDeleteSshKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSshKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSshKeyMutation, { data, loading, error }] = useDeleteSshKeyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteSshKeyMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSshKeyMutation, DeleteSshKeyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSshKeyMutation, DeleteSshKeyMutationVariables>(DeleteSshKeyDocument, options);
+      }
+export type DeleteSshKeyMutationHookResult = ReturnType<typeof useDeleteSshKeyMutation>;
+export type DeleteSshKeyMutationResult = Apollo.MutationResult<DeleteSshKeyMutation>;
+export type DeleteSshKeyMutationOptions = Apollo.BaseMutationOptions<DeleteSshKeyMutation, DeleteSshKeyMutationVariables>;
 export const DeleteUserDocument = gql`
     mutation DeleteUser($input: DeleteUserInput!) {
   payload: deleteUser(input: $input) {
@@ -2227,6 +2537,64 @@ export function useSetPrimaryEmailMutation(baseOptions?: Apollo.MutationHookOpti
 export type SetPrimaryEmailMutationHookResult = ReturnType<typeof useSetPrimaryEmailMutation>;
 export type SetPrimaryEmailMutationResult = Apollo.MutationResult<SetPrimaryEmailMutation>;
 export type SetPrimaryEmailMutationOptions = Apollo.BaseMutationOptions<SetPrimaryEmailMutation, SetPrimaryEmailMutationVariables>;
+export const SshKeysDocument = gql`
+    query SshKeys($fullPath: String!, $first: Int!, $after: String, $filterBy: SshKeyFilter, $orderBy: SshKeyOrder) {
+  sshKeys(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...SshKeyFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}
+    ${SshKeyFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}
+${PolicyFragmentFragmentDoc}`;
+
+/**
+ * __useSshKeysQuery__
+ *
+ * To run a query within a React component, call `useSshKeysQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSshKeysQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSshKeysQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useSshKeysQuery(baseOptions: Apollo.QueryHookOptions<SshKeysQuery, SshKeysQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SshKeysQuery, SshKeysQueryVariables>(SshKeysDocument, options);
+      }
+export function useSshKeysLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SshKeysQuery, SshKeysQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SshKeysQuery, SshKeysQueryVariables>(SshKeysDocument, options);
+        }
+export type SshKeysQueryHookResult = ReturnType<typeof useSshKeysQuery>;
+export type SshKeysLazyQueryHookResult = ReturnType<typeof useSshKeysLazyQuery>;
+export type SshKeysQueryResult = Apollo.QueryResult<SshKeysQuery, SshKeysQueryVariables>;
 export const UpdateActivationEmailDocument = gql`
     mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {
   updateActivationEmail(input: $input) {
@@ -2439,6 +2807,41 @@ export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
 export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
 export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export const UpdateSshKeyDocument = gql`
+    mutation UpdateSshKey($input: UpdateSshKeyInput!) {
+  payload: updateSshKey(input: $input) {
+    sshKey {
+      ...SshKeyFragment
+    }
+  }
+}
+    ${SshKeyFragmentFragmentDoc}`;
+export type UpdateSshKeyMutationFn = Apollo.MutationFunction<UpdateSshKeyMutation, UpdateSshKeyMutationVariables>;
+
+/**
+ * __useUpdateSshKeyMutation__
+ *
+ * To run a mutation, you first call `useUpdateSshKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSshKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSshKeyMutation, { data, loading, error }] = useUpdateSshKeyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateSshKeyMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSshKeyMutation, UpdateSshKeyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSshKeyMutation, UpdateSshKeyMutationVariables>(UpdateSshKeyDocument, options);
+      }
+export type UpdateSshKeyMutationHookResult = ReturnType<typeof useUpdateSshKeyMutation>;
+export type UpdateSshKeyMutationResult = Apollo.MutationResult<UpdateSshKeyMutation>;
+export type UpdateSshKeyMutationOptions = Apollo.BaseMutationOptions<UpdateSshKeyMutation, UpdateSshKeyMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($input: UpdateUserInput!) {
   payload: updateUser(input: $input) {

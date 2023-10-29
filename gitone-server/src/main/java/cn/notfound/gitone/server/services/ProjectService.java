@@ -10,11 +10,15 @@ import cn.notfound.gitone.server.entities.Access;
 import cn.notfound.gitone.server.entities.MemberEntity;
 import cn.notfound.gitone.server.entities.NamespaceEntity;
 import cn.notfound.gitone.server.entities.ProjectEntity;
+import cn.notfound.gitone.server.models.git.GitRepository;
 import cn.notfound.gitone.server.policies.Action;
 import cn.notfound.gitone.server.policies.NamespacePolicy;
+import cn.notfound.gitone.server.util.StoragePath;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
 
 @AllArgsConstructor
 @Service
@@ -28,7 +32,7 @@ public class ProjectService extends ViewerContext {
 
     private final MemberDao memberDao;
 
-    public ProjectEntity create(CreateProjectInput input) {
+    public ProjectEntity create(CreateProjectInput input) throws IOException {
         ProjectEntity projectEntity = input.entity();
 
         NamespaceEntity parent = namespaceDao.find(input.parentId());
@@ -49,6 +53,8 @@ public class ProjectService extends ViewerContext {
         memberEntity.setAccess(Access.OWNER);
         memberEntity.setCreatedById(viewerId());
         memberDao.create(memberEntity);
+
+        new GitRepository(projectEntity).create();
 
         return projectEntity;
     }

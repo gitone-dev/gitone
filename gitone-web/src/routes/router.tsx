@@ -72,6 +72,7 @@ const router = createBrowserRouter([
       { path: "account", element: <Profile.Account /> },
       { path: "emails", element: <Profile.Emails /> },
       { path: "password", element: <Profile.Password /> },
+      { path: "ssh-keys", element: <Profile.SshKeys /> },
     ],
   },
   ...paths.map((path) => ({
@@ -81,7 +82,16 @@ const router = createBrowserRouter([
       { index: true, element: <Namespace.Show /> },
       { path: "-/projects", element: <Namespace.Projects /> },
       { path: "-/members", element: <Namespace.Members /> },
-      { path: "-/settings", element: <Namespace.Settings /> },
+      {
+        path: "-/settings",
+        children: [
+          { index: true, element: <Namespace.Settings.Settings /> },
+          {
+            path: "ssh-keys",
+            element: <Namespace.Settings.SshKeys />,
+          },
+        ],
+      },
     ],
   })),
   { path: "*", element: <NotFoundPage /> },

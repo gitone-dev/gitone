@@ -20,10 +20,12 @@ const documents = {
     "mutation CreateMember($input: CreateMemberInput!) {\n  payload: createMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}": types.CreateMemberDocument,
     "mutation CreateProject($input: CreateProjectInput!) {\n  payload: createProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.CreateProjectDocument,
     "mutation CreateSession($input: CreateSessionInput!) {\n  payload: createSession(input: $input) {\n    session {\n      ...SessionFragment\n    }\n  }\n}": types.CreateSessionDocument,
+    "mutation CreateSshKey($input: CreateSshKeyInput!) {\n  payload: createSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}": types.CreateSshKeyDocument,
     "mutation CreateUser($input: CreateUserInput!) {\n  payload: createUser(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.CreateUserDocument,
     "mutation DeleteEmail($input: DeleteEmailInput!) {\n  payload: deleteEmail(input: $input) {\n    email {\n      ...EmailFragment\n    }\n  }\n}": types.DeleteEmailDocument,
     "mutation DeleteMember($input: DeleteMemberInput!) {\n  payload: deleteMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}": types.DeleteMemberDocument,
     "mutation DeleteSession {\n  payload: deleteSession {\n    message\n  }\n}": types.DeleteSessionDocument,
+    "mutation DeleteSshKey($input: DeleteSshKeyInput!) {\n  payload: deleteSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}": types.DeleteSshKeyDocument,
     "mutation DeleteUser($input: DeleteUserInput!) {\n  payload: deleteUser(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.DeleteUserDocument,
     "fragment EmailFragment on Email {\n  id\n  createdAt\n  updatedAt\n  email\n  primary\n}": types.EmailFragmentFragmentDoc,
     "query ExistEmail($email: String!) {\n  existEmail(email: $email)\n}": types.ExistEmailDocument,
@@ -44,12 +46,15 @@ const documents = {
     "mutation SendPasswordResetEmail($input: SendPasswordResetEmailInput!) {\n  payload: sendPasswordResetEmail(input: $input) {\n    message\n  }\n}": types.SendPasswordResetEmailDocument,
     "fragment SessionFragment on Session {\n  username\n  email\n  active\n  header\n  token\n}": types.SessionFragmentFragmentDoc,
     "mutation SetPrimaryEmail($input: SetPrimaryEmailInput!) {\n  payload: setPrimaryEmail(input: $input) {\n    email {\n      ...EmailFragment\n    }\n  }\n}": types.SetPrimaryEmailDocument,
+    "fragment SshKeyFragment on SshKey {\n  id\n  createdAt\n  updatedAt\n  title\n  key\n  fingerprint\n  usages\n  lastUsedAt\n  expiresAt\n  isExpired\n  namespace {\n    ...UserFragment\n    ...GroupFragment\n    ...ProjectFragment\n  }\n}": types.SshKeyFragmentFragmentDoc,
+    "query SshKeys($fullPath: String!, $first: Int!, $after: String, $filterBy: SshKeyFilter, $orderBy: SshKeyOrder) {\n  sshKeys(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...SshKeyFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.SshKeysDocument,
     "mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {\n  updateActivationEmail(input: $input) {\n    message\n  }\n}": types.UpdateActivationEmailDocument,
     "mutation UpdateGroup($input: UpdateGroupInput!) {\n  payload: updateGroup(input: $input) {\n    group {\n      ...GroupFragment\n    }\n  }\n}": types.UpdateGroupDocument,
     "mutation UpdateMember($input: UpdateMemberInput!) {\n  payload: updateMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}": types.UpdateMemberDocument,
     "mutation updatePassword($input: UpdatePasswordInput!) {\n  payload: updatePassword(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.UpdatePasswordDocument,
     "mutation UpdatePath($input: UpdatePathInput!) {\n  payload: updatePath(input: $input) {\n    namespace {\n      ...UserFragment\n      ...GroupFragment\n      ...ProjectFragment\n    }\n  }\n}": types.UpdatePathDocument,
     "mutation UpdateProject($input: UpdateProjectInput!) {\n  payload: updateProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.UpdateProjectDocument,
+    "mutation UpdateSshKey($input: UpdateSshKeyInput!) {\n  payload: updateSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}": types.UpdateSshKeyDocument,
     "mutation UpdateUser($input: UpdateUserInput!) {\n  payload: updateUser(input: $input) {\n    user {\n      ...UserDetailFragment\n    }\n  }\n}": types.UpdateUserDocument,
     "mutation UpdateVisibility($input: UpdateVisibilityInput!) {\n  payload: updateVisibility(input: $input) {\n    namespace {\n      ...UserFragment\n      ...GroupFragment\n      ...ProjectFragment\n    }\n  }\n}": types.UpdateVisibilityDocument,
     "fragment UserFragment on User {\n  id\n  createdAt\n  updatedAt\n  name\n  path\n  fullName\n  fullPath\n  username\n  visibility\n  description\n  avatarUrl\n}\n\nquery User($username: String!) {\n  user(username: $username) {\n    ...UserFragment\n  }\n}": types.UserFragmentFragmentDoc,
@@ -105,6 +110,10 @@ export function graphql(source: "mutation CreateSession($input: CreateSessionInp
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation CreateSshKey($input: CreateSshKeyInput!) {\n  payload: createSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"): (typeof documents)["mutation CreateSshKey($input: CreateSshKeyInput!) {\n  payload: createSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation CreateUser($input: CreateUserInput!) {\n  payload: createUser(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}"): (typeof documents)["mutation CreateUser($input: CreateUserInput!) {\n  payload: createUser(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -118,6 +127,10 @@ export function graphql(source: "mutation DeleteMember($input: DeleteMemberInput
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation DeleteSession {\n  payload: deleteSession {\n    message\n  }\n}"): (typeof documents)["mutation DeleteSession {\n  payload: deleteSession {\n    message\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation DeleteSshKey($input: DeleteSshKeyInput!) {\n  payload: deleteSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"): (typeof documents)["mutation DeleteSshKey($input: DeleteSshKeyInput!) {\n  payload: deleteSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -201,6 +214,14 @@ export function graphql(source: "mutation SetPrimaryEmail($input: SetPrimaryEmai
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "fragment SshKeyFragment on SshKey {\n  id\n  createdAt\n  updatedAt\n  title\n  key\n  fingerprint\n  usages\n  lastUsedAt\n  expiresAt\n  isExpired\n  namespace {\n    ...UserFragment\n    ...GroupFragment\n    ...ProjectFragment\n  }\n}"): (typeof documents)["fragment SshKeyFragment on SshKey {\n  id\n  createdAt\n  updatedAt\n  title\n  key\n  fingerprint\n  usages\n  lastUsedAt\n  expiresAt\n  isExpired\n  namespace {\n    ...UserFragment\n    ...GroupFragment\n    ...ProjectFragment\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query SshKeys($fullPath: String!, $first: Int!, $after: String, $filterBy: SshKeyFilter, $orderBy: SshKeyOrder) {\n  sshKeys(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...SshKeyFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"): (typeof documents)["query SshKeys($fullPath: String!, $first: Int!, $after: String, $filterBy: SshKeyFilter, $orderBy: SshKeyOrder) {\n  sshKeys(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...SshKeyFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {\n  updateActivationEmail(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {\n  updateActivationEmail(input: $input) {\n    message\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -222,6 +243,10 @@ export function graphql(source: "mutation UpdatePath($input: UpdatePathInput!) {
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation UpdateProject($input: UpdateProjectInput!) {\n  payload: updateProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"): (typeof documents)["mutation UpdateProject($input: UpdateProjectInput!) {\n  payload: updateProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdateSshKey($input: UpdateSshKeyInput!) {\n  payload: updateSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"): (typeof documents)["mutation UpdateSshKey($input: UpdateSshKeyInput!) {\n  payload: updateSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

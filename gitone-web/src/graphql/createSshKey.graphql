@@ -1,0 +1,7 @@
+mutation CreateSshKey($input: CreateSshKeyInput!) {
+  payload: createSshKey(input: $input) {
+    sshKey {
+      ...SshKeyFragment
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import MembersContainer, { useSearch } from "../../../shared/MembersContainer";
+import MembersContainer, { useSearch } from "../../namespace/members/MembersContainer";
 import { useFullPath } from "../../../utils/router";
 
 function Members() {

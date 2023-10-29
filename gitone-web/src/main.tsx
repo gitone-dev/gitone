@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <SnackbarProvider maxSnack={3}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn">
           <RouterProvider router={router} />
         </LocalizationProvider>
       </SnackbarProvider>

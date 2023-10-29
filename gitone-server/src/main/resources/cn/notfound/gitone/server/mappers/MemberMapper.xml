@@ -103,7 +103,7 @@
             </where>
             ORDER BY mb.user_id DESC, mb.access DESC
         ) AS mb
-        inner join namespaces AS u ON mb.user_id = u.id
+        INNER JOIN namespaces AS u ON mb.user_id = u.id
         <where>
             <include refid="page" />
             <if test="filter.query != null">
