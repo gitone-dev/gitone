@@ -22,6 +22,9 @@ public class GraphQlConfig {
 
     @Bean
     public RuntimeWiringConfigurer runtimeWiringConfigurer() {
-        return builder -> builder.scalar(ExtendedScalars.DateTime);
+        return builder -> {
+            builder.scalar(ExtendedScalars.DateTime);
+            builder.scalar(ExtendedScalars.GraphQLLong);
+        };
     }
 }

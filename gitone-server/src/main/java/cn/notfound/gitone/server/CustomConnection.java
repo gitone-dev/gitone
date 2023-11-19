@@ -72,6 +72,10 @@ public abstract class CustomConnection<T,  P extends CustomPage<?>> implements C
 
     protected abstract ConnectionCursor createCursor(T node);
 
+    protected ConnectionCursor createCursor(T node, int index) {
+        return createCursor(node);
+    }
+
     private boolean hasPreviousPage() {
         if (page.getLast() != null) {
             return data.size() == page.getLimit();

@@ -1,7 +1,11 @@
 package cn.notfound.gitone.server.controllers;
 
 import cn.notfound.gitone.server.CustomCursor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class NodeCursor<ID> extends CustomCursor {
 
     private ID id;
@@ -11,13 +15,5 @@ public class NodeCursor<ID> extends CustomCursor {
 
     public NodeCursor(ID id) {
         this.id =id;
-    }
-
-    public ID getId() {
-        return id;
-    }
-
-    public void setId(ID id) {
-        this.id = id;
     }
 }

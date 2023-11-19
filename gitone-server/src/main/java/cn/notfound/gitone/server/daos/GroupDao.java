@@ -29,7 +29,7 @@ public class GroupDao extends TimestampDao<Integer, GroupEntity, GroupMapper> {
         return groupEntity;
     }
 
-    // TODO N+1
+    // FIXME: 2023/10/29 N+1
     private void renameDescendants(GroupEntity groupEntity, String oldFullPath, String oldFullName) {
         List<GroupEntity> entities = mapper.findByDescendants(groupEntity.getId());
         for (GroupEntity entity : entities) {

@@ -80,8 +80,14 @@ const router = createBrowserRouter([
     element: <Layout.Namespace />,
     children: [
       { index: true, element: <Namespace.Show /> },
+      { path: "-/blob/*", element: <Namespace.Blob /> },
+      { path: "-/branches", element: <Namespace.Branches /> },
+      { path: "-/commit/*", element: <Namespace.Commit /> },
+      { path: "-/commits/*", element: <Namespace.Commits /> },
       { path: "-/projects", element: <Namespace.Projects /> },
       { path: "-/members", element: <Namespace.Members /> },
+      { path: "-/tags", element: <Namespace.Tags /> },
+      { path: "-/tree/*", element: <Namespace.Tree /> },
       {
         path: "-/settings",
         children: [

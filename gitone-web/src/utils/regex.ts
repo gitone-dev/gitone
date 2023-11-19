@@ -18,7 +18,7 @@ const user = {
   username: {
     helper: "长度 2~64，可包含字母、数字且以字母开头",
     rules: {
-      pattern: /^[A-Za-z][A-Za-z0-9]{1,63}$/,
+      pattern: /^[A-Za-z][A-Za-z0-9\-]{1,63}$/,
       maxLength: 64,
       required: true,
     },
@@ -66,7 +66,7 @@ const group = {
   path: {
     helper: "长度 2~64，可包含字母、数字且以字母开头",
     rules: {
-      pattern: /^[A-Za-z][A-Za-z0-9]{1,63}$/,
+      pattern: /^[A-Za-z][A-Za-z0-9\-]{1,63}$/,
       maxLength: 64,
       required: true,
     },
@@ -101,6 +101,47 @@ const sshKey = {
   },
 };
 
+const branch = {
+  name: {
+    helper: "长度 1~64",
+    rules: {
+      pattern: /^.{1,64}$/,
+      maxLength: 64,
+      required: true,
+    },
+  },
+  revision: {
+    helper: "Commit ID",
+    rules: {
+      required: true,
+    },
+  },
+};
+
+const tag = {
+  name: {
+    helper: "长度 1~64",
+    rules: {
+      pattern: /^.{1,64}$/,
+      maxLength: 64,
+      required: true,
+    },
+  },
+  revision: {
+    helper: "Commit ID",
+    rules: {
+      required: true,
+    },
+  },
+  message: {
+    helper: "标签描述",
+    rules: {
+      pattern: /^.{0,255}$/,
+      maxLength: 255,
+    },
+  },
+};
+
 const project = group;
 
-export { group, project, sshKey, user };
+export { branch, group, project, sshKey, tag, user };

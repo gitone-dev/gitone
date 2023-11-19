@@ -1,34 +1,31 @@
 import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
-  CreateSshKeyInput,
   DeleteSshKeyInput,
   Maybe,
   OrderDirection,
+  Policy,
   SshKeyEdge,
   SshKeyOrderField,
   UpdateSshKeyInput,
-  useCreateSshKeyMutation,
   useDeleteSshKeyMutation,
   useSshKeysQuery,
   useUpdateSshKeyMutation,
 } from "../../../../../generated/types";
-import ChunkPaper from "../../../../../shared/ChunkPaper";
 import ErrorBox from "../../../../../shared/ErrorBox";
 import LoadingBox from "../../../../../shared/LoadingBox";
-import Header from "./Header";
 import ListSshKey from "./ListSshKey";
-import NewDialog from "./NewDialog";
 
 interface Props {
   fullPath: string;
+  policy: Policy;
   query?: Maybe<string>;
   orderField: SshKeyOrderField;
+  orderDirection: OrderDirection;
 }
 
 function SshKeysContainer(props: Props) {
-  const { fullPath, query, orderField } = props;
-  const [open, setOpen] = useState(false);
+  const { fullPath, policy, query, orderField, orderDirection } = props;
   const { enqueueSnackbar } = useSnackbar();
 
   const { data, loading, error, fetchMore } = useSshKeysQuery({
@@ -38,59 +35,16 @@ function SshKeysContainer(props: Props) {
       first: 20,
       filterBy: { query },
       orderBy: {
-        direction: OrderDirection.Desc,
+        direction: orderDirection,
         field: orderField,
       },
     },
   });
   const edges = data?.sshKeys?.edges;
   const pageInfo = data?.sshKeys?.pageInfo;
-  const policy = data?.namespacePolicy;
 
-  const [createSshKeyMutation] = useCreateSshKeyMutation();
   const [updateSshKeyMutation] = useUpdateSshKeyMutation();
   const [deleteSshKeyMutation] = useDeleteSshKeyMutation();
-
-  const onCreate = (input: CreateSshKeyInput) => {
-    createSshKeyMutation({
-      variables: { input },
-      update(cache, { data: result }) {
-        const sshKey = result?.payload?.sshKey;
-        if (!sshKey) return;
-
-        cache.modify({
-          fields: {
-            sshKeys(existingRefs = {}, { toReference, readField }) {
-              if (
-                existingRefs.edges?.some(
-                  (edge: SshKeyEdge) => readField("id", edge.node) === sshKey.id
-                )
-              ) {
-                return existingRefs;
-              }
-
-              return {
-                ...existingRefs,
-                edges: [
-                  ...existingRefs.edges,
-                  {
-                    __typename: "SshKeyEdge",
-                    node: toReference(sshKey),
-                  },
-                ],
-              };
-            },
-          },
-        });
-      },
-      onCompleted() {
-        enqueueSnackbar("添加成功", { variant: "success" });
-      },
-      onError(error) {
-        enqueueSnackbar(error.message, { variant: "error" });
-      },
-    });
-  };
 
   const onUpdate = (input: UpdateSshKeyInput) => {
     updateSshKeyMutation({
@@ -131,9 +85,6 @@ function SshKeysContainer(props: Props) {
     });
   };
 
-  const onClick = () => setOpen(true);
-  const onClose = () => setOpen(false);
-
   const onScroll = () => {
     if (loading) return;
     if (!pageInfo?.hasNextPage) return;
@@ -161,24 +112,15 @@ function SshKeysContainer(props: Props) {
   }
 
   return (
-    <ChunkPaper primary="SSH 公钥列表">
-      <Header poliicy={policy} onClick={onClick} />
-      <ListSshKey
-        fullPath={fullPath}
-        policy={policy}
-        edges={edges}
-        pageInfo={pageInfo}
-        loadMore={onScroll}
-        onUpdate={onUpdate}
-        onDelete={onDelete}
-      />
-      <NewDialog
-        fullPath={fullPath}
-        open={open}
-        onClose={onClose}
-        onCreate={onCreate}
-      />
-    </ChunkPaper>
+    <ListSshKey
+      fullPath={fullPath}
+      policy={policy}
+      edges={edges}
+      pageInfo={pageInfo}
+      loadMore={onScroll}
+      onUpdate={onUpdate}
+      onDelete={onDelete}
+    />
   );
 }
 

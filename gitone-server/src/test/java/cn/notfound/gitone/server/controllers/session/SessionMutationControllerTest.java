@@ -48,7 +48,7 @@ class SessionMutationControllerTest extends BaseFactory {
         userFactory.viewer(session);
         mutate("deleteSession", session).errors().verify();
         userFactory.viewer(session);
-        /* FIXME 无法通过测试
+        /* FIXME: 2023/10/29 无法通过测试
          * query("viewer", session).execute()
          *         .errors()
          *         .expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));

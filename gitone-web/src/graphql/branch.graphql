@@ -1,0 +1,7 @@
+fragment BranchFragment on Branch {
+  id
+  name
+  commit {
+    ...CommitFragment
+  }
+}

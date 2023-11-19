@@ -55,6 +55,13 @@ const cache = new InMemoryCache({
         unconfirmedEmails: relayStylePagination(),
       },
     },
+    Repository: {
+      fields: {
+        branches: relayStylePagination(),
+        tags: relayStylePagination(),
+        commits: relayStylePagination(),
+      },
+    },
   },
 });
 

@@ -4,6 +4,7 @@ import cn.notfound.gitone.server.entities.Node;
 import cn.notfound.gitone.server.entities.Role;
 import cn.notfound.gitone.server.entities.UserDetailEntity;
 import cn.notfound.gitone.server.entities.UserEntity;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,8 @@ public class CustomUserDetails implements UserDetails, OAuth2User, Node<Integer>
     private final String name;
 
     private final String username;
+    @Getter
+    private final String email;
 
     private final String password;
 
@@ -31,6 +34,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User, Node<Integer>
         this.id = userEntity.getId();
         this.name = userEntity.getName();
         this.username = userEntity.getFullPath();
+        this.email = userDetailEntity.getEmail();
         this.password = userDetailEntity.getPassword();
         this.enabled = userDetailEntity.getActive();
         if (userDetailEntity.getRole().equals(Role.ADMIN)) {

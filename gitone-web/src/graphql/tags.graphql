@@ -1,0 +1,22 @@
+query Tags(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: TagFilter
+  $orderBy: TagOrder
+) {
+  repository(fullPath: $fullPath) {
+    id
+    tags(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {
+      edges {
+        node {
+          ...TagFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+}

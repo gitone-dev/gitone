@@ -7,9 +7,9 @@ import UpdateVisibilityPaper from "../../namespace/settings/UpdateVisibilityPape
 import UpdatePaper from "./UpdatePaper";
 
 function Settings() {
-  const { fullPath } = useFullPath();
+  const { fullPath, star } = useFullPath();
   const { data, loading, error } = useProjectQuery({
-    variables: { fullPath },
+    variables: { fullPath, revisionPath: star },
   });
 
   const project = data?.project;

@@ -85,6 +85,7 @@ function Header(props: Props) {
   return (
     <Stack direction="row" spacing={1}>
       <TextField
+        autoFocus
         sx={{ flexGrow: 1 }}
         size="small"
         defaultValue={query}
@@ -99,6 +100,7 @@ function Header(props: Props) {
         }}
       />
       <Select
+        sx={{ width: 140 }}
         size="small"
         displayEmpty
         name="访问权限"
@@ -114,6 +116,7 @@ function Header(props: Props) {
         <MenuItem value={Access.Reporter}>报告者</MenuItem>
       </Select>
       <Select
+        sx={{ width: 140 }}
         size="small"
         displayEmpty
         name="sort"
@@ -129,7 +132,7 @@ function Header(props: Props) {
         <MenuItem value={MemberOrderField.Username}>用户名</MenuItem>
       </Select>
       {actions.includes(Action.CreateMember) && (
-        <Button variant="contained" onClick={onClick}>
+        <Button size="small" variant="contained" onClick={onClick}>
           添加成员
         </Button>
       )}

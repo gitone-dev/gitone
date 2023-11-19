@@ -7,13 +7,14 @@ import RelativeTime from "../../../shared/RelativeTime";
 import { useFullPath } from "../../../utils/router";
 
 function Show() {
-  const { fullPath } = useFullPath();
+  const { fullPath, star } = useFullPath();
   const { data, loading, error } = useProjectQuery({
-    variables: { fullPath },
+    variables: { fullPath, revisionPath: star },
   });
 
   const project = data?.project;
   const policy = data?.namespacePolicy;
+  const repository = data?.repository;
   if (loading) {
     return <LoadingBox />;
   } else if (error) {
@@ -38,6 +39,7 @@ function Show() {
             {window.location.origin}/git/{project.fullPath}.git
           </code>
         </Item>
+        <Item label="空仓库">{`${repository?.empty}`}</Item>
       </Descriptions>
     </ChunkPaper>
   );

@@ -1,0 +1,5 @@
+fragment GitUserFragment on GitUser {
+  name
+  email
+  date
+}

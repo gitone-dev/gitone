@@ -1,4 +1,5 @@
 scalar DateTime
+scalar Long
 
 interface Node {
   id: ID!
@@ -42,6 +43,7 @@ type Query {
   existEmail(email: String!): Boolean!
 
   viewer: User!
+  viewerPolicy: Policy!
   user(username: String!): User!
   users(
     first: Int = 20
@@ -161,6 +163,14 @@ type Mutation {
   createSshKey(input: CreateSshKeyInput!): CreateSshKeyPayload
   updateSshKey(input: UpdateSshKeyInput!): UpdateSshKeyPayload
   deleteSshKey(input: DeleteSshKeyInput!): DeleteSshKeyPayload
+
+  # repository
+
+  createBranch(input: CreateBranchInput!): CreateBranchPayload
+  deleteBranch(input: DeleteBranchInput!): DeleteBranchPayload
+
+  createTag(input: CreateTagInput!): CreateTagPayload
+  deleteTag(input: DeleteTagInput!): DeleteTagPayload
 }
 
 # session
@@ -740,9 +750,41 @@ type DeleteSshKeyPayload {
 
 type Repository implements Node {
   id: ID!
-  exists: Boolean
-  branches: BranchConnection
-  tags: TagConnection
+  empty: Boolean
+  defaultBranch: Branch
+  revisionPath(revisionPath: String): RevisionPath
+  commit(revision: String): Commit
+  branches(
+    first: Int = 20
+    after: String
+    filterBy: BranchFilter
+    orderBy: BranchOrder = { field: NAME, direction: ASC }
+  ): BranchConnection
+  tags(
+    first: Int = 20
+    after: String
+    filterBy: TagFilter
+    orderBy: TagOrder = { field: NAME, direction: ASC }
+  ): TagConnection
+  commits(
+    first: Int = 20
+    after: String
+    filterBy: CommitFilter!
+  ): CommitConnection
+  blob(
+    revision: String
+    path: String
+  ): Blob
+  tree(
+    revision: String
+    path: String
+  ): TreeEntryConnection
+  diffs(
+    oldRevision: String
+    newRevision: String!
+    first: Int = 20
+    after: String
+  ): DiffConnection
 }
 
 # branch
@@ -763,12 +805,51 @@ type BranchConnection {
   pageInfo: PageInfo
 }
 
+input BranchFilter {
+  query: String
+}
+
+input BranchOrder {
+  direction: OrderDirection!
+  field: BranchOrderField!
+}
+
+enum BranchOrderField {
+  NAME
+  AUTHOR_DATE
+  COMMITTER_DATE
+}
+
+input CreateBranchInput {
+  fullPath: String!
+  revision: String!
+  name: String!
+}
+
+type CreateBranchPayload {
+  repositoryId: ID!
+  branch: Branch!
+}
+
+input DeleteBranchInput {
+  fullPath: String!
+  name: String!
+}
+
+type DeleteBranchPayload {
+  repositoryId: ID!
+  branch: Branch!
+}
+
 # tag
 
 type Tag {
   id: ID!
   name: String!
   commit: Commit
+  tagger: GitUser
+  shortMessage: String
+  fullMessage: String
 }
 
 type TagEdge {
@@ -781,11 +862,62 @@ type TagConnection {
   pageInfo: PageInfo
 }
 
+input TagFilter {
+  query: String
+}
+
+input TagOrder {
+  direction: OrderDirection!
+  field: TagOrderField!
+}
+
+enum TagOrderField {
+  NAME
+  AUTHOR_DATE
+  COMMITTER_DATE
+}
+
+input CreateTagInput {
+  fullPath: String!
+  revision: String!
+  name: String!
+  message: String!
+}
+
+type CreateTagPayload {
+  repositoryId: ID!
+  tag: Tag!
+}
+
+input DeleteTagInput {
+  fullPath: String!
+  name: String!
+}
+
+type DeleteTagPayload {
+  repositoryId: ID!
+  tag: Tag!
+}
+
+# revision path
+
+type RevisionPath implements Node {
+  id: ID!
+  revision: String!
+  path: String!
+  type: String!
+}
+
 # commit
 
-type Commit {
+type Commit implements Node {
   id: ID!
   sha: String!
+  parentShas: [String!]
+  author: GitUser
+  committer: GitUser
+  shortMessage: String
+  fullMessage: String
 }
 
 type CommitEdge {
@@ -795,5 +927,84 @@ type CommitEdge {
 
 type CommitConnection {
   edges: [CommitEdge!]
+  pageInfo: PageInfo
+}
+
+input CommitFilter {
+  revision: String!
+  path: String
+  email: String
+}
+
+# git user
+
+type GitUser {
+  name: String
+  email: String
+  date: DateTime
+}
+
+# blob
+
+type Blob implements Node {
+  id: ID!
+  sha: String
+  name: String
+  path: String
+  mode: Int
+  text: String
+  size: Long
+}
+
+# tree
+
+type TreeEntry implements Node {
+  id: ID!
+  sha: String
+  name: String
+  path: String
+  mode: Int
+  type: String
+}
+
+type TreeEntryEdge {
+  node: TreeEntry!
+  cursor: String!
+}
+
+type TreeEntryConnection {
+  edges: [TreeEntryEdge!]
+  pageInfo: PageInfo
+}
+
+# diff
+
+enum ChangeType {
+  ADD,
+  MODIFY,
+  DELETE,
+  RENAME,
+  COPY
+}
+
+type Diff implements Node {
+  id: ID!
+  changeType: ChangeType
+  oldSha: String
+  newSha: String
+  oldMode: Int
+  newMode: Int
+  oldPath: String
+  newPath: String
+  diff: String
+}
+
+type DiffEdge {
+  node: Diff!
+  cursor: String!
+}
+
+type DiffConnection {
+  edges: [DiffEdge!]
   pageInfo: PageInfo
 }

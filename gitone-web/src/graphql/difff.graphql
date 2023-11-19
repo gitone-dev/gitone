@@ -1,0 +1,19 @@
+query Diff($fullPath: String!, $oldRevision: String, $newRevision: String!) {
+  repository(fullPath: $fullPath) {
+    id
+    diffs(oldRevision: $oldRevision, newRevision: $newRevision) {
+      edges {
+        node {
+          id
+          changeType
+          oldSha
+          newSha
+          oldPath
+          newPath
+          diff
+        }
+        cursor
+      }
+    }
+  }
+}

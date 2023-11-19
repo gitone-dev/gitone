@@ -18,14 +18,14 @@ function Breadcrumbs(props: Props) {
   const breadcrumbs = items[pathname];
   return (
     <MuiBreadcrumbs>
-      {breadcrumbs.map((b) =>
+      {breadcrumbs?.map((b) =>
         b.to !== pathname ? (
           <Link
             key={b.to}
-            underline="hover"
             color="inherit"
             component={RouterLink}
             to={b.to}
+            underline="hover"
           >
             {b.text}
           </Link>

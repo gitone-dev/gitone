@@ -1,0 +1,27 @@
+query Branches(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: BranchFilter
+  $orderBy: BranchOrder
+) {
+  repository(fullPath: $fullPath) {
+    id
+    branches(
+      first: $first
+      after: $after
+      filterBy: $filterBy
+      orderBy: $orderBy
+    ) {
+      edges {
+        node {
+          ...BranchFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+}

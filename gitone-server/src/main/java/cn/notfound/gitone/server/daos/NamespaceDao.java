@@ -29,7 +29,7 @@ public class NamespaceDao extends TimestampDao<Integer, NamespaceEntity, Namespa
         return namespaceEntity;
     }
 
-    // TODO N+1
+    // FIXME: 2023/10/29 N+1
     private void renameDescendants(NamespaceEntity namespaceEntity, String oldFullPath, String oldFullName) {
         List<NamespaceEntity> entities = mapper.findByDescendants(namespaceEntity.getId());
         for (NamespaceEntity entity : entities) {

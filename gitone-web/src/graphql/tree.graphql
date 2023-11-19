@@ -1,0 +1,27 @@
+fragment TreeEntryFragment on TreeEntry {
+  id
+  name
+  path
+  mode
+  type
+}
+
+query Tree($fullPath: String!, $revision: String!, $path: String!) {
+  repository(fullPath: $fullPath) {
+    id
+    tree(revision: $revision, path: $path) {
+      edges {
+        node {
+          ...TreeEntryFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}

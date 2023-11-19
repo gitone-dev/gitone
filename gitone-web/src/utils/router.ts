@@ -21,7 +21,8 @@ function useFullPath() {
   });
 
   const fullPath = paths.join("/");
-  return { paths, fullPath };
+  const star = params["*"] || "";
+  return { paths, fullPath, star };
 }
 
 export { paths, segments, useFullPath };

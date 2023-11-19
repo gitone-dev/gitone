@@ -11,27 +11,29 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   CreateSshKeyInput,
   Maybe,
+  SshKeyEdge,
   SshKeyUsage,
+  useCreateSshKeyMutation,
 } from "../../../../../generated/types";
 import dayjs, { Dayjs, tz } from "../../../../../shared/dayts";
 import { sshKey as pattern } from "../../../../../utils/regex";
 
 interface Props {
-  fullPath: string;
   open: boolean;
+  fullPath: string;
   onClose: () => void;
-  onCreate: (input: CreateSshKeyInput) => void;
 }
 
 function NewDialog(props: Props) {
-  const { fullPath, open, onClose, onCreate } = props;
+  const { open, fullPath, onClose } = props;
   const [expiresAt, setExpiresAt] = useState<string | null>();
-
+  const { enqueueSnackbar } = useSnackbar();
   const {
     formState: { errors },
     handleSubmit,
@@ -43,12 +45,7 @@ function NewDialog(props: Props) {
       usages: [SshKeyUsage.Read],
     },
   });
-
-  const onSubmit = handleSubmit((input: CreateSshKeyInput) => {
-    onCreate(input);
-    onClose();
-    reset();
-  });
+  const [createSshKeyMutation] = useCreateSshKeyMutation();
 
   const onChange = (value: Maybe<Dayjs>) => {
     const text = value?.tz(tz).format();
@@ -56,13 +53,56 @@ function NewDialog(props: Props) {
     setValue("expiresAt", text);
   };
 
+  const onCreate = handleSubmit((input: CreateSshKeyInput) => {
+    createSshKeyMutation({
+      variables: { input },
+      update(cache, { data: result }) {
+        const sshKey = result?.payload?.sshKey;
+        if (!sshKey) return;
+
+        cache.modify({
+          fields: {
+            sshKeys(existingRefs = {}, { toReference, readField }) {
+              if (
+                existingRefs.edges?.some(
+                  (edge: SshKeyEdge) => readField("id", edge.node) === sshKey.id
+                )
+              ) {
+                return existingRefs;
+              }
+
+              return {
+                ...existingRefs,
+                edges: [
+                  ...existingRefs.edges,
+                  {
+                    __typename: "SshKeyEdge",
+                    node: toReference(sshKey),
+                  },
+                ],
+              };
+            },
+          },
+        });
+      },
+      onCompleted() {
+        enqueueSnackbar("添加成功", { variant: "success" });
+        onClose();
+        reset();
+      },
+      onError(error) {
+        enqueueSnackbar(error.message, { variant: "error" });
+      },
+    });
+  });
+
   return (
     <Dialog
       fullWidth
       open={open}
       onClose={onClose}
       component="form"
-      onSubmit={onSubmit}
+      onSubmit={onCreate}
     >
       <DialogTitle>添加 SSH 公钥</DialogTitle>
       <DialogContent>

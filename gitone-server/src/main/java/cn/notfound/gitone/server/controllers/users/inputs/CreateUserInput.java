@@ -18,7 +18,7 @@ public class CreateUserInput {
     @NotBlank @Size(min = 2, max = 64)
     private String name;
 
-    @NotBlank @Pattern(regexp = "^[A-Za-z][A-Za-z0-9]{1,63}$")
+    @NotBlank @Pattern(regexp = "^[A-Za-z][A-Za-z0-9\\-]{1,63}$")
     private String username;
 
     @NotBlank @Size(min = 6, max = 32)

@@ -1,0 +1,25 @@
+fragment CommitFragment on Commit {
+  id
+  sha
+  parentShas
+  author {
+    ...GitUserFragment
+  }
+  committer {
+    ...GitUserFragment
+  }
+  shortMessage
+  fullMessage
+}
+
+query Commit($fullPath: String!, $revision: String) {
+  repository(fullPath: $fullPath) {
+    id
+    commit(revision: $revision) {
+      ...CommitFragment
+    }
+  }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}

@@ -8,18 +8,20 @@ import org.eclipse.jgit.api.errors.InvalidRefNameException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.util.FileUtils;
-import org.eclipse.jgit.util.sha1.SHA1;
 import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class GitRepository implements Node<String> {
+
     public static final String TYPE = "Repository";
+
     public static final String InitialBranch = "main";
     @Getter
     private static String rootPath;
@@ -42,7 +44,7 @@ public class GitRepository implements Node<String> {
     private final String id;
 
     public GitRepository(ProjectEntity projectEntity) throws IOException {
-        this.id = String.format("%s:%d", ProjectEntity.TYPE, projectEntity.getId());
+        this.id = projectEntity.getId().toString();
         this.relativePath = StoragePath.get(projectEntity);
 
         Assert.hasText(rootPath, "rootPath 为空");
@@ -73,17 +75,17 @@ public class GitRepository implements Node<String> {
         FileUtils.delete(gitDir, FileUtils.RECURSIVE);
     }
 
-    public boolean exists() {
-        return repository.getObjectDatabase().exists();
+    public boolean empty() throws IOException {
+        return repository.getRefDatabase().getRefsByPrefix(Constants.R_HEADS).isEmpty();
     }
 
-    public List<GitBranch> getBranches() throws IOException {
-        List<Ref> refs = repository.getRefDatabase().getRefsByPrefix(Constants.R_HEADS);
-        return refs.stream().map(ref -> new GitBranch(this, ref)).toList();
-    }
+    public GitBranch defaultBranch() throws IOException {
+        Ref ref = repository.findRef(Constants.HEAD).getLeaf();
+        if (ref == null || ref.getObjectId() == null) return null;
 
-    public List<GitTag> getTags() throws IOException {
-        List<Ref> refs = repository.getRefDatabase().getRefsByPrefix(Constants.R_TAGS);
-        return refs.stream().map(ref -> new GitTag(this, ref)).toList();
+        try (RevWalk walk = new RevWalk(repository)) {
+            RevCommit revCommit = walk.parseCommit(ref.getObjectId());
+            return new GitBranch(this, ref, revCommit);
+        }
     }
 }

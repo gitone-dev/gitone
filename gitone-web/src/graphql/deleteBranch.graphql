@@ -1,0 +1,8 @@
+mutation DeleteBranch($input: DeleteBranchInput!) {
+  payload: deleteBranch(input: $input) {
+    repositoryId
+    branch {
+      ...BranchFragment
+    }
+  }
+}

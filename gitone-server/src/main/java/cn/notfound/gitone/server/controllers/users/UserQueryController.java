@@ -3,8 +3,11 @@ package cn.notfound.gitone.server.controllers.users;
 import cn.notfound.gitone.server.ViewerContext;
 import cn.notfound.gitone.server.config.exception.NotFound;
 import cn.notfound.gitone.server.daos.UserDao;
+import cn.notfound.gitone.server.entities.NamespaceEntity;
 import cn.notfound.gitone.server.entities.Role;
 import cn.notfound.gitone.server.entities.UserEntity;
+import cn.notfound.gitone.server.policies.NamespacePolicy;
+import cn.notfound.gitone.server.policies.Policy;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -20,10 +23,19 @@ public class UserQueryController extends ViewerContext {
 
     private UserDao userDao;
 
+    private NamespacePolicy namespacePolicy;
+
     @QueryMapping
     @Secured({ Role.ROLE_USER })
     public UserEntity viewer() {
         return userDao.find(viewerId());
+    }
+
+    @QueryMapping
+    @Secured({ Role.ROLE_USER })
+    public Policy viewerPolicy() {
+        NamespaceEntity namespaceEntity = userDao.find(viewerId());;
+        return namespacePolicy.policy(namespaceEntity);
     }
 
     @QueryMapping

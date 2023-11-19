@@ -1,0 +1,12 @@
+fragment TagFragment on Tag {
+  id
+  name
+  commit {
+    ...CommitFragment
+  }
+  tagger {
+    ...GitUserFragment
+  }
+  shortMessage
+  fullMessage
+}

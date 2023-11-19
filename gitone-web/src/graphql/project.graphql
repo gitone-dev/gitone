@@ -10,11 +10,24 @@ fragment ProjectFragment on Project {
   description
 }
 
-query Project($fullPath: String!) {
+query Project($fullPath: String!, $revisionPath: String!) {
   project(fullPath: $fullPath) {
     ...ProjectFragment
   }
   namespacePolicy(fullPath: $fullPath) {
     ...PolicyFragment
+  }
+  repository(fullPath: $fullPath) {
+    id
+    empty
+    defaultBranch {
+      name
+    }
+    revisionPath(revisionPath: $revisionPath) {
+      id
+      revision
+      path
+      type
+    }
   }
 }

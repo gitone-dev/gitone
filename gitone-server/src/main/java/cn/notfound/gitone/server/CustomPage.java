@@ -3,6 +3,7 @@ package cn.notfound.gitone.server;
 import graphql.relay.ConnectionCursor;
 
 public abstract class CustomPage<T extends ConnectionCursor> {
+
     private Integer first;
 
     private Integer last;

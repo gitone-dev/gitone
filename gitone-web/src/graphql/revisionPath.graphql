@@ -1,0 +1,11 @@
+query RevisionPath($fullPath: String!, $revisionPath: String) {
+  repository(fullPath: $fullPath) {
+    id
+    revisionPath(revisionPath: $revisionPath) {
+      id
+      revision
+      path
+      type
+    }
+  }
+}

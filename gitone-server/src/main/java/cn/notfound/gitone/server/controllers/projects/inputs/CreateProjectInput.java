@@ -22,7 +22,7 @@ public class CreateProjectInput {
     @NotBlank @Size(min = 1, max = 64)
     private String name;
 
-    @NotBlank @Pattern(regexp = "^[A-Za-z][A-Za-z0-9]{1,63}$")
+    @NotBlank @Pattern(regexp = "^[A-Za-z][A-Za-z0-9\\-]{1,63}$")
     private String path;
 
     @NotNull

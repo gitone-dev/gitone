@@ -10,6 +10,6 @@ public class UpdatePathInput {
     @NotBlank
     private String fullPath;
 
-    @NotBlank @Pattern(regexp = "^[A-Za-z][A-Za-z0-9]{1,63}$")
+    @NotBlank @Pattern(regexp = "^[A-Za-z][A-Za-z0-9\\-]{1,63}$")
     private String path;
 }

@@ -1,0 +1,8 @@
+mutation CreateBranch($input: CreateBranchInput!) {
+  payload: createBranch(input: $input) {
+    repositoryId
+    branch {
+      ...BranchFragment
+    }
+  }
+}

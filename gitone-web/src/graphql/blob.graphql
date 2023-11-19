@@ -1,0 +1,20 @@
+fragment BlobFragment on Blob {
+  id
+  sha
+  path
+  name
+  size
+  text
+}
+
+query Blob($fullPath: String!, $revision: String!, $path: String!) {
+  repository(fullPath: $fullPath) {
+    id
+    blob(revision: $revision, path: $path) {
+      ...BlobFragment
+    }
+  }
+  namespacePolicy(fullPath: $fullPath) {
+    ...PolicyFragment
+  }
+}

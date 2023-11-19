@@ -60,9 +60,7 @@ public class UserMutationController extends ViewerContext {
         return new ActivateUserPayload("账号激活成功");
     }
 
-    /*
-     * TODO 控制发送频率
-     */
+    // FIXME: 2023/10/29 控制发送频率
     @MutationMapping
     public SendPasswordResetEmailPayload sendPasswordResetEmail(@Valid @Argument SendPasswordResetEmailInput input) {
         userService.sendPasswordResetEmail(input);

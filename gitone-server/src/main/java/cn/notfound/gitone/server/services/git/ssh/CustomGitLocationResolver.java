@@ -38,7 +38,7 @@ public class CustomGitLocationResolver extends AbstractLoggingBean implements Gi
 
     @Override
     public Path resolveRootDirectory(String command, String[] args, ServerSession session, FileSystem fs) {
-        // TODO 推送代码
+        // FIXME: 2023/10/29 推送代码
         if (!RemoteConfig.DEFAULT_UPLOAD_PACK.equals(args[0])) return null;
 
         SshKeyEntity sshKeyEntity = session.getAttribute(CustomPublickeyAuthenticator.SSH_KEY);

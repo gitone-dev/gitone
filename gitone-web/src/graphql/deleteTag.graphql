@@ -1,0 +1,8 @@
+mutation DeleteTag($input: DeleteTagInput!) {
+  payload: deleteTag(input: $input) {
+    repositoryId
+    tag {
+      ...TagFragment
+    }
+  }
+}

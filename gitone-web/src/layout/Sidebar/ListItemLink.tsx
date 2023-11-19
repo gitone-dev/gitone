@@ -7,6 +7,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import React, { useState } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
+import { pathEqual } from "../../utils/git";
 
 interface Props {
   key?: string;
@@ -29,7 +30,11 @@ function ListItemLink(props: Props) {
   const { icon, text, to, hidden, children } = props;
   const { pathname } = useLocation();
   const [open, setOpen] = useState<boolean>(
-    !!(children && (to === pathname || children.find((e) => e.to === pathname)))
+    !!(
+      children &&
+      (pathEqual(to, pathname) ||
+        children.find((e) => pathEqual(e.to, pathname)))
+    )
   );
 
   const onClick = () => setOpen(!open);
@@ -59,7 +64,7 @@ function ListItemLink(props: Props) {
               key={item.key}
               component={RouterLink}
               to={item.to}
-              selected={pathname === item.to}
+              selected={pathEqual(pathname, item.to)}
             >
               {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
               <ListItemText primary={item.text} />

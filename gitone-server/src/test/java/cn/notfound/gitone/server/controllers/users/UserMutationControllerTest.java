@@ -194,7 +194,7 @@ class UserMutationControllerTest extends BaseFactory {
 
         mutationUpdatePassword(null, input, ErrorType.UNAUTHORIZED);
         mutationUpdatePassword(session, input, null);
-        // FIXME 旧的 TOKEN 未失效
+        // FIXME: 2023/10/29 旧的 TOKEN 未失效
         query("viewer", session).execute().errors().verify();
 
         CreateSessionInput createSessionInput = new CreateSessionInput();

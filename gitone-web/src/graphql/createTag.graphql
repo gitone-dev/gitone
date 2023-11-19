@@ -1,0 +1,8 @@
+mutation CreateTag($input: CreateTagInput!) {
+  payload: createTag(input: $input) {
+    repositoryId
+    tag {
+      ...TagFragment
+    }
+  }
+}

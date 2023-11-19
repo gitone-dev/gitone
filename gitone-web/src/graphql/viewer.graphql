@@ -2,4 +2,7 @@ query Viewer {
   viewer {
     ...UserFragment
   }
+  viewerPolicy {
+    ...PolicyFragment
+  }
 }

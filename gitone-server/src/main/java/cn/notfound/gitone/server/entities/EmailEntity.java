@@ -22,6 +22,7 @@ public class EmailEntity implements TimestampNode<Integer> {
 
     private String email;
 
+    // FIXME: 2023/10/29 仅保存 SHA256
     private String confirmationToken;
 
     private OffsetDateTime confirmationSentAt;

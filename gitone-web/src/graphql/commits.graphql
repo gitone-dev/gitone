@@ -1,0 +1,21 @@
+query Commits(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: CommitFilter!
+) {
+  repository(fullPath: $fullPath) {
+    id
+    commits(first: $first, after: $after, filterBy: $filterBy) {
+      edges {
+        node {
+          ...CommitFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+}
