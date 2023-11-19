@@ -1,3 +1,4 @@
+import { pathEqual } from "@/utils/git";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
@@ -7,7 +8,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import React, { useState } from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import { pathEqual } from "../../utils/git";
 
 interface Props {
   key?: string;

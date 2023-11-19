@@ -1,7 +1,7 @@
+import { GroupEdge, PageInfo } from "@/generated/types";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { GroupEdge, PageInfo } from "../../../generated/types";
 import ListItemGroup from "./ListItemGroup";
 
 interface Props {

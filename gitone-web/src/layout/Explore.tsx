@@ -1,10 +1,10 @@
+import LoadingPage from "@/app/LoadingPage";
+import { useViewerQuery } from "@/generated/types";
 import CodeIcon from "@mui/icons-material/Code";
 import GroupsIcon from "@mui/icons-material/Groups";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import { useViewerQuery } from "../generated/types";
-import LoadingPage from "../pages/LoadingPage";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
 import Sidebar from "./Sidebar";

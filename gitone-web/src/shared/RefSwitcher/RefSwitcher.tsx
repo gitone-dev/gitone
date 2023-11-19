@@ -1,3 +1,4 @@
+import { RevisionPath } from "@/generated/types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -11,7 +12,6 @@ import Tab from "@mui/material/Tab";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { RevisionPath } from "../../generated/types";
 import { ListBranchName } from "./ListBranchName";
 import { ListTagName } from "./ListTagName";
 

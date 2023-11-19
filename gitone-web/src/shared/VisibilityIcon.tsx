@@ -1,6 +1,6 @@
+import { Maybe, Visibility } from "@/generated/types";
 import LockIcon from "@mui/icons-material/Lock";
 import PublicIcon from "@mui/icons-material/Public";
-import { Maybe, Visibility } from "../generated/types";
 
 interface Props {
   visibility: Maybe<Visibility>;

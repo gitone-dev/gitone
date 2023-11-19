@@ -1,3 +1,6 @@
+import { Project } from "@/generated/types";
+import RelativeTime from "@/shared/RelativeTime";
+import VisibilityIcon from "@/shared/VisibilityIcon";
 import GroupIcon from "@mui/icons-material/Group";
 import Avatar from "@mui/material/Avatar";
 import Link from "@mui/material/Link";
@@ -5,9 +8,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { Link as RouterLink } from "react-router-dom";
-import { Project } from "../../../generated/types";
-import RelativeTime from "../../RelativeTime";
-import VisibilityIcon from "../../VisibilityIcon";
 
 interface Props {
   project: Project;

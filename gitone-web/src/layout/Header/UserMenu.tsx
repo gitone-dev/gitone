@@ -1,3 +1,5 @@
+import { deleteSession } from "@/client";
+import { User, useDeleteSessionMutation } from "@/generated/types";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -10,8 +12,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { deleteSession } from "../../client";
-import { User, useDeleteSessionMutation } from "../../generated/types";
 
 interface Props {
   viewer: User;

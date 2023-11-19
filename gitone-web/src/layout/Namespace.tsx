@@ -1,7 +1,7 @@
-import { Action, useNamespaceQuery } from "../generated/types";
-import ErrorPage from "../pages/ErrorPage";
-import LoadingPage from "../pages/LoadingPage";
-import { useFullPath } from "../utils/router";
+import ErrorPage from "@/app/ErrorPage";
+import LoadingPage from "@/app/LoadingPage";
+import { Action, useNamespaceQuery } from "@/generated/types";
+import { useFullPath } from "@/utils/router";
 import Group from "./Group";
 import Project from "./Project";
 import User from "./User";

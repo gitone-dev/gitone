@@ -1,13 +1,13 @@
+import ErrorPage from "@/app/ErrorPage";
+import LoadingPage from "@/app/LoadingPage";
+import { useUserQuery } from "@/generated/types";
+import { useFullPath } from "@/utils/router";
 import CodeIcon from "@mui/icons-material/Code";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PersonIcon from "@mui/icons-material/Person";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import { useUserQuery } from "../generated/types";
-import ErrorPage from "../pages/ErrorPage";
-import LoadingPage from "../pages/LoadingPage";
-import { useFullPath } from "../utils/router";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
 import Sidebar from "./Sidebar";

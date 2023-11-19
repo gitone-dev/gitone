@@ -6,7 +6,7 @@ type ResolvedGlobalId = {
 };
 
 function fromGlobalId(globalId: string): ResolvedGlobalId {
-  let split = globalId.split("/");
+  const split = globalId.split("/");
   if (split.length !== 3) {
     throw new Error("invalid id");
   } else if (split[0] !== PREFIX) {

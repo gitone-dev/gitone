@@ -7,20 +7,31 @@
     <title>GitOne</title>
     <style>
       #debug {
+        display: flex;
+        align-items: center;
         position: fixed;
-        right: 24px;
-        bottom: 24px;
-        z-index: 10000;
+        left: 12px;
+        bottom: 12px;
+        z-index: 1399;
         padding: 8px;
         border: 1px dashed #ccc;
         border-radius: 2px;
         user-select: none;
+      }
+      #debug > div {
+        margin: 0 4px;
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <div id="debug">开发环境</div>
+    <div id="debug">
+      <div>
+        <a href='https://gitee.com/gitone-dev/gitone' target="_blank" rel="none"><img width="80px"
+            src='https://gitee.com/gitone-dev/gitone/widgets/widget_3.svg?color=2195f3' /></a>
+      </div>
+      <div>开发环境</div>
+    </div>
   </body>
 </html>

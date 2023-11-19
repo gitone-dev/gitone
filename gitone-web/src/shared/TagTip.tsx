@@ -1,6 +1,6 @@
+import { Tag } from "@/generated/types";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { Tag } from "../generated/types";
 
 interface Props {
   tag: Tag;

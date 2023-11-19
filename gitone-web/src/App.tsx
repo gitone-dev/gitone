@@ -1,7 +1,7 @@
+import LoadingPage from "@/app/LoadingPage";
+import { useViewerQuery } from "@/generated/types";
+import Layout from "@/layout";
 import { Navigate } from "react-router-dom";
-import { useViewerQuery } from "./generated/types";
-import Layout from "./layout";
-import LoadingPage from "./pages/LoadingPage";
 
 function App() {
   const { data, loading } = useViewerQuery();

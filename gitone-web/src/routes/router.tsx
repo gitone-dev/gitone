@@ -1,16 +1,16 @@
+import App from "@/App";
+import NotFoundPage from "@/app/NotFoundPage";
+import Dashboard from "@/app/dashboard";
+import Explore from "@/app/explore";
+import Groups from "@/app/groups";
+import Namespace from "@/app/namespace";
+import Profile from "@/app/profile";
+import Projects from "@/app/projects";
+import Session from "@/app/session";
+import Users from "@/app/users";
+import Layout from "@/layout";
+import { paths } from "@/utils/router";
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import Layout from "../layout";
-import NotFoundPage from "../pages/NotFoundPage";
-import Dashboard from "../pages/dashboard";
-import Explore from "../pages/explore";
-import Groups from "../pages/groups";
-import Namespace from "../pages/namespace";
-import Profile from "../pages/profile";
-import Projects from "../pages/projects";
-import Session from "../pages/session";
-import Users from "../pages/users";
-import { paths } from "../utils/router";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },

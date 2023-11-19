@@ -1,10 +1,10 @@
+import { useViewerQuery } from "@/generated/types";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
-import { useViewerQuery } from "../../generated/types";
 import NewMenu from "./NewMenu";
 import UserMenu from "./UserMenu";
 

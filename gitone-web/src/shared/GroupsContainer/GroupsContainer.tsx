@@ -1,13 +1,13 @@
-import { useEffect } from "react";
 import {
   GroupOrderField,
   Maybe,
   OrderDirection,
   Visibility,
   useGroupsQuery,
-} from "../../generated/types";
-import ErrorBox from "../ErrorBox";
-import LoadingBox from "../LoadingBox";
+} from "@/generated/types";
+import ErrorBox from "@/shared/ErrorBox";
+import LoadingBox from "@/shared/LoadingBox";
+import { useEffect } from "react";
 import ListGroup from "./ListGroup";
 
 interface Props {

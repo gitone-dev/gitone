@@ -1,14 +1,14 @@
-import { useEffect } from "react";
 import {
   Maybe,
   OrderDirection,
   ProjectOrderField,
   Visibility,
   useProjectsQuery,
-} from "../../generated/types";
-import ErrorBox from "../ErrorBox";
+} from "@/generated/types";
+import ErrorBox from "@/shared/ErrorBox";
+import LoadingBox from "@/shared/LoadingBox";
+import { useEffect } from "react";
 import ListProject from "./ListProject";
-import LoadingBox from "../LoadingBox";
 
 interface Props {
   parentId?: string;

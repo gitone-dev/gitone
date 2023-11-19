@@ -1,3 +1,4 @@
+import { ProjectOrderField, Visibility } from "@/generated/types";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -5,59 +6,14 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import debounce from "@mui/material/utils/debounce";
-import { Link as RouterLink, useSearchParams } from "react-router-dom";
-import { Maybe, ProjectOrderField, Visibility } from "../../generated/types";
-
-function useSearch(props: Props) {
-  const { isViewer } = props;
-  const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get("query");
-  const visibility = isViewer
-    ? (searchParams.get("visibility") as Visibility)
-    : Visibility.Public;
-  const orderField =
-    (searchParams.get("orderField") as ProjectOrderField) ||
-    ProjectOrderField.CreatedAt;
-
-  const setQuery = debounce((query: string) => {
-    searchParams.set("query", query);
-    setSearchParams(searchParams, { replace: true });
-  }, 500);
-
-  const setVisibility = (visibility: Maybe<Visibility>) => {
-    if (visibility) {
-      searchParams.set("visibility", visibility);
-    } else {
-      searchParams.delete("visibility");
-    }
-    setSearchParams(searchParams, { replace: true });
-  };
-
-  const setOrderField = (orderField: Maybe<ProjectOrderField>) => {
-    if (orderField) {
-      searchParams.set("orderField", orderField);
-    } else {
-      searchParams.set("orderField", ProjectOrderField.CreatedAt);
-    }
-    setSearchParams(searchParams, { replace: true });
-  };
-
-  return {
-    query,
-    setQuery,
-    visibility,
-    setVisibility,
-    orderField,
-    setOrderField,
-  };
-}
+import { Link as RouterLink } from "react-router-dom";
+import useSearch from "./useSearch";
 
 interface Props {
   isViewer: boolean;
 }
 
-function Header(props: Props) {
+export default function Header(props: Props) {
   const { isViewer } = props;
   const {
     query,
@@ -134,6 +90,3 @@ function Header(props: Props) {
     </Stack>
   );
 }
-
-export default Header;
-export { useSearch };

@@ -1,14 +1,14 @@
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import { Link as RouterLink } from "react-router-dom";
 import {
   BranchOrderField,
   Maybe,
   OrderDirection,
   useBranchesQuery,
-} from "../../generated/types";
+} from "@/generated/types";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import { Link as RouterLink } from "react-router-dom";
 
 export interface Props {
   fullPath: string;

@@ -1,3 +1,6 @@
+import ErrorPage from "@/app/ErrorPage";
+import LoadingPage from "@/app/LoadingPage";
+import { useViewerQuery } from "@/generated/types";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import EmailIcon from "@mui/icons-material/Email";
 import KeyIcon from "@mui/icons-material/Key";
@@ -6,9 +9,6 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import { useViewerQuery } from "../generated/types";
-import ErrorPage from "../pages/ErrorPage";
-import LoadingPage from "../pages/LoadingPage";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
 import Sidebar from "./Sidebar";

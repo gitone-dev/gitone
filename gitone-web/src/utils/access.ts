@@ -1,4 +1,4 @@
-import { Access, Maybe } from "../generated/types";
+import { Access, Maybe } from "@/generated/types";
 
 const Accesses = [
   Access.NoAccess,

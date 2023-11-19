@@ -1,7 +1,7 @@
+import LoadingPage from "@/app/LoadingPage";
+import { useViewerQuery } from "@/generated/types";
 import { BoxProps } from "@mui/material/Box";
 import { Navigate } from "react-router-dom";
-import { useViewerQuery } from "../generated/types";
-import LoadingPage from "../pages/LoadingPage";
 import Center from "./Center";
 
 function Unauthorized(props: BoxProps) {

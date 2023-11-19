@@ -1,7 +1,7 @@
+import { PageInfo, ProjectEdge } from "@/generated/types";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { PageInfo, ProjectEdge } from "../../../generated/types";
 import ListItemProject from "./ListItemProject";
 
 interface Props {

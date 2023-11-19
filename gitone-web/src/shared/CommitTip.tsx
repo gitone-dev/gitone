@@ -1,8 +1,8 @@
+import { Commit, Maybe } from "@/generated/types";
 import Link, { LinkProps } from "@mui/material/Link";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
-import { Commit, Maybe } from "../generated/types";
 
 interface Props {
   fullPath: string;

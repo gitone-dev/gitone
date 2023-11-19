@@ -1476,7 +1476,7 @@ export type DiffQueryVariables = Exact<{
 }>;
 
 
-export type DiffQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, diffs?: { __typename?: 'DiffConnection', edges?: Array<{ __typename?: 'DiffEdge', cursor: string, node: { __typename?: 'Diff', id: string, oldSha?: string | null, newSha?: string | null, oldPath?: string | null, newPath?: string | null, changeType?: ChangeType | null, diff?: string | null } }> | null } | null } };
+export type DiffQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, diffs?: { __typename?: 'DiffConnection', edges?: Array<{ __typename?: 'DiffEdge', cursor: string, node: { __typename?: 'Diff', id: string, changeType?: ChangeType | null, oldSha?: string | null, newSha?: string | null, oldPath?: string | null, newPath?: string | null, diff?: string | null } }> | null } | null } };
 
 export type EmailFragmentFragment = { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean };
 
@@ -2774,11 +2774,11 @@ export const DiffDocument = gql`
       edges {
         node {
           id
+          changeType
           oldSha
           newSha
           oldPath
           newPath
-          changeType
           diff
         }
         cursor

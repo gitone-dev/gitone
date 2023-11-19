@@ -18,7 +18,7 @@ const user = {
   username: {
     helper: "长度 2~64，可包含字母、数字且以字母开头",
     rules: {
-      pattern: /^[A-Za-z][A-Za-z0-9\-]{1,63}$/,
+      pattern: /^[A-Za-z][A-Za-z0-9-]{1,63}$/,
       maxLength: 64,
       required: true,
     },
@@ -66,7 +66,7 @@ const group = {
   path: {
     helper: "长度 2~64，可包含字母、数字且以字母开头",
     rules: {
-      pattern: /^[A-Za-z][A-Za-z0-9\-]{1,63}$/,
+      pattern: /^[A-Za-z][A-Za-z0-9-]{1,63}$/,
       maxLength: 64,
       required: true,
     },
