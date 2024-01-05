@@ -11,11 +11,15 @@ import cn.notfound.gitone.server.controllers.branches.BranchPage;
 import cn.notfound.gitone.server.controllers.commits.CommitConnection;
 import cn.notfound.gitone.server.controllers.commits.CommitFilter;
 import cn.notfound.gitone.server.controllers.commits.CommitPage;
+import cn.notfound.gitone.server.controllers.diffs.DiffConnection;
+import cn.notfound.gitone.server.controllers.diffs.DiffPage;
 import cn.notfound.gitone.server.controllers.tags.TagConnection;
 import cn.notfound.gitone.server.controllers.tags.TagFilter;
 import cn.notfound.gitone.server.controllers.tags.TagOrder;
 import cn.notfound.gitone.server.controllers.tags.TagPage;
 import cn.notfound.gitone.server.models.git.*;
+import cn.notfound.gitone.server.services.node.HighlightService;
+import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
@@ -25,9 +29,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@AllArgsConstructor
 @Controller
 @SchemaMapping(typeName = GitRepository.TYPE)
 public class RepositoryTypeController {
+
+    private final HighlightService highlightService;
 
     @SchemaMapping
     public String id(GitRepository gitRepository) {
@@ -115,14 +122,31 @@ public class RepositoryTypeController {
     }
 
     @SchemaMapping
-    public NodeConnection<String, GitDiff> diffs(
+    public DiffConnection diffs(
             GitRepository gitRepository,
             @Argument String oldRevision,
-            @Argument String newRevision) throws IOException {
+            @Argument String newRevision,
+            @Argument Integer first,
+            @Argument String after
+    ) throws IOException {
+        DiffPage page = new DiffPage(first, after);
+
         GitCommit oldCommit = GitCommit.find(gitRepository, oldRevision);
         GitCommit newCommit = GitCommit.find(gitRepository, newRevision);
         List<GitDiff> diffs = GitDiff.between(gitRepository, oldCommit, newCommit);
-        NodePage<String> page = new NodePage<>(diffs.size());
-        return new NodeConnection<>(diffs, page);
+        if (page.getAfter() != null) {
+            String id = page.getAfter().getId();
+            if (id != null) {
+                for (int i = 0; i < diffs.size(); i++) {
+                    if (!id.equals(diffs.get(i).getId())) continue;
+                    diffs = diffs.subList(i + 1, diffs.size());
+                    break;
+                }
+            }
+        }
+        if (page.getFirst() != null && page.getFirst() < diffs.size()) {
+            diffs = diffs.subList(0, page.getFirst() + 1);
+        }
+        return new DiffConnection(diffs, page);
     }
 }

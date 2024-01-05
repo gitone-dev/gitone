@@ -6,8 +6,6 @@ import cn.notfound.gitone.server.OrderPage;
 import cn.notfound.gitone.server.models.git.GitBranch;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.util.Objects;
-
 public class BranchPage extends OrderPage<BranchCursor> {
 
     private final BranchOrder order;
@@ -21,11 +19,11 @@ public class BranchPage extends OrderPage<BranchCursor> {
         this.order = order;
 
         if (order.getDirection().equals(OrderDirection.DESC)) {
-            minCursor = Objects.requireNonNullElse(getBefore(), new BranchCursor());
-            maxCursor = Objects.requireNonNullElse(getAfter(), new BranchCursor());
+            minCursor = getBefore();
+            maxCursor = getAfter();
         } else {
-            minCursor = Objects.requireNonNullElse(getAfter(), new BranchCursor());
-            maxCursor = Objects.requireNonNullElse(getBefore(), new BranchCursor());
+            minCursor = getAfter();
+            maxCursor = getBefore();
         }
     }
 
@@ -52,10 +50,10 @@ public class BranchPage extends OrderPage<BranchCursor> {
     private boolean isName(GitBranch gitBranch) {
         boolean result = true;
 
-        if (minCursor.getName() != null)
+        if (minCursor != null && minCursor.getName() != null)
             result = gitBranch.getName().compareTo(minCursor.getName()) > 0;
 
-        if (result && maxCursor.getName() != null)
+        if (result && maxCursor != null && maxCursor.getName() != null)
             result = gitBranch.getName().compareTo(maxCursor.getName()) < 0;
 
         return result;
@@ -64,10 +62,10 @@ public class BranchPage extends OrderPage<BranchCursor> {
     private boolean isAuthorDate(GitBranch gitBranch) {
         boolean result = true;
 
-        if (minCursor.getAuthorDate() != null)
+        if (minCursor != null && minCursor.getAuthorDate() != null)
             result = gitBranch.getCommit().getAuthor().getDate().isAfter(minCursor.getAuthorDate());
 
-        if (result && maxCursor.getAuthorDate() != null)
+        if (result && maxCursor != null && maxCursor.getAuthorDate() != null)
             result = gitBranch.getCommit().getCommitter().getDate().isBefore(maxCursor.getAuthorDate());
 
         return result;
@@ -76,10 +74,10 @@ public class BranchPage extends OrderPage<BranchCursor> {
     private boolean isCommitterDate(GitBranch gitBranch) {
         boolean result = true;
 
-        if (minCursor.getCommitterDate() != null)
+        if (minCursor != null && minCursor.getCommitterDate() != null)
             result = gitBranch.getCommit().getCommitter().getDate().isAfter(minCursor.getCommitterDate());
 
-        if (result && maxCursor.getCommitterDate() != null)
+        if (result && maxCursor != null && maxCursor.getCommitterDate() != null)
             result = gitBranch.getCommit().getCommitter().getDate().isBefore(maxCursor.getCommitterDate());
 
         return result;

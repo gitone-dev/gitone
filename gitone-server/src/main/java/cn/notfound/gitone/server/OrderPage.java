@@ -1,8 +1,6 @@
 package cn.notfound.gitone.server;
 
-import graphql.relay.ConnectionCursor;
-
-public abstract class OrderPage<T extends ConnectionCursor> extends CustomPage<T> {
+public abstract class OrderPage<T extends CustomCursor> extends CustomPage<T> {
 
     public OrderPage(Integer first, String after) {
         super(first, after);

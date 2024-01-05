@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package highlight;
+option java_multiple_files = true;
+option java_package = "cn.notfound.gitone.node.highlight";
+
+service Highlight {
+  rpc Blob(BlobRequest) returns (BlobResponse);
+  rpc Blobs(stream BlobRequest) returns (stream BlobResponse);
+  rpc Diff(DiffRequest) returns (DiffResponse);
+}
+
+message BlobRequest {
+  string name = 1;
+  string text = 2;
+}
+
+message BlobResponse {
+  repeated BlobLine blobLines = 1;
+}
+
+message BlobLine {
+  int32 number = 1;
+  string text = 2;
+  string html = 3;
+}
+
+message DiffRequest {
+  enum Type {
+    UNKNOWN = 0;
+    ADD = 1;
+    MODIFY = 2;
+    DELETE = 3;
+    RENAME = 4;
+    COPY = 5;
+  }
+  string id = 1;
+  Type type = 2;
+  string oldPath = 3;
+  string newPath = 4;
+  string oldSha = 5;
+  string newSha = 6;
+  string oldText = 7;
+  string newText = 8;
+  repeated DiffLine lines = 9;
+}
+
+message DiffLine {
+  enum Type {
+    UNKNOWN = 0;
+    ADD = 1;
+    DELETE = 2;
+    MATCH = 3;
+    META = 4;
+  }
+  int32 index = 1;
+  Type type = 2;
+  int32 oldNumber = 3;
+  int32 newNumber = 4;
+  string text = 5;
+  string html = 6;
+}
+
+message DiffResponse {
+  repeated DiffLine lines = 1;
+}

@@ -4,7 +4,7 @@ import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
 import RelativeTime from "@/shared/RelativeTime";
 import { SHA_ABBR_LENGTH } from "@/utils/git";
-import { Divider } from "@mui/material";
+import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -55,10 +55,6 @@ function CommitContainer(props: Props) {
           </Typography>
         </Stack>
         <Divider sx={{ my: 1 }} />
-        <Typography variant="inherit" whiteSpace="pre-wrap">
-          {commit.fullMessage}
-        </Typography>
-        <Divider sx={{ my: 1 }} />
         <Stack direction="row" spacing={1}>
           <span>parent</span>
           {commit.parentShas?.map((sha) => (
@@ -71,6 +67,14 @@ function CommitContainer(props: Props) {
             </Link>
           ))}
         </Stack>
+        <Divider sx={{ my: 1 }} />
+        <Typography
+          variant="inherit"
+          whiteSpace="pre-wrap"
+          fontFamily="monospace"
+        >
+          {commit.fullMessage}
+        </Typography>
       </ChunkPaper>
       <DiffsContainer
         fullPath={fullPath}

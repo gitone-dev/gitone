@@ -70,6 +70,18 @@ public class GitBlob implements Node<String> {
         return size;
     }
 
+    public Integer linesCount() throws IOException {
+        int count = 0;
+        byte[] data = getData();;
+        for (byte datum : data) {
+            if (datum == '\n') count += 1;
+        }
+        if (data[data.length - 1] != '\n') {
+            count += 1;
+        }
+        return count;
+    }
+
     private void loadData() throws IOException {
         if (isFile()) {
             ObjectLoader objectLoader = gitRepository.repository.open(sha);

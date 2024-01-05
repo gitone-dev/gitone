@@ -1,0 +1,26 @@
+query BlobLines(
+  $fullPath: String!
+  $revision: String!
+  $path: String!
+  $first: Int!
+  $after: String
+) {
+  repository(fullPath: $fullPath) {
+    id
+    blob(revision: $revision, path: $path) {
+      id
+      lines(first: $first, after: $after) {
+        edges {
+          node {
+            number
+            html
+          }
+          cursor
+        }
+        pageInfo {
+          ...PageInfoFragment
+        }
+      }
+    }
+  }
+}

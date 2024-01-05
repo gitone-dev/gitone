@@ -73,7 +73,6 @@ function RefSwitcher(props: Props) {
           <Paper sx={{ pt: 2, px: 2, width: 300 }}>
             <TextField
               fullWidth
-              autoFocus
               sx={{ flexGrow: 1 }}
               size="small"
               placeholder="分支名或标签名"

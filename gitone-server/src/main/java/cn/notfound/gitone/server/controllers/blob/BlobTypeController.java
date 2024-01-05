@@ -1,15 +1,24 @@
 package cn.notfound.gitone.server.controllers.blob;
 
+import cn.notfound.gitone.node.highlight.BlobLine;
+import cn.notfound.gitone.node.highlight.BlobRequest;
 import cn.notfound.gitone.server.controllers.Relay;
 import cn.notfound.gitone.server.models.git.GitBlob;
+import cn.notfound.gitone.server.services.node.HighlightService;
+import lombok.AllArgsConstructor;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
+import java.util.List;
 
+@AllArgsConstructor
 @Controller
 @SchemaMapping(typeName = GitBlob.TYPE)
 public class BlobTypeController {
+
+    private HighlightService highlightService;
 
     @SchemaMapping
     public String id(GitBlob gitBlob) {
@@ -17,8 +26,27 @@ public class BlobTypeController {
     }
 
     @SchemaMapping
-    public String text(GitBlob gitBlob) throws IOException {
-        // FIXME: 2023/11/6 文件识别
-        return new String(gitBlob.getData());
+    public BlobLineConnection lines(
+            GitBlob gitBlob,
+            @Argument Integer first,
+            @Argument String after
+    ) throws IOException {
+
+        BlobLinePage page = new BlobLinePage(first, after);
+        // FIXME: 2023/11/28 语言识别
+        BlobRequest request = BlobRequest.newBuilder()
+                .setName(gitBlob.getName())
+                .setText(new String(gitBlob.getData()))
+                .build();
+        // FIXME 越界
+        List<BlobLine> lines = highlightService.blob(request).getBlobLinesList();
+        if (page.getAfter() != null) {
+            Integer number = page.getAfter().getNumber();
+            if (number != null) lines = lines.subList(number, lines.size());
+        }
+        if (page.getFirst() != null) {
+            lines = lines.subList(0, page.getFirst() + 1);
+        }
+        return new BlobLineConnection(lines, page);
     }
 }

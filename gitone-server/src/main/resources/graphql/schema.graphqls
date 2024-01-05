@@ -952,8 +952,28 @@ type Blob implements Node {
   name: String
   path: String
   mode: Int
-  text: String
   size: Long
+  linesCount: Int
+  lines(
+    first: Int
+    after: String
+  ): BlobLineConnection
+}
+
+type BlobLine {
+  number: Int
+  text: String
+  html: String
+}
+
+type BlobLineEdge {
+  node: BlobLine!
+  cursor: String!
+}
+
+type BlobLineConnection {
+  edges: [BlobLineEdge!]
+  pageInfo: PageInfo
 }
 
 # tree
@@ -979,7 +999,7 @@ type TreeEntryConnection {
 
 # diff
 
-enum ChangeType {
+enum DiffType {
   ADD,
   MODIFY,
   DELETE,
@@ -987,16 +1007,33 @@ enum ChangeType {
   COPY
 }
 
+enum DiffLineType {
+  ADD,
+  DELETE,
+  MATCH,
+  META,
+  EXPAND,
+}
+
+type DiffLine {
+  type: DiffLineType!
+  oldNumber: Int!
+  newNumber: Int!
+  text: String
+  html: String
+}
+
 type Diff implements Node {
   id: ID!
-  changeType: ChangeType
+  type: DiffType
+  oldPath: String
+  newPath: String
   oldSha: String
   newSha: String
   oldMode: Int
   newMode: Int
-  oldPath: String
-  newPath: String
   diff: String
+  lines: [DiffLine!]
 }
 
 type DiffEdge {

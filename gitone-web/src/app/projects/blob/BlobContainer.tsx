@@ -26,13 +26,15 @@ function BlobContainer(props: Props) {
   });
 
   const blob = data?.repository?.blob;
+  const edges = blob?.lines?.edges;
+  const pageInfo = blob?.lines?.pageInfo;
   const policy = data?.namespacePolicy;
 
   if (loading) {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
-  } else if (!blob || !policy) {
+  } else if (!blob || !policy || !edges || !pageInfo) {
     return <ErrorBox message="客户端查询条件错误" />;
   }
 
@@ -48,15 +50,13 @@ function BlobContainer(props: Props) {
         }}
       >
         <Stack spacing={1} direction="row">
-          <Typography variant="body2">
-            {blob.text?.match(/\n/g)?.length} lines
-          </Typography>
+          <Typography>{blob.linesCount} lines</Typography>
           <Divider orientation="vertical" flexItem />
-          <Typography variant="body2">{humanReadable(blob.size)}</Typography>
+          <Typography>{humanReadable(blob.size)}</Typography>
         </Stack>
       </Paper>
       <Paper elevation={2} sx={{ px: 2, pb: 2, pt: 1, borderRadius: 0 }}>
-        <Text blob={blob} />
+        <Text edges={edges} />
       </Paper>
     </Box>
   );

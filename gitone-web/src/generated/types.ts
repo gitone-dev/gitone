@@ -51,12 +51,39 @@ export type ActivateUserPayload = {
 export type Blob = Node & {
   __typename?: 'Blob';
   id: Scalars['ID']['output'];
+  lines?: Maybe<BlobLineConnection>;
+  linesCount?: Maybe<Scalars['Int']['output']>;
   mode?: Maybe<Scalars['Int']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   path?: Maybe<Scalars['String']['output']>;
   sha?: Maybe<Scalars['String']['output']>;
   size?: Maybe<Scalars['Long']['output']>;
+};
+
+
+/**  blob */
+export type BlobLinesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type BlobLine = {
+  __typename?: 'BlobLine';
+  html?: Maybe<Scalars['String']['output']>;
+  number?: Maybe<Scalars['Int']['output']>;
   text?: Maybe<Scalars['String']['output']>;
+};
+
+export type BlobLineConnection = {
+  __typename?: 'BlobLineConnection';
+  edges?: Maybe<Array<BlobLineEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type BlobLineEdge = {
+  __typename?: 'BlobLineEdge';
+  cursor: Scalars['String']['output'];
+  node: BlobLine;
 };
 
 /**  branch */
@@ -92,15 +119,6 @@ export enum BranchOrderField {
   AuthorDate = 'AUTHOR_DATE',
   CommitterDate = 'COMMITTER_DATE',
   Name = 'NAME'
-}
-
-/**  diff */
-export enum ChangeType {
-  Add = 'ADD',
-  Copy = 'COPY',
-  Delete = 'DELETE',
-  Modify = 'MODIFY',
-  Rename = 'RENAME'
 }
 
 /**  commit */
@@ -331,15 +349,16 @@ export type DeleteUserPayload = {
 
 export type Diff = Node & {
   __typename?: 'Diff';
-  changeType?: Maybe<ChangeType>;
   diff?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  lines?: Maybe<Array<DiffLine>>;
   newMode?: Maybe<Scalars['Int']['output']>;
   newPath?: Maybe<Scalars['String']['output']>;
   newSha?: Maybe<Scalars['String']['output']>;
   oldMode?: Maybe<Scalars['Int']['output']>;
   oldPath?: Maybe<Scalars['String']['output']>;
   oldSha?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<DiffType>;
 };
 
 export type DiffConnection = {
@@ -353,6 +372,32 @@ export type DiffEdge = {
   cursor: Scalars['String']['output'];
   node: Diff;
 };
+
+export type DiffLine = {
+  __typename?: 'DiffLine';
+  html?: Maybe<Scalars['String']['output']>;
+  newNumber: Scalars['Int']['output'];
+  oldNumber: Scalars['Int']['output'];
+  text?: Maybe<Scalars['String']['output']>;
+  type: DiffLineType;
+};
+
+export enum DiffLineType {
+  Add = 'ADD',
+  Delete = 'DELETE',
+  Expand = 'EXPAND',
+  Match = 'MATCH',
+  Meta = 'META'
+}
+
+/**  diff */
+export enum DiffType {
+  Add = 'ADD',
+  Copy = 'COPY',
+  Delete = 'DELETE',
+  Modify = 'MODIFY',
+  Rename = 'RENAME'
+}
 
 /**  email */
 export type Email = Node & {
@@ -1308,7 +1353,7 @@ export type ActivateUserMutationVariables = Exact<{
 
 export type ActivateUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'ActivateUserPayload', message?: string | null } | null };
 
-export type BlobFragmentFragment = { __typename?: 'Blob', id: string, sha?: string | null, path?: string | null, name?: string | null, size?: any | null, text?: string | null };
+export type BlobFragmentFragment = { __typename?: 'Blob', id: string, sha?: string | null, path?: string | null, name?: string | null, size?: any | null, linesCount?: number | null, lines?: { __typename?: 'BlobLineConnection', edges?: Array<{ __typename?: 'BlobLineEdge', cursor: string, node: { __typename?: 'BlobLine', number?: number | null, html?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type BlobQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -1317,7 +1362,18 @@ export type BlobQueryVariables = Exact<{
 }>;
 
 
-export type BlobQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, blob?: { __typename?: 'Blob', id: string, sha?: string | null, path?: string | null, name?: string | null, size?: any | null, text?: string | null } | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+export type BlobQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, blob?: { __typename?: 'Blob', id: string, sha?: string | null, path?: string | null, name?: string | null, size?: any | null, linesCount?: number | null, lines?: { __typename?: 'BlobLineConnection', edges?: Array<{ __typename?: 'BlobLineEdge', cursor: string, node: { __typename?: 'BlobLine', number?: number | null, html?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+
+export type BlobLinesQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  revision: Scalars['String']['input'];
+  path: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type BlobLinesQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, blob?: { __typename?: 'Blob', id: string, lines?: { __typename?: 'BlobLineConnection', edges?: Array<{ __typename?: 'BlobLineEdge', cursor: string, node: { __typename?: 'BlobLine', number?: number | null, html?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } | null } };
 
 export type BranchFragmentFragment = { __typename?: 'Branch', id: string, name: string, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null };
 
@@ -1469,14 +1525,17 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteUserPayload', user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
-export type DiffQueryVariables = Exact<{
+export type DiffFragmentFragment = { __typename?: 'Diff', id: string, type?: DiffType | null, oldPath?: string | null, newPath?: string | null, oldSha?: string | null, newSha?: string | null, lines?: Array<{ __typename?: 'DiffLine', type: DiffLineType, oldNumber: number, newNumber: number, text?: string | null, html?: string | null }> | null };
+
+export type DiffsQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
   oldRevision?: InputMaybe<Scalars['String']['input']>;
   newRevision: Scalars['String']['input'];
 }>;
 
 
-export type DiffQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, diffs?: { __typename?: 'DiffConnection', edges?: Array<{ __typename?: 'DiffEdge', cursor: string, node: { __typename?: 'Diff', id: string, changeType?: ChangeType | null, oldSha?: string | null, newSha?: string | null, oldPath?: string | null, newPath?: string | null, diff?: string | null } }> | null } | null } };
+export type DiffsQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, diffs?: { __typename?: 'DiffConnection', edges?: Array<{ __typename?: 'DiffEdge', cursor: string, node: { __typename?: 'Diff', id: string, type?: DiffType | null, oldPath?: string | null, newPath?: string | null, oldSha?: string | null, newSha?: string | null, lines?: Array<{ __typename?: 'DiffLine', type: DiffLineType, oldNumber: number, newNumber: number, text?: string | null, html?: string | null }> | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
 
 export type EmailFragmentFragment = { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean };
 
@@ -1754,6 +1813,14 @@ export type ViewerEmailsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ViewerEmailsQuery = { __typename?: 'Query', viewer: { __typename?: 'User', id: string, emails?: { __typename?: 'EmailConnection', edges?: Array<{ __typename?: 'EmailEdge', cursor: string, node: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null, unconfirmedEmails?: { __typename?: 'EmailConnection', edges?: Array<{ __typename?: 'EmailEdge', cursor: string, node: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
 
+export const PageInfoFragmentFragmentDoc = gql`
+    fragment PageInfoFragment on PageInfo {
+  hasPreviousPage
+  hasNextPage
+  startCursor
+  endCursor
+}
+    `;
 export const BlobFragmentFragmentDoc = gql`
     fragment BlobFragment on Blob {
   id
@@ -1761,9 +1828,21 @@ export const BlobFragmentFragmentDoc = gql`
   path
   name
   size
-  text
+  linesCount
+  lines {
+    edges {
+      node {
+        number
+        html
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
 }
-    `;
+    ${PageInfoFragmentFragmentDoc}`;
 export const GitUserFragmentFragmentDoc = gql`
     fragment GitUserFragment on GitUser {
   name
@@ -1795,6 +1874,23 @@ export const BranchFragmentFragmentDoc = gql`
   }
 }
     ${CommitFragmentFragmentDoc}`;
+export const DiffFragmentFragmentDoc = gql`
+    fragment DiffFragment on Diff {
+  id
+  type
+  oldPath
+  newPath
+  oldSha
+  newSha
+  lines {
+    type
+    oldNumber
+    newNumber
+    text
+    html
+  }
+}
+    `;
 export const EmailFragmentFragmentDoc = gql`
     fragment EmailFragment on Email {
   id
@@ -1863,14 +1959,6 @@ export const MemberFragmentFragmentDoc = gql`
     ${UserFragmentFragmentDoc}
 ${GroupFragmentFragmentDoc}
 ${ProjectFragmentFragmentDoc}`;
-export const PageInfoFragmentFragmentDoc = gql`
-    fragment PageInfoFragment on PageInfo {
-  hasPreviousPage
-  hasNextPage
-  startCursor
-  endCursor
-}
-    `;
 export const PolicyFragmentFragmentDoc = gql`
     fragment PolicyFragment on Policy {
   id
@@ -2026,6 +2114,60 @@ export function useBlobLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlobQ
 export type BlobQueryHookResult = ReturnType<typeof useBlobQuery>;
 export type BlobLazyQueryHookResult = ReturnType<typeof useBlobLazyQuery>;
 export type BlobQueryResult = Apollo.QueryResult<BlobQuery, BlobQueryVariables>;
+export const BlobLinesDocument = gql`
+    query BlobLines($fullPath: String!, $revision: String!, $path: String!, $first: Int!, $after: String) {
+  repository(fullPath: $fullPath) {
+    id
+    blob(revision: $revision, path: $path) {
+      id
+      lines(first: $first, after: $after) {
+        edges {
+          node {
+            number
+            html
+          }
+          cursor
+        }
+        pageInfo {
+          ...PageInfoFragment
+        }
+      }
+    }
+  }
+}
+    ${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useBlobLinesQuery__
+ *
+ * To run a query within a React component, call `useBlobLinesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBlobLinesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBlobLinesQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      revision: // value for 'revision'
+ *      path: // value for 'path'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *   },
+ * });
+ */
+export function useBlobLinesQuery(baseOptions: Apollo.QueryHookOptions<BlobLinesQuery, BlobLinesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BlobLinesQuery, BlobLinesQueryVariables>(BlobLinesDocument, options);
+      }
+export function useBlobLinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlobLinesQuery, BlobLinesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BlobLinesQuery, BlobLinesQueryVariables>(BlobLinesDocument, options);
+        }
+export type BlobLinesQueryHookResult = ReturnType<typeof useBlobLinesQuery>;
+export type BlobLinesLazyQueryHookResult = ReturnType<typeof useBlobLinesLazyQuery>;
+export type BlobLinesQueryResult = Apollo.QueryResult<BlobLinesQuery, BlobLinesQueryVariables>;
 export const BranchesDocument = gql`
     query Branches($fullPath: String!, $first: Int!, $after: String, $filterBy: BranchFilter, $orderBy: BranchOrder) {
   repository(fullPath: $fullPath) {
@@ -2766,57 +2908,61 @@ export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
-export const DiffDocument = gql`
-    query Diff($fullPath: String!, $oldRevision: String, $newRevision: String!) {
+export const DiffsDocument = gql`
+    query Diffs($fullPath: String!, $after: String, $oldRevision: String, $newRevision: String!) {
   repository(fullPath: $fullPath) {
     id
-    diffs(oldRevision: $oldRevision, newRevision: $newRevision) {
+    diffs(
+      first: 20
+      after: $after
+      oldRevision: $oldRevision
+      newRevision: $newRevision
+    ) {
       edges {
         node {
-          id
-          changeType
-          oldSha
-          newSha
-          oldPath
-          newPath
-          diff
+          ...DiffFragment
         }
         cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
       }
     }
   }
 }
-    `;
+    ${DiffFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
 
 /**
- * __useDiffQuery__
+ * __useDiffsQuery__
  *
- * To run a query within a React component, call `useDiffQuery` and pass it any options that fit your needs.
- * When your component renders, `useDiffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useDiffsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDiffsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useDiffQuery({
+ * const { data, loading, error } = useDiffsQuery({
  *   variables: {
  *      fullPath: // value for 'fullPath'
+ *      after: // value for 'after'
  *      oldRevision: // value for 'oldRevision'
  *      newRevision: // value for 'newRevision'
  *   },
  * });
  */
-export function useDiffQuery(baseOptions: Apollo.QueryHookOptions<DiffQuery, DiffQueryVariables>) {
+export function useDiffsQuery(baseOptions: Apollo.QueryHookOptions<DiffsQuery, DiffsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<DiffQuery, DiffQueryVariables>(DiffDocument, options);
+        return Apollo.useQuery<DiffsQuery, DiffsQueryVariables>(DiffsDocument, options);
       }
-export function useDiffLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DiffQuery, DiffQueryVariables>) {
+export function useDiffsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DiffsQuery, DiffsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<DiffQuery, DiffQueryVariables>(DiffDocument, options);
+          return Apollo.useLazyQuery<DiffsQuery, DiffsQueryVariables>(DiffsDocument, options);
         }
-export type DiffQueryHookResult = ReturnType<typeof useDiffQuery>;
-export type DiffLazyQueryHookResult = ReturnType<typeof useDiffLazyQuery>;
-export type DiffQueryResult = Apollo.QueryResult<DiffQuery, DiffQueryVariables>;
+export type DiffsQueryHookResult = ReturnType<typeof useDiffsQuery>;
+export type DiffsLazyQueryHookResult = ReturnType<typeof useDiffsLazyQuery>;
+export type DiffsQueryResult = Apollo.QueryResult<DiffsQuery, DiffsQueryVariables>;
 export const ExistEmailDocument = gql`
     query ExistEmail($email: String!) {
   existEmail(email: $email)

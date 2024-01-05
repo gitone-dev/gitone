@@ -5,6 +5,8 @@ type ResolvedGlobalId = {
   id: number;
 };
 
+export type Range = [number, number];
+
 function fromGlobalId(globalId: string): ResolvedGlobalId {
   const split = globalId.split("/");
   if (split.length !== 3) {
@@ -18,4 +20,8 @@ function fromGlobalId(globalId: string): ResolvedGlobalId {
   };
 }
 
-export { fromGlobalId };
+function blobLineCursor(number: number) {
+  return btoa(JSON.stringify({ number }));
+}
+
+export { fromGlobalId, blobLineCursor };

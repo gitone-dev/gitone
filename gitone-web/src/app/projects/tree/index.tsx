@@ -60,7 +60,18 @@ function Show() {
 
   return (
     <>
-      <Stack direction="row" spacing={1} alignItems="center" pt={2}>
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="center"
+        sx={{
+          backgroundColor: "white",
+          pt: 2,
+          position: "sticky",
+          top: 60,
+          zIndex: 1,
+        }}
+      >
         <RefSwitcher
           fullPath={fullPath}
           type="tree"

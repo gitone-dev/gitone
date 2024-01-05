@@ -7,6 +7,7 @@ import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.eclipse.jgit.util.io.NullOutputStream;
+import org.eclipse.jgit.util.sha1.SHA1;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,11 +16,19 @@ import java.util.stream.Collectors;
 
 public class GitDiff implements Node<String> {
 
+    public static final String TYPE = "Diff";
+
     private final GitRepository gitRepository;
 
     private final DiffEntry entry;
 
     private String diff;
+
+    private byte[] oldContent;
+
+    private byte[] newContent;
+
+    private List<GitDiffLine> diffLines;
 
     public GitDiff(GitRepository gitRepository, DiffEntry entry) {
         this.gitRepository = gitRepository;
@@ -28,10 +37,15 @@ public class GitDiff implements Node<String> {
 
     @Override
     public String getId() {
-        return String.format("%s:%s:%s", gitRepository.getId(), getOldSha(), getNewSha());
+        SHA1 sha1 = SHA1.newInstance();
+        sha1.update(getOldSha().getBytes());
+        sha1.update(getNewSha().getBytes());
+        sha1.update(getOldPath().getBytes());
+        sha1.update(getNewPath().getBytes());
+        return String.format("%s:%s", gitRepository.getId(), sha1.toObjectId().getName());
     }
 
-    public DiffEntry.ChangeType getChangeType() {
+    public DiffEntry.ChangeType getType() {
         return entry.getChangeType();
     }
 
@@ -59,16 +73,39 @@ public class GitDiff implements Node<String> {
         return entry.getNewMode();
     }
 
+    public byte[] getOldContent() throws IOException {
+        if (oldContent != null) return oldContent;
+
+        getDiffLines();
+        return oldContent;
+    }
+
+    public byte[] getNewContent() throws IOException {
+        if (newContent != null) return newContent;
+
+        getDiffLines();
+        return newContent;
+    }
+
     public String getDiff() throws IOException {
-        if (diff == null) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            try (DiffFormatter formatter = new DiffFormatter(outputStream)) {
-                formatter.setRepository(gitRepository.repository);
-                formatter.format(entry);
-                this.diff = outputStream.toString();
-            }
-        }
+        if (diff != null) return diff;
+        getDiffLines();
         return diff;
+    }
+
+    public List<GitDiffLine> getDiffLines() throws IOException {
+        if (diffLines != null) return diffLines;
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (GitDiffFormatter formatter = new GitDiffFormatter(outputStream)) {
+            formatter.setRepository(gitRepository.repository);
+            formatter.format(entry);
+            this.oldContent = formatter.getOldContent();
+            this.newContent = formatter.getNewContent();
+            this.diff = outputStream.toString();
+            this.diffLines = formatter.getDiffLines();
+        }
+        return diffLines;
     }
 
     public static List<GitDiff> between(

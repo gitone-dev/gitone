@@ -1,11 +1,15 @@
 package cn.notfound.gitone.server;
 
-import graphql.relay.ConnectionCursor;
+import lombok.Getter;
+import lombok.Setter;
 
-public abstract class CustomPage<T extends ConnectionCursor> {
+@Getter
+public abstract class CustomPage<T extends CustomCursor> {
 
+    @Setter
     private Integer first;
 
+    @Setter
     private Integer last;
 
     private T before;
@@ -21,34 +25,10 @@ public abstract class CustomPage<T extends ConnectionCursor> {
         setAfter(after);
     }
 
-    public Integer getFirst() {
-        return first;
-    }
-
-    public void setFirst(Integer first) {
-        this.first = first;
-    }
-
-    public Integer getLast() {
-        return last;
-    }
-
-    public void setLast(Integer last) {
-        this.last = last;
-    }
-
-    public T getBefore() {
-        return before;
-    }
-
     public void setBefore(String before) {
         if (before != null) {
             this.before = createCursor(before);
         }
-    }
-
-    public T getAfter() {
-        return after;
     }
 
     public void setAfter(String after) {

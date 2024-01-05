@@ -7,6 +7,8 @@ import graphql.relay.ConnectionCursor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
+
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,14 +16,18 @@ public class TagCursor extends CustomCursor {
 
     public static ConnectionCursor create(GitTag node, TagOrder order) {
         TagCursor cursor = new TagCursor();
-        cursor.setName(node.getName());
-        /* TODO
-         * switch (order.getField()) {
-         *     case NAME -> cursor.setName(node.getName());
-         * }
-         */
+        switch (order.getField()) {
+            case NAME -> cursor.setName(node.getName());
+            case AUTHOR_DATE -> cursor.setAuthorDate(node.getCommit().getAuthor().getDate());
+            case COMMITTER_DATE -> cursor.setCommitterDate(node.getCommit().getCommitter().getDate());
+        }
+
         return cursor;
     }
 
     private String name;
+
+    private OffsetDateTime authorDate;
+
+    private OffsetDateTime committerDate;
 }

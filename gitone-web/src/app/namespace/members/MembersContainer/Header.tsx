@@ -42,7 +42,6 @@ export default function Header(props: Props) {
   return (
     <Stack direction="row" spacing={1}>
       <TextField
-        autoFocus
         sx={{ flexGrow: 1 }}
         size="small"
         defaultValue={query}

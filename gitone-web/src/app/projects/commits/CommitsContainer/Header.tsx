@@ -28,7 +28,6 @@ export default function Header(props: Props) {
         revisionPath={revisionPath}
       />
       <TextField
-        autoFocus
         sx={{ flexGrow: 1 }}
         size="small"
         defaultValue={query}

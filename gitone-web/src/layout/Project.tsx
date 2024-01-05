@@ -159,7 +159,7 @@ function Project() {
   return (
     <Page sx={{ display: "flex" }}>
       <Sidebar items={items(fullPath, revisionPath, actions)} />
-      <Box sx={{ p: 1, flexGrow: 1, overflowX: "hidden" }}>
+      <Box sx={{ p: 1, flexGrow: 1 }}>
         <Toolbar />
         <Breadcrumbs items={breadcrumbItems(paths, revisionPath)} />
         <Box>

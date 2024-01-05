@@ -4,7 +4,19 @@ fragment BlobFragment on Blob {
   path
   name
   size
-  text
+  linesCount
+  lines {
+    edges {
+      node {
+        number
+        html
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
 }
 
 query Blob($fullPath: String!, $revision: String!, $path: String!) {

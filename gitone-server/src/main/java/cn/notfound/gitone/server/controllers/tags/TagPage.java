@@ -6,8 +6,6 @@ import cn.notfound.gitone.server.OrderPage;
 import cn.notfound.gitone.server.models.git.GitTag;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.util.Objects;
-
 public class TagPage extends OrderPage<TagCursor> {
 
     private final TagOrder order;
@@ -21,11 +19,11 @@ public class TagPage extends OrderPage<TagCursor> {
         this.order = order;
 
         if (order.getDirection().equals(OrderDirection.DESC)) {
-            minCursor = Objects.requireNonNullElse(getBefore(), new TagCursor());
-            maxCursor = Objects.requireNonNullElse(getAfter(), new TagCursor());
+            minCursor = getBefore();
+            maxCursor = getAfter();
         } else {
-            minCursor = Objects.requireNonNullElse(getAfter(), new TagCursor());
-            maxCursor = Objects.requireNonNullElse(getBefore(), new TagCursor());
+            minCursor = getAfter();
+            maxCursor = getBefore();
         }
     }
 
@@ -46,17 +44,41 @@ public class TagPage extends OrderPage<TagCursor> {
     }
 
     public boolean isBetween(GitTag gitTag) {
-        return isName(gitTag);
+        return isName(gitTag) && isAuthorDate(gitTag) && isCommitterDate(gitTag);
     }
 
     private boolean isName(GitTag gitTag) {
         boolean result = true;
 
-        if (minCursor.getName() != null)
+        if (minCursor != null && minCursor.getName() != null)
             result = gitTag.getName().compareTo(minCursor.getName()) > 0;
 
-        if (result && maxCursor.getName() != null)
+        if (result && maxCursor != null && maxCursor.getName() != null)
             result = gitTag.getName().compareTo(maxCursor.getName()) < 0;
+
+        return result;
+    }
+
+    private boolean isAuthorDate(GitTag gitTag) {
+        boolean result = true;
+
+        if (minCursor != null && minCursor.getAuthorDate() != null)
+            result = gitTag.getCommit().getAuthor().getDate().isAfter(minCursor.getAuthorDate());
+
+        if (result && maxCursor != null && maxCursor.getAuthorDate() != null)
+            result = gitTag.getCommit().getCommitter().getDate().isBefore(maxCursor.getAuthorDate());
+
+        return result;
+    }
+
+    private boolean isCommitterDate(GitTag gitTag) {
+        boolean result = true;
+
+        if (minCursor != null && minCursor.getCommitterDate() != null)
+            result = gitTag.getCommit().getCommitter().getDate().isAfter(minCursor.getCommitterDate());
+
+        if (result && maxCursor != null && maxCursor.getCommitterDate() != null)
+            result = gitTag.getCommit().getCommitter().getDate().isBefore(maxCursor.getCommitterDate());
 
         return result;
     }

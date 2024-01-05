@@ -1,0 +1,15 @@
+fragment DiffFragment on Diff {
+  id
+  type
+  oldPath
+  newPath
+  oldSha
+  newSha
+  lines {
+    type
+    oldNumber
+    newNumber
+    text
+    html
+  }
+}

@@ -2,7 +2,6 @@ package cn.notfound.gitone.server.models.git;
 
 import cn.notfound.gitone.server.OrderDirection;
 import cn.notfound.gitone.server.config.exception.NotFound;
-import cn.notfound.gitone.server.controllers.branches.BranchOrderField;
 import cn.notfound.gitone.server.controllers.tags.TagFilter;
 import cn.notfound.gitone.server.controllers.tags.TagOrderField;
 import cn.notfound.gitone.server.controllers.tags.TagPage;
@@ -36,15 +35,17 @@ public class GitTag extends GitRef {
     }
 
     public GitUser getTagger() {
-        if (revTag.getTaggerIdent() == null) return null;
+        if (revTag == null || revTag.getTaggerIdent() == null) return null;
         return new GitUser(revTag.getTaggerIdent());
     }
 
     public String getShortMessage() {
+        if (revTag == null) return null;
         return revTag.getShortMessage();
     }
 
     public String getFullMessage() {
+        if (revTag == null) return null;
         return revTag.getFullMessage();
     }
 

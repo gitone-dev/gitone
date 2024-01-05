@@ -16,8 +16,8 @@ public class BranchCursor extends CustomCursor {
 
     public static ConnectionCursor create(GitBranch node, BranchOrder order) {
         BranchCursor cursor = new BranchCursor();
-        cursor.setName(node.getName());
         switch (order.getField()) {
+            case NAME -> cursor.setName(node.getName());
             case AUTHOR_DATE -> cursor.setAuthorDate(node.getCommit().getAuthor().getDate());
             case COMMITTER_DATE -> cursor.setCommitterDate(node.getCommit().getCommitter().getDate());
         }

@@ -60,6 +60,7 @@ const cache = new InMemoryCache({
         branches: relayStylePagination(),
         tags: relayStylePagination(),
         commits: relayStylePagination(),
+        diffs: relayStylePagination(),
       },
     },
   },

@@ -39,12 +39,12 @@ const breadcrumbItems = (
 
 function Show() {
   const { fullPath, star } = useFullPath();
+  const { enqueueSnackbar } = useSnackbar();
   const { data, loading, error } = useRevisionPathQuery({
     variables: { fullPath, revisionPath: star },
   });
 
   const revisionPath = data?.repository.revisionPath;
-  const { enqueueSnackbar } = useSnackbar();
 
   const onClick = () => {
     if (!revisionPath?.path) return;
@@ -63,7 +63,18 @@ function Show() {
 
   return (
     <>
-      <Stack direction="row" spacing={1} alignItems="center" pt={2}>
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="center"
+        sx={{
+          backgroundColor: "white",
+          pt: 2,
+          position: "sticky",
+          top: 60,
+          zIndex: 1,
+        }}
+      >
         <RefSwitcher
           fullPath={fullPath}
           type="blob"

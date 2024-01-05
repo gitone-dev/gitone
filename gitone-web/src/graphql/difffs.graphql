@@ -1,0 +1,26 @@
+query Diffs(
+  $fullPath: String!
+  $after: String
+  $oldRevision: String
+  $newRevision: String!
+) {
+  repository(fullPath: $fullPath) {
+    id
+    diffs(
+      first: 20
+      after: $after
+      oldRevision: $oldRevision
+      newRevision: $newRevision
+    ) {
+      edges {
+        node {
+          ...DiffFragment
+        }
+        cursor
+      }
+      pageInfo {
+        ...PageInfoFragment
+      }
+    }
+  }
+}

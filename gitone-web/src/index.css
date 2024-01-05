@@ -1,3 +1,59 @@
 html {
-    overflow-y: scroll;
+    tab-size: 4;
+    text-wrap: wrap;
+}
+
+.sk-add { background-color: #c8e6c9 }
+.sk-del { background-color: #ffccbc }
+
+.skc-0000 { color: #0000 }
+.skc-000000 { color: #000000 }
+.skc-000000ff { color: #000000FF }
+.skc-000080 { color: #000080 }
+.skc-0000ff { color: #0000FF }
+.skc-001080 { color: #001080 }
+.skc-0070c1 { color: #0070C1 }
+.skc-007acc { color: #007ACC }
+.skc-008000 { color: #008000 }
+.skc-0451a5 { color: #0451A5 }
+.skc-098658 { color: #098658 }
+.skc-16825d { color: #16825D }
+.skc-267f99 { color: #267F99 }
+.skc-369432 { color: #369432 }
+.skc-61616130 { color: #61616130 }
+.skc-6f6f6f { color: #6F6F6F }
+.skc-767676 { color: #767676 }
+.skc-795e26 { color: #795E26 }
+.skc-800000 { color: #800000 }
+.skc-811f3f { color: #811F3F }
+.skc-90c2f9 { color: #90C2F9 }
+.skc-919191 { color: #919191 }
+.skc-939393 { color: #939393 }
+.skc-add6ff80 { color: #ADD6FF80 }
+.skc-af00db { color: #AF00DB }
+.skc-cecece { color: #CECECE }
+.skc-d3d3d3 { color: #D3D3D3 }
+.skc-d4d4d4 { color: #D4D4D4 }
+.skc-e5ebf1 { color: #E5EBF1 }
+.skc-e8e8e8 { color: #E8E8E8 }
+.skc-ee0000 { color: #EE0000 }
+.skc-f3f3f3 { color: #F3F3F3 }
+.skc-fff { color: #FFF }
+.skc-ffffff { color: #FFFFFF }
+.skc-a31515 { color: #A31515 }
+.skc-c72e0f { color: #C72E0F }
+.skc-c8ddf150 { color: #C8DDF150 }
+.skc-cd3131 { color: #CD3131 }
+.skc-d16969 { color: #D16969 }
+.skc-d4d4d4 { color: #D4D4D4 }
+.skc-dddddd { color: #DDDDDD }
+.skc-e50000 { color: #E50000 }
+
+.skf-none { display: none; }
+.skf-italic { font-style: italic; }
+.skf-bold { font-weight: bold; }
+.skf-underline { text-decoration: underline; }
+
+.cl {
+    background-color: gray;
 }

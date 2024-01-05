@@ -28,6 +28,8 @@ public class CustomProperties implements InitializingBean {
     private String gitData;
     @NotNull
     private Ssh ssh;
+    @NotNull
+    private Node node;
 
     @Override
     public void afterPropertiesSet() {
@@ -48,5 +50,13 @@ public class CustomProperties implements InitializingBean {
         private int port;
         @NotNull
         private List<String> keys;
+    }
+
+    @Data
+    public static class Node {
+        @NotEmpty
+        private String host;
+
+        private int port;
     }
 }

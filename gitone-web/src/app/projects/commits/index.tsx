@@ -1,14 +1,14 @@
-import {
-  Policy,
-  RevisionPath,
-  useRevisionPathQuery,
-} from "@/generated/types";
+import { Policy, RevisionPath, useRevisionPathQuery } from "@/generated/types";
 import Breadcrumbs, { BreadcrumbItems } from "@/layout/Breadcrumbs";
 import ChunkPaper from "@/shared/ChunkPaper";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
 import RefSwitcher from "@/shared/RefSwitcher";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
+import copy from "copy-to-clipboard";
+import { useSnackbar } from "notistack";
 import CommitsContainer from "./CommitsContainer";
 
 const breadcrumbItems = (
@@ -45,11 +45,19 @@ interface Props {
 
 function Commits(props: Props) {
   const { fullPath, policy, star } = props;
+  const { enqueueSnackbar } = useSnackbar();
   const { data, loading, error } = useRevisionPathQuery({
     variables: { fullPath, revisionPath: star },
   });
 
   const revisionPath = data?.repository.revisionPath;
+
+  const onClick = () => {
+    if (!revisionPath?.path) return;
+
+    copy(revisionPath.path);
+    enqueueSnackbar(`已复制：${revisionPath.path}`, { variant: "info" });
+  };
 
   if (loading) {
     return <LoadingBox />;
@@ -61,13 +69,29 @@ function Commits(props: Props) {
 
   return (
     <>
-      <Stack direction="row" spacing={1} alignItems="center" pt={2}>
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="center"
+        sx={{
+          backgroundColor: "white",
+          pt: 2,
+          position: "sticky",
+          top: 60,
+          zIndex: 1,
+        }}
+      >
         <RefSwitcher
           fullPath={fullPath}
           type="commits"
           revisionPath={revisionPath}
         />
         <Breadcrumbs items={breadcrumbItems(fullPath, revisionPath)} />
+        {revisionPath.path && (
+          <IconButton onClick={onClick}>
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+        )}
       </Stack>
       <ChunkPaper primary="提交列表">
         <CommitsContainer
