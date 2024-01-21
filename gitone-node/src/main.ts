@@ -14,7 +14,6 @@ const address = `${HOST}:${PORT}`;
 async function main() {
   const highlighter = await getHighlighter({ theme: "light-plus" });
 
-
   const server = new grpc.Server();
   const pingImpl = new PingImplementation();
   const highlightImpl = new HighlightImplementation(highlighter);

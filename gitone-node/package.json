@@ -4,11 +4,10 @@
   "description": "GitOne node server",
   "scripts": {
     "dev": "nodemon src/main.ts",
-    "split-diff": "nodemon src/split-diffs/index.ts",
     "build": "tsc && cp -r src/proto dist/",
     "start": "node dist/main.js",
-    "theme": "ts-node bin/theme.ts",
-    "generate-types": "proto-loader-gen-types --keepCase=true --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/generated/ src/proto/*.proto",
+    "theme": "ts-node src/theme.ts",
+    "codegen": "proto-loader-gen-types --keepCase=true --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/generated/ src/proto/*.proto",
     "test": "tsc && jest"
   },
   "license": "MIT",

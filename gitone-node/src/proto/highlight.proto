@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package highlight;
 option java_multiple_files = true;
-option java_package = "cn.notfound.gitone.node.highlight";
+option java_package = "dev.gitone.node.highlight";
 
 service Highlight {
   rpc Blob(BlobRequest) returns (BlobResponse);

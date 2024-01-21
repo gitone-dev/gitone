@@ -1,0 +1,22 @@
+# GitOne Web
+
+生成 graphql 代码：
+
+[source,bash]
+----
+npm run codegen
+----
+
+开发模式启动服务：
+
+[source,bash]
+----
+npm run dev
+----
+
+打包：
+
+[source,bash]
+----
+npm run build
+----
