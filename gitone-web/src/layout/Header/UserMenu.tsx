@@ -1,5 +1,5 @@
-import { deleteSession } from "@/client";
-import { User, useDeleteSessionMutation } from "@/generated/types";
+import { logout } from "@/client";
+import { User } from "@/generated/types";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -21,7 +21,6 @@ function UserMenu(props: Props) {
   const { viewer } = props;
   const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [deleteSessionMutation] = useDeleteSessionMutation();
 
   const onOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,16 +30,14 @@ function UserMenu(props: Props) {
     setAnchorEl(null);
   };
 
-  const onDeleteSession = () => {
-    deleteSession();
-    deleteSessionMutation({
-      onCompleted() {
+  const onLogout = () => {
+    logout()
+      .then(() => {
         window.location.href = "/session/new";
-      },
-      onError(error) {
+      })
+      .catch((error) => {
         enqueueSnackbar(error.message, { variant: "error" });
-      },
-    });
+      });
   };
 
   return (
@@ -75,7 +72,7 @@ function UserMenu(props: Props) {
           </ListItemIcon>
           <ListItemText>设置</ListItemText>
         </MenuItem>
-        <MenuItem onClick={onDeleteSession}>
+        <MenuItem onClick={onLogout}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>

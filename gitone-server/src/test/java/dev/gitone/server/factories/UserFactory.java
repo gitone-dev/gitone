@@ -1,6 +1,5 @@
 package dev.gitone.server.factories;
 
-import dev.gitone.server.controllers.session.inputs.CreateSessionInput;
 import dev.gitone.server.controllers.users.inputs.ActivateUserInput;
 import dev.gitone.server.controllers.users.inputs.CreateUserInput;
 import dev.gitone.server.daos.EmailDao;
@@ -73,10 +72,7 @@ public class UserFactory extends BaseFactory {
         CreateUserInput input = createUserInput();
         create(input);
 
-        CreateSessionInput createSessionInput = new CreateSessionInput();
-        createSessionInput.setUsername(input.getUsername());
-        createSessionInput.setPassword(input.getPassword());
-        SessionResult session = createSession(createSessionInput);
+        SessionResult session = new SessionResult();
         session.setUsername(input.getUsername());
         session.setPassword(input.getPassword());
         return session;

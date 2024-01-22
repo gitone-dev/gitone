@@ -192,6 +192,7 @@ class NamespaceMutationControllerTest extends BaseFactory {
         mutationUpdatePath(session2, input, null, ErrorType.FORBIDDEN);
         mutationUpdatePath(session1, input, u1.namespace(), null);
         mutationUpdatePath(session2, input, null, ErrorType.NOT_FOUND);
+        session1.setUsername(u1.getUsername());
         queryNamespace(session1, u1p1);
         queryNamespace(session1, u1p2);
 

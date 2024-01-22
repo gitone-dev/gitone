@@ -5,33 +5,31 @@ import {
   InMemoryCache,
   from,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import { relayStylePagination } from "@apollo/client/utilities";
 
-const authMiddleware = new ApolloLink((operation, forward) => {
+const errorLink = onError(({ networkError, operation }) => {
+  if (!networkError) return;
+
+  const {
+    response: { headers },
+  } = operation.getContext();
+  if (!headers) return;
+
+  const token = headers.get("X-Csrf-Token");
+  if (token) {
+    localStorage.setItem("X-Csrf-Token", token);
+  }
+});
+
+const csrfMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
     headers: {
       ...headers,
-      "X-Auth-Token": localStorage.getItem("X-Auth-Token") || null,
+      "X-Csrf-Token": localStorage.getItem("X-Csrf-Token") || null,
     },
   }));
   return forward(operation);
-});
-
-const afterwareLink = new ApolloLink((operation, forward) => {
-  return forward(operation).map((response) => {
-    const context = operation.getContext();
-    const {
-      response: { headers },
-    } = context;
-
-    if (headers) {
-      const token = headers.get("X-Auth-Token");
-      if (token) {
-        localStorage.setItem("X-Auth-Token", token);
-      }
-    }
-    return response;
-  });
 });
 
 const httpLink = new HttpLink({
@@ -67,15 +65,37 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  link: from([authMiddleware, afterwareLink.concat(httpLink)]),
+  link: from([errorLink, csrfMiddleware, httpLink]),
   cache: cache,
   name: "gitone-web",
   version: "0.0.1",
 });
 
-function deleteSession() {
-  localStorage.removeItem("X-Auth-Token");
+type LoginInput = {
+  username: string;
+  password: string;
+};
+
+function login(input: LoginInput) {
+  return fetch("/login", {
+    method: "POST",
+    headers: {
+      "X-Csrf-Token": localStorage.getItem("X-Csrf-Token") || "",
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    body: new URLSearchParams(input),
+  });
+}
+
+function logout() {
+  return fetch("/logout", {
+    method: "POST",
+    headers: {
+      "X-Csrf-Token": localStorage.getItem("X-Csrf-Token") || "",
+    },
+  });
 }
 
 export default client;
-export { cache, deleteSession };
+export { cache, login, logout };
+export type { LoginInput };

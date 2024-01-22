@@ -1,6 +1,5 @@
 package dev.gitone.server.factories;
 
-import dev.gitone.server.controllers.session.inputs.CreateSessionInput;
 import dev.gitone.server.results.NamespaceResult;
 import dev.gitone.server.results.SessionResult;
 import org.springframework.graphql.test.tester.GraphQlTester;
@@ -24,13 +23,13 @@ public class BaseFactory {
 
         return graphQlTester
                 .mutate()
-                .header(session.getHeader(), session.getToken())
+                .headers(headers -> headers.setBasicAuth(session.getUsername(), session.getPassword()))
                 .build()
                 .documentName(documentName);
     }
 
-    public GraphQlTester.Request<?> query(String documentName, CreateSessionInput createSessionInput) {
-        SessionResult session = createSession(createSessionInput);
+    public GraphQlTester.Request<?> query(String documentName, LoginInput loginInput) {
+        SessionResult session = createSession(loginInput);
         return query(documentName, session);
     }
 
@@ -46,22 +45,18 @@ public class BaseFactory {
 
         return graphQlTester
                 .mutate()
-                .header(session.getHeader(), session.getToken())
+                .headers(headers -> headers.setBasicAuth(session.getUsername(), session.getPassword()))
                 .build()
                 .documentName(documentName)
                 .variable("input", input)
                 .execute();
     }
 
-    public SessionResult createSession(CreateSessionInput input) {
-        GraphQlTester.Response response = graphQlTester
-                .mutate()
-                .build()
-                .documentName("createSession")
-                .variable("input", input)
-                .execute();
-
-        return response.path("payload.session").entity(SessionResult.class).get();
+    public SessionResult createSession(LoginInput input) {
+        SessionResult sessionResult = new SessionResult();
+        sessionResult.setUsername(input.getUsername());
+        sessionResult.setPassword(input.getPassword());
+        return sessionResult;
     }
 
     public NamespaceResult queryNamespace(SessionResult session, String fullPath) {

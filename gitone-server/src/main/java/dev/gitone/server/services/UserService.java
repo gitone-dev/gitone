@@ -24,6 +24,8 @@ import java.time.OffsetDateTime;
 @Service
 public class UserService extends ViewerContext {
 
+    public static final String ACTIVATE_USER_KEY = "GITONE_ACTIVATE_USER_KEY";
+
     private PasswordEncoder passwordEncoder;
 
     private UserDao userDao;
@@ -58,9 +60,9 @@ public class UserService extends ViewerContext {
         HttpSession httpSession = request.getSession(false);
         Unauthorized.notNull(httpSession, "请先登录");
 
-        Integer userId = (Integer) httpSession.getAttribute(SessionService.ACTIVATE_USER_KEY);
+        Integer userId = (Integer) httpSession.getAttribute(ACTIVATE_USER_KEY);
         Forbidden.notNull(userId, "请重新登录");
-        httpSession.removeAttribute(SessionService.ACTIVATE_USER_KEY);
+        httpSession.removeAttribute(ACTIVATE_USER_KEY);
 
         UserDetailEntity userDetailEntity = userDetailDao.find(userId);
         Assert.notNull(userDetailEntity, "请重新登录");
@@ -77,9 +79,9 @@ public class UserService extends ViewerContext {
         HttpSession httpSession = request.getSession(false);
         Unauthorized.notNull(httpSession, "请先登录");
 
-        Integer userId = (Integer) httpSession.getAttribute(SessionService.ACTIVATE_USER_KEY);
+        Integer userId = (Integer) httpSession.getAttribute(ACTIVATE_USER_KEY);
         Forbidden.notNull(userId, "请重新登录");
-        httpSession.removeAttribute(SessionService.ACTIVATE_USER_KEY);
+        httpSession.removeAttribute(ACTIVATE_USER_KEY);
 
         UserDetailEntity userDetailEntity = userDetailDao.find(userId);
         Forbidden.notNull(userDetailEntity, "请重新登录");

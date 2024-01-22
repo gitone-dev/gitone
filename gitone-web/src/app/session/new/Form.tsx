@@ -1,7 +1,4 @@
-import {
-  CreateSessionInput,
-  useCreateSessionMutation,
-} from "@/generated/types";
+import { LoginInput, login } from "@/client";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -17,34 +14,50 @@ function Form() {
     formState: { isSubmitting },
     handleSubmit,
     register,
-  } = useForm<CreateSessionInput>();
+  } = useForm<LoginInput>();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const [createSessionMutation] = useCreateSessionMutation();
 
-  const onSubmit = handleSubmit((input: CreateSessionInput) => {
-    createSessionMutation({
-      variables: { input },
-      onCompleted({ payload }) {
-        const session = payload?.session;
-        if (session?.active) {
-          enqueueSnackbar("登录成功", { variant: "success" });
-          navigate("/", { replace: true });
-        } else {
-          enqueueSnackbar("帐号未激活", { variant: "error" });
-          navigate("/users/unactivate", {
-            replace: true,
-            state: {
-              email: session?.email,
-              username: session?.username,
-            },
-          });
+  const onSubmit = handleSubmit((input: LoginInput) => {
+    login(input)
+      .then((data) => {
+        switch (data.status) {
+          case 200:
+            data.json().then((data) => {
+              enqueueSnackbar(data.message || "登录成功", { variant: "success" });
+              navigate("/", { replace: true });
+            });
+            break;
+          case 401:
+            data.json().then((data) => {
+              enqueueSnackbar(data.message || '登录失败', { variant: "error" });
+            });
+            break;
         }
-      },
-      onError(error) {
+      })
+      .catch((error) => {
         enqueueSnackbar(error.message, { variant: "error" });
-      },
-    });
+      });
+    // TODO 未激活状态
+    //   onCompleted({ payload }) {
+    //     const session = payload?.session;
+    //     if (session?.active) {
+    //       enqueueSnackbar("登录成功", { variant: "success" });
+    //       navigate("/", { replace: true });
+    //     } else {
+    //       enqueueSnackbar("帐号未激活", { variant: "error" });
+    //       navigate("/users/unactivate", {
+    //         replace: true,
+    //         state: {
+    //           email: session?.email,
+    //           username: session?.username,
+    //         },
+    //       });
+    //     }
+    //   },
+    //   onError(error) {
+    //     enqueueSnackbar(error.message, { variant: "error" });
+    //   },
   });
 
   return (

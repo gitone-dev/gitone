@@ -218,16 +218,6 @@ export type CreateProjectPayload = {
   project?: Maybe<Project>;
 };
 
-export type CreateSessionInput = {
-  password: Scalars['String']['input'];
-  username: Scalars['String']['input'];
-};
-
-export type CreateSessionPayload = {
-  __typename?: 'CreateSessionPayload';
-  session?: Maybe<Session>;
-};
-
 export type CreateSshKeyInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   fullPath: Scalars['String']['input'];
@@ -311,11 +301,6 @@ export type DeleteProjectInput = {
 export type DeleteProjectPayload = {
   __typename?: 'DeleteProjectPayload';
   project?: Maybe<Project>;
-};
-
-export type DeleteSessionPayload = {
-  __typename?: 'DeleteSessionPayload';
-  message?: Maybe<Scalars['String']['output']>;
 };
 
 export type DeleteSshKeyInput = {
@@ -526,8 +511,6 @@ export type Mutation = {
   createMember?: Maybe<CreateMemberPayload>;
   /**  project */
   createProject?: Maybe<CreateProjectPayload>;
-  /**  session */
-  createSession?: Maybe<CreateSessionPayload>;
   /**  ssh key */
   createSshKey?: Maybe<CreateSshKeyPayload>;
   createTag?: Maybe<CreateTagPayload>;
@@ -538,7 +521,6 @@ export type Mutation = {
   deleteGroup?: Maybe<DeleteGroupPayload>;
   deleteMember?: Maybe<DeleteMemberPayload>;
   deleteProject?: Maybe<DeleteProjectPayload>;
-  deleteSession?: Maybe<DeleteSessionPayload>;
   deleteSshKey?: Maybe<DeleteSshKeyPayload>;
   deleteTag?: Maybe<DeleteTagPayload>;
   deleteUser?: Maybe<DeleteUserPayload>;
@@ -591,11 +573,6 @@ export type MutationCreateMemberArgs = {
 
 export type MutationCreateProjectArgs = {
   input: CreateProjectInput;
-};
-
-
-export type MutationCreateSessionArgs = {
-  input: CreateSessionInput;
 };
 
 
@@ -1068,16 +1045,6 @@ export type SendPasswordResetEmailPayload = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
-/**  session */
-export type Session = {
-  __typename?: 'Session';
-  active: Scalars['Boolean']['output'];
-  email?: Maybe<Scalars['String']['output']>;
-  header: Scalars['String']['output'];
-  token: Scalars['String']['output'];
-  username: Scalars['String']['output'];
-};
-
 export type SetPrimaryEmailInput = {
   email: Scalars['String']['input'];
 };
@@ -1450,13 +1417,6 @@ export type CreateProjectMutationVariables = Exact<{
 
 export type CreateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
 
-export type CreateSessionMutationVariables = Exact<{
-  input: CreateSessionInput;
-}>;
-
-
-export type CreateSessionMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateSessionPayload', session?: { __typename?: 'Session', username: string, email?: string | null, active: boolean, header: string, token: string } | null } | null };
-
 export type CreateSshKeyMutationVariables = Exact<{
   input: CreateSshKeyInput;
 }>;
@@ -1498,11 +1458,6 @@ export type DeleteMemberMutationVariables = Exact<{
 
 
 export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
-
-export type DeleteSessionMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type DeleteSessionMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteSessionPayload', message?: string | null } | null };
 
 export type DeleteSshKeyMutationVariables = Exact<{
   input: DeleteSshKeyInput;
@@ -1661,8 +1616,6 @@ export type SendPasswordResetEmailMutationVariables = Exact<{
 
 
 export type SendPasswordResetEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'SendPasswordResetEmailPayload', message?: string | null } | null };
-
-export type SessionFragmentFragment = { __typename?: 'Session', username: string, email?: string | null, active: boolean, header: string, token: string };
 
 export type SetPrimaryEmailMutationVariables = Exact<{
   input: SetPrimaryEmailInput;
@@ -1964,15 +1917,6 @@ export const PolicyFragmentFragmentDoc = gql`
   id
   access
   actions
-}
-    `;
-export const SessionFragmentFragmentDoc = gql`
-    fragment SessionFragment on Session {
-  username
-  email
-  active
-  header
-  token
 }
     `;
 export const SshKeyFragmentFragmentDoc = gql`
@@ -2523,41 +2467,6 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
-export const CreateSessionDocument = gql`
-    mutation CreateSession($input: CreateSessionInput!) {
-  payload: createSession(input: $input) {
-    session {
-      ...SessionFragment
-    }
-  }
-}
-    ${SessionFragmentFragmentDoc}`;
-export type CreateSessionMutationFn = Apollo.MutationFunction<CreateSessionMutation, CreateSessionMutationVariables>;
-
-/**
- * __useCreateSessionMutation__
- *
- * To run a mutation, you first call `useCreateSessionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSessionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSessionMutation, { data, loading, error }] = useCreateSessionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateSessionMutation(baseOptions?: Apollo.MutationHookOptions<CreateSessionMutation, CreateSessionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSessionMutation, CreateSessionMutationVariables>(CreateSessionDocument, options);
-      }
-export type CreateSessionMutationHookResult = ReturnType<typeof useCreateSessionMutation>;
-export type CreateSessionMutationResult = Apollo.MutationResult<CreateSessionMutation>;
-export type CreateSessionMutationOptions = Apollo.BaseMutationOptions<CreateSessionMutation, CreateSessionMutationVariables>;
 export const CreateSshKeyDocument = gql`
     mutation CreateSshKey($input: CreateSshKeyInput!) {
   payload: createSshKey(input: $input) {
@@ -2770,38 +2679,6 @@ export function useDeleteMemberMutation(baseOptions?: Apollo.MutationHookOptions
 export type DeleteMemberMutationHookResult = ReturnType<typeof useDeleteMemberMutation>;
 export type DeleteMemberMutationResult = Apollo.MutationResult<DeleteMemberMutation>;
 export type DeleteMemberMutationOptions = Apollo.BaseMutationOptions<DeleteMemberMutation, DeleteMemberMutationVariables>;
-export const DeleteSessionDocument = gql`
-    mutation DeleteSession {
-  payload: deleteSession {
-    message
-  }
-}
-    `;
-export type DeleteSessionMutationFn = Apollo.MutationFunction<DeleteSessionMutation, DeleteSessionMutationVariables>;
-
-/**
- * __useDeleteSessionMutation__
- *
- * To run a mutation, you first call `useDeleteSessionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteSessionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteSessionMutation, { data, loading, error }] = useDeleteSessionMutation({
- *   variables: {
- *   },
- * });
- */
-export function useDeleteSessionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSessionMutation, DeleteSessionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteSessionMutation, DeleteSessionMutationVariables>(DeleteSessionDocument, options);
-      }
-export type DeleteSessionMutationHookResult = ReturnType<typeof useDeleteSessionMutation>;
-export type DeleteSessionMutationResult = Apollo.MutationResult<DeleteSessionMutation>;
-export type DeleteSessionMutationOptions = Apollo.BaseMutationOptions<DeleteSessionMutation, DeleteSessionMutationVariables>;
 export const DeleteSshKeyDocument = gql`
     mutation DeleteSshKey($input: DeleteSshKeyInput!) {
   payload: deleteSshKey(input: $input) {

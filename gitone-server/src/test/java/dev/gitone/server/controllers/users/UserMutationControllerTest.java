@@ -1,9 +1,9 @@
 package dev.gitone.server.controllers.users;
 
-import dev.gitone.server.controllers.session.inputs.CreateSessionInput;
 import dev.gitone.server.controllers.users.inputs.*;
 import dev.gitone.server.entities.Visibility;
 import dev.gitone.server.factories.BaseFactory;
+import dev.gitone.server.factories.LoginInput;
 import dev.gitone.server.factories.UserFactory;
 import dev.gitone.server.faker.Faker;
 import dev.gitone.server.results.SessionResult;
@@ -60,10 +60,10 @@ class UserMutationControllerTest extends BaseFactory {
     void updateActivationEmail() {
         CreateUserInput createUserInput = userFactory.createUserInput();
         userFactory.create(createUserInput, false);
-        CreateSessionInput createSessionInput = new CreateSessionInput();
-        createSessionInput.setUsername(createUserInput.getUsername());
-        createSessionInput.setPassword(createUserInput.getPassword());
-        SessionResult session = userFactory.createSession(createSessionInput);
+        LoginInput loginInput = new LoginInput();
+        loginInput.setUsername(createUserInput.getUsername());
+        loginInput.setPassword(createUserInput.getPassword());
+        SessionResult session = userFactory.createSession(loginInput);
 
         UpdateActivationEmailInput input = new UpdateActivationEmailInput();
         input.setEmail(Faker.email());
@@ -80,10 +80,10 @@ class UserMutationControllerTest extends BaseFactory {
     void sendActivationEmail() {
         CreateUserInput createUserInput = userFactory.createUserInput();
         userFactory.create(createUserInput, false);
-        CreateSessionInput createSessionInput = new CreateSessionInput();
-        createSessionInput.setUsername(createUserInput.getUsername());
-        createSessionInput.setPassword(createUserInput.getPassword());
-        SessionResult session = createSession(createSessionInput);
+        LoginInput loginInput = new LoginInput();
+        loginInput.setUsername(createUserInput.getUsername());
+        loginInput.setPassword(createUserInput.getPassword());
+        SessionResult session = createSession(loginInput);
 
         String oldToken = userFactory.getConfirmationToken(createUserInput.getEmail());
 
@@ -153,10 +153,10 @@ class UserMutationControllerTest extends BaseFactory {
         activateUserInput.setToken(userFactory.getConfirmationToken(createUserInput.getEmail()));
         mutationActivateUser(activateUserInput, null);
 
-        CreateSessionInput createSessionInput = new CreateSessionInput();
-        createSessionInput.setUsername(createUserInput.getUsername());
-        createSessionInput.setPassword(input.getPassword());
-        createSession(createSessionInput);
+        LoginInput loginInput = new LoginInput();
+        loginInput.setUsername(createUserInput.getUsername());
+        loginInput.setPassword(input.getPassword());
+        createSession(loginInput);
 
         mutationResetPassword(input, ErrorType.BAD_REQUEST);
     }
@@ -194,17 +194,17 @@ class UserMutationControllerTest extends BaseFactory {
 
         mutationUpdatePassword(null, input, ErrorType.UNAUTHORIZED);
         mutationUpdatePassword(session, input, null);
-        // FIXME: 2023/10/29 旧的 TOKEN 未失效
-        query("viewer", session).execute().errors().verify();
-
-        CreateSessionInput createSessionInput = new CreateSessionInput();
-        createSessionInput.setUsername(session.getUsername());
-        createSessionInput.setPassword(session.getPassword());
-        mutate("createSession",createSessionInput)
+        query("viewer", session).execute()
                 .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
 
-        createSessionInput.setPassword(input.getPassword());
-        createSession(createSessionInput);
+        LoginInput loginInput = new LoginInput();
+        loginInput.setUsername(session.getUsername());
+        loginInput.setPassword(session.getPassword());
+        mutate("createSession",loginInput)
+                .errors().expect(e -> e.getErrorType().equals(ErrorType.UNAUTHORIZED));
+
+        loginInput.setPassword(input.getPassword());
+        createSession(loginInput);
     }
 
     private void queryNamespace(UserResult user, ErrorType errorType) {

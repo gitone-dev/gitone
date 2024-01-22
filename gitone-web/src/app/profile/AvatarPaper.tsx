@@ -64,9 +64,9 @@ function AvatarPaper(props: Props) {
 
   const onSubmit = handleSubmit((data: CreateAvatarInput) => {
     const headers = new Headers();
-    const token = localStorage.getItem("X-Auth-Token");
+    const token = localStorage.getItem("X-Csrf-Token");
     if (token) {
-      headers.append("X-Auth-Token", token);
+      headers.append("X-Csrf-Token", token);
     }
     const formData = new FormData();
     formData.append("file", data.files[0]);

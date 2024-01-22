@@ -104,11 +104,6 @@ type Policy implements Node {
 }
 
 type Mutation {
-  # session
-
-  createSession(input: CreateSessionInput!): CreateSessionPayload
-  deleteSession: DeleteSessionPayload
-
   # user
 
   createUser(input: CreateUserInput!): CreateUserPayload
@@ -171,29 +166,6 @@ type Mutation {
 
   createTag(input: CreateTagInput!): CreateTagPayload
   deleteTag(input: DeleteTagInput!): DeleteTagPayload
-}
-
-# session
-
-type Session {
-  username: String!
-  email: String
-  header: String!
-  token: String!
-  active: Boolean!
-}
-
-input CreateSessionInput {
-  username: String!
-  password: String!
-}
-
-type CreateSessionPayload {
-  session: Session
-}
-
-type DeleteSessionPayload {
-  message: String
 }
 
 # namespace

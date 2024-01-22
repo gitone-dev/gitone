@@ -13,6 +13,16 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      "/login": {
+        target: "http://127.0.0.1:8080",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/logout": {
+        target: "http://127.0.0.1:8080",
+        changeOrigin: true,
+        secure: false,
+      },
       "/graphql": {
         target: "http://127.0.0.1:8080",
         changeOrigin: true,
