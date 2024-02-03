@@ -15,61 +15,61 @@ import Sidebar from "./Sidebar";
 
 const items = [
   {
-    key: "/profile",
+    key: "/-/settings",
     icon: <AccountCircleIcon />,
     text: "个人资料",
-    to: "/profile",
+    to: "/-/settings",
   },
   {
-    key: "/profile/account",
+    key: "/-/settings/account",
     icon: <ManageAccountsIcon />,
     text: "账号管理",
-    to: "/profile/account",
+    to: "/-/settings/account",
   },
   {
-    key: "/profile/emails",
+    key: "/-/settings/emails",
     icon: <EmailIcon />,
     text: "邮箱管理",
-    to: "/profile/emails",
+    to: "/-/settings/emails",
   },
   {
-    key: "/profile/password",
+    key: "/-/settings/password",
     icon: <LockIcon />,
     text: "密码管理",
-    to: "/profile/password",
+    to: "/-/settings/password",
   },
   {
-    key: "/profile/ssh-keys",
+    key: "/-/settings/ssh-keys",
     icon: <KeyIcon />,
     text: "SSH 公钥",
-    to: "/profile/ssh-keys",
+    to: "/-/settings/ssh-keys",
   },
 ];
 
 const breadcrumbItems: BreadcrumbItems = {
-  "/profile": [
-    { to: "/profile", text: "用户设置" },
-    { to: "/profile", text: "个人资料" },
+  "/-/settings": [
+    { to: "/-/settings", text: "用户设置" },
+    { to: "/-/settings", text: "个人资料" },
   ],
-  "/profile/account": [
-    { to: "/profile", text: "用户设置" },
-    { to: "/profile/account", text: "账号管理" },
+  "/-/settings/account": [
+    { to: "/-/settings", text: "用户设置" },
+    { to: "/-/settings/account", text: "账号管理" },
   ],
-  "/profile/emails": [
-    { to: "/profile", text: "用户设置" },
-    { to: "/profile/emails", text: "邮箱管理" },
+  "/-/settings/emails": [
+    { to: "/-/settings", text: "用户设置" },
+    { to: "/-/settings/emails", text: "邮箱管理" },
   ],
-  "/profile/password": [
-    { to: "/profile", text: "用户设置" },
-    { to: "/profile/password", text: "密码管理" },
+  "/-/settings/password": [
+    { to: "/-/settings", text: "用户设置" },
+    { to: "/-/settings/password", text: "密码管理" },
   ],
-  "/profile/ssh-keys": [
-    { to: "/profile", text: "用户设置" },
-    { to: "/profile/ssh-keys", text: "SSH 公钥" },
+  "/-/settings/ssh-keys": [
+    { to: "/-/settings", text: "用户设置" },
+    { to: "/-/settings/ssh-keys", text: "SSH 公钥" },
   ],
 };
 
-function Profile() {
+export default function Settings() {
   const { loading, error } = useViewerQuery();
 
   if (loading) {
@@ -91,5 +91,3 @@ function Profile() {
     </Page>
   );
 }
-
-export default Profile;

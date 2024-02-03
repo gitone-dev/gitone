@@ -66,7 +66,7 @@ function UserMenu(props: Props) {
           </ListItemIcon>
           <ListItemText>@{viewer.username}</ListItemText>
         </MenuItem>
-        <MenuItem component={RouterLink} to="/profile" divider>
+        <MenuItem component={RouterLink} to="/-/settings" divider>
           <ListItemIcon>
             <SettingsIcon />
           </ListItemIcon>

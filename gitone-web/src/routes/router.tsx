@@ -4,9 +4,9 @@ import Dashboard from "@/app/dashboard";
 import Explore from "@/app/explore";
 import Groups from "@/app/groups";
 import Namespace from "@/app/namespace";
-import Profile from "@/app/profile";
 import Projects from "@/app/projects";
 import Session from "@/app/session";
+import Settings from "@/app/settings";
 import Users from "@/app/users";
 import Layout from "@/layout";
 import { paths } from "@/utils/router";
@@ -65,14 +65,14 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/profile",
-    element: <Layout.Profile />,
+    path: "-/settings",
+    element: <Layout.Settings/>,
     children: [
-      { index: true, element: <Profile.Index /> },
-      { path: "account", element: <Profile.Account /> },
-      { path: "emails", element: <Profile.Emails /> },
-      { path: "password", element: <Profile.Password /> },
-      { path: "ssh-keys", element: <Profile.SshKeys /> },
+      { index: true, element: <Settings.Index /> },
+      { path: "account", element: <Settings.Account /> },
+      { path: "emails", element: <Settings.Emails /> },
+      { path: "password", element: <Settings.Password /> },
+      { path: "ssh-keys", element: <Settings.SshKeys /> },
     ],
   },
   ...paths.map((path) => ({

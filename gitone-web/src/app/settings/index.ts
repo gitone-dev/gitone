@@ -4,7 +4,7 @@ import Index from "./Index";
 import Password from "./password";
 import SshKeys from "./sshKeys";
 
-const Profile = {
+const Settings = {
   Account,
   Emails,
   Index,
@@ -12,4 +12,4 @@ const Profile = {
   SshKeys,
 };
 
-export default Profile;
+export default Settings;

@@ -3,7 +3,7 @@ import Dashboard from "./Dashboard";
 import Explore from "./Explore";
 import Group from "./Group";
 import Namespace from "./Namespace";
-import Profile from "./Profile";
+import Settings from "./Settings";
 import Simple from "./Simple";
 import Unauthorized from "./Unauthorized";
 import User from "./User";
@@ -14,7 +14,7 @@ const Layout = {
   Dashboard,
   Group,
   Namespace,
-  Profile,
+  Settings,
   Simple,
   Unauthorized,
   User,
