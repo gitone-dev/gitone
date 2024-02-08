@@ -1,0 +1,22 @@
+fragment RegisteredClientFragment on RegisteredClient {
+  id
+  createdAt
+  updatedAt
+  clientId
+  clientName
+  clientSecret
+  redirectUris
+  scopes
+  description
+  namespace {
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
+  }
+}
+
+query RegisteredClient($id: ID!) {
+  registeredClient(id: $id) {
+    ...RegisteredClientFragment
+  }
+}

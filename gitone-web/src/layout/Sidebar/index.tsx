@@ -8,7 +8,7 @@ interface Props {
   items: Array<Item>;
 }
 
-function Sidebar(props: Props) {
+export default function Sidebar(props: Props) {
   const { items } = props;
 
   return (
@@ -38,5 +38,4 @@ function Sidebar(props: Props) {
   );
 }
 
-export default Sidebar;
 export type SidebarItems = Array<Item>;

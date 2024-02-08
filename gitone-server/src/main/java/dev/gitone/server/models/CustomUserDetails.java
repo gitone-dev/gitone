@@ -1,47 +1,37 @@
 package dev.gitone.server.models;
 
 import dev.gitone.server.entities.Node;
-import dev.gitone.server.entities.Role;
-import dev.gitone.server.entities.UserDetailEntity;
-import dev.gitone.server.entities.UserEntity;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.SpringSecurityCoreVersion;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.io.Serial;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-public class CustomUserDetails implements UserDetails, OAuth2User, Node<Integer> {
+@Setter
+public class CustomUserDetails extends User implements OAuth2User, Node<Integer> {
 
-    private final Integer id;
+    @Serial
+    private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
-    private final String name;
+    private Integer id;
 
-    private final String username;
+    private String name;
     @Getter
-    private final String email;
+    private String email;
 
-    private final String password;
+    public CustomUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, true, true, true, true, authorities);
+    }
 
-    private final Boolean enabled;
-
-    private final List<GrantedAuthority> authorities;
-
-    public CustomUserDetails(UserEntity userEntity, UserDetailEntity userDetailEntity) {
-        this.id = userEntity.getId();
-        this.name = userEntity.getName();
-        this.username = userEntity.getFullPath();
-        this.email = userDetailEntity.getEmail();
-        this.password = userDetailEntity.getPassword();
-        this.enabled = userDetailEntity.getActive();
-        if (userDetailEntity.getRole().equals(Role.ADMIN)) {
-            authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER, Role.ROLE_ADMIN);
-        } else {
-            authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER);
-        }
+    public CustomUserDetails(String username, String password, boolean enabled, boolean accountNonExpired,
+                             boolean credentialsNonExpired, boolean accountNonLocked,
+                             Collection<? extends GrantedAuthority> authorities) {
+        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     }
 
     @Override
@@ -55,42 +45,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User, Node<Integer>
     }
 
     @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
     public Map<String, Object> getAttributes() {
         return Map.of();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
     }
 }

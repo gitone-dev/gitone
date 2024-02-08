@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.gitone.server.mappers.OAuth2RegisteredClientMapper">
+    <resultMap id="oauth2RegisteredClientMap" type="dev.gitone.server.entities.OAuth2RegisteredClientEntity">
+        <id property="id"  column="id" jdbcType="INTEGER" />
+        <result property="uuid" column="uuid" jdbcType="VARCHAR" />
+        <result property="createdAt"  column="created_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="namespaceId" column="namespace_id" jdbcType="INTEGER" />
+        <result property="clientId" column="client_id" jdbcType="VARCHAR" />
+        <result property="clientIdIssuedAt" column="client_id_issued_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="clientSecret" column="client_secret" jdbcType="VARCHAR" />
+        <result property="clientSecretExpiresAt" column="client_secret_expires_at" jdbcType="TIMESTAMP_WITH_TIMEZONE" />
+        <result property="clientName" column="client_name" jdbcType="VARCHAR" />
+        <result property="clientAuthenticationMethods" column="client_authentication_methods" jdbcType="ARRAY" />
+        <result property="authorizationGrantTypes" column="authorization_grant_types" jdbcType="ARRAY" />
+        <result property="redirectUris" column="redirect_uris" jdbcType="ARRAY" />
+        <result property="postLogoutRedirectUris" column="post_logout_redirect_uris" jdbcType="ARRAY" />
+        <result property="scopes" column="scopes" jdbcType="ARRAY" />
+        <result property="clientSettings" column="client_settings" jdbcType="OTHER" />
+        <result property="tokenSettings" column="token_settings" jdbcType="OTHER" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+        <result property="createdById" column="created_by_id" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="oauth2RegisteredClientColumns">
+        id,
+        uuid,
+        created_at,
+        updated_at,
+        namespace_id,
+        client_id,
+        client_id_issued_at,
+        client_secret,
+        client_secret_expires_at,
+        client_name,
+        client_authentication_methods,
+        authorization_grant_types,
+        redirect_uris,
+        post_logout_redirect_uris,
+        scopes,
+        client_settings,
+        token_settings,
+        description,
+        created_by_id
+    </sql>
+    <sql id="filter">
+        <if test="filter.traversalIds != null and !filter.traversalIds.empty ">
+            AND rc.namespace_id IN
+            <foreach collection="filter.traversalIds " open="(" item="namespaceId" separator="," close=")" >
+                #{namespaceId,jdbcType=INTEGER}
+            </foreach>
+        </if>
+        <if test="filter.query != null">
+            AND rc.client_name LIKE '%' || #{filter.query,jdbcType=VARCHAR} || '%'
+        </if>
+    </sql>
+    <sql id="direction">${page.direction(before)}</sql>
+    <sql id="cursorOp">
+        <choose>
+            <when test="cursor.createdAt != null">
+                AND (
+                    rc.created_at = #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND rc.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR rc.created_at <include refid="direction" /> #{cursor.createdAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.updatedAt != null">
+                AND (
+                    rc.updated_at = #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE} AND rc.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR rc.updated_at <include refid="direction" /> #{cursor.updatedAt,jdbcType=TIMESTAMP_WITH_TIMEZONE}
+                )
+            </when>
+            <when test="cursor.client_name != null">
+                AND (
+                    rc.client_name = #{cursor.title,jdbcType=VARCHAR} AND rc.id &gt; #{cursor.id,jdbcType=INTEGER}
+                    OR rc.title <include refid="direction" /> #{cursor.client_name,jdbcType=VARCHAR}
+                )
+            </when>
+        </choose>
+    </sql>
+    <sql id="page">
+        <if test="page.before != null">
+            <bind name="before" value="true"/>
+            <bind name="cursor" value="page.before"/>
+            <include refid="cursorOp" />
+        </if>
+        <if test="page.after != null">
+            <bind name="before" value="false"/>
+            <bind name="cursor" value="page.after"/>
+            <include refid="cursorOp" />
+        </if>
+    </sql>
+    <select id="find" parameterType="java.lang.Integer" resultMap="oauth2RegisteredClientMap">
+        SELECT <include refid="oauth2RegisteredClientColumns" />
+        FROM oauth2_registered_clients
+        WHERE id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="findByIds" parameterType="java.util.Collection" resultMap="oauth2RegisteredClientMap">
+        SELECT <include refid="oauth2RegisteredClientColumns" />
+        FROM oauth2_registered_clients
+        WHERE id IN
+        <foreach collection="ids" open="(" item="id" separator="," close=")">
+            #{id,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="findByUuid" parameterType="java.lang.String" resultMap="oauth2RegisteredClientMap">
+        SELECT <include refid="oauth2RegisteredClientColumns" />
+        FROM oauth2_registered_clients
+        WHERE uuid = #{uuid,jdbcType=INTEGER}
+    </select>
+    <select id="findByClientId" parameterType="java.lang.String" resultMap="oauth2RegisteredClientMap">
+        SELECT <include refid="oauth2RegisteredClientColumns" />
+        FROM oauth2_registered_clients
+        WHERE client_id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="findAll" resultMap="oauth2RegisteredClientMap">
+        SELECT <include refid="oauth2RegisteredClientColumns" />
+        FROM oauth2_registered_clients as rc
+        <where>
+            <include refid="filter" />
+            <include refid="page" />
+        </where>
+        ORDER BY rc.${page.order.field} ${page.orderDirection}, rc.id ASC
+        LIMIT #{page.limit,jdbcType=INTEGER}
+    </select>
+    <insert id="create" parameterType="dev.gitone.server.entities.OAuth2RegisteredClientEntity" keyProperty="id" useGeneratedKeys="true" >
+        INSERT INTO oauth2_registered_clients (
+            uuid,
+            created_at,
+            updated_at,
+            namespace_id,
+            client_id,
+            client_id_issued_at,
+            client_secret,
+            client_secret_expires_at,
+            client_name,
+            client_authentication_methods,
+            authorization_grant_types,
+            redirect_uris,
+            post_logout_redirect_uris,
+            scopes,
+            client_settings,
+            token_settings,
+            description,
+            created_by_id
+        ) VALUES (
+            #{uuid,jdbcType=VARCHAR},
+            #{createdAt,jdbcType=TIMESTAMP},
+            #{updatedAt,jdbcType=TIMESTAMP},
+            #{namespaceId,jdbcType=INTEGER},
+            #{clientId,jdbcType=VARCHAR},
+            #{clientIdIssuedAt,jdbcType=TIMESTAMP},
+            #{clientSecret,jdbcType=VARCHAR},
+            #{clientSecretExpiresAt,jdbcType=TIMESTAMP},
+            #{clientName,jdbcType=VARCHAR},
+            #{clientAuthenticationMethods,jdbcType=ARRAY},
+            #{authorizationGrantTypes,jdbcType=ARRAY},
+            #{redirectUris,jdbcType=ARRAY},
+            #{postLogoutRedirectUris,jdbcType=ARRAY},
+            #{scopes,jdbcType=ARRAY},
+            #{clientSettings,jdbcType=OTHER},
+            #{tokenSettings,jdbcType=OTHER},
+            #{description,jdbcType=VARCHAR},
+            #{createdById,jdbcType=INTEGER}
+        )
+    </insert>
+    <update id="update" parameterType="dev.gitone.server.entities.OAuth2RegisteredClientEntity">
+        UPDATE oauth2_registered_clients SET
+            created_at = #{createdAt,jdbcType=TIMESTAMP},
+            updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+            client_id = #{clientId,jdbcType=VARCHAR},
+            client_id_issued_at = #{clientIdIssuedAt,jdbcType=TIMESTAMP},
+            client_secret = #{clientSecret,jdbcType=VARCHAR},
+            client_secret_expires_at = #{clientSecretExpiresAt,jdbcType=TIMESTAMP},
+            client_name = #{clientName,jdbcType=VARCHAR},
+            client_authentication_methods = #{clientAuthenticationMethods,jdbcType=ARRAY},
+            authorization_grant_types = #{authorizationGrantTypes,jdbcType=ARRAY},
+            redirect_uris = #{redirectUris,jdbcType=ARRAY},
+            post_logout_redirect_uris = #{postLogoutRedirectUris,jdbcType=ARRAY},
+            scopes = #{scopes,jdbcType=ARRAY},
+            client_settings = #{clientSettings,jdbcType=OTHER},
+            token_settings = #{tokenSettings,jdbcType=OTHER},
+            description = #{description,jdbcType=VARCHAR},
+            created_by_id = #{createdById,jdbcType=INTEGER}
+        WHERE id = #{id,jdbcType=INTEGER}
+    </update>
+    <delete id="delete" parameterType="dev.gitone.server.entities.OAuth2RegisteredClientEntity">
+        DELETE FROM oauth2_registered_clients
+        WHERE id = #{id,jdbcType=INTEGER}
+    </delete>
+</mapper>

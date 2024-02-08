@@ -1,0 +1,7 @@
+mutation UpdateRegisteredClient($input: UpdateRegisteredClientInput!) {
+  payload: updateRegisteredClient(input: $input) {
+    registeredClient {
+      ...RegisteredClientFragment
+    }
+  }
+}

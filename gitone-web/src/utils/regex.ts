@@ -101,6 +101,24 @@ const sshKey = {
   },
 };
 
+const registeredClient = {
+  clientName: {
+    helper: "长度 1~64",
+    rules: {
+      pattern: /^.{1,64}$/,
+      maxLength: 64,
+      required: true,
+    },
+  },
+  description: {
+    helper: "描述一下 OIDC 客户端用途",
+    rules: {
+      pattern: /^.{0,255}$/,
+      maxLength: 255,
+    },
+  },
+};
+
 const branch = {
   name: {
     helper: "长度 1~64",
@@ -144,4 +162,4 @@ const tag = {
 
 const project = group;
 
-export { branch, group, project, sshKey, tag, user };
+export { branch, group, project, sshKey, registeredClient, tag, user };

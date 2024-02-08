@@ -6,7 +6,6 @@ import dev.gitone.server.factories.LoginInput;
 import dev.gitone.server.factories.UserFactory;
 import dev.gitone.server.results.SessionResult;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureHttpGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +27,7 @@ class SessionMutationControllerTest extends BaseFactory {
 
     @Disabled
     void createSession() {
+        // TODO
         CreateUserInput createUserInput = userFactory.createUserInput();
         userFactory.create(createUserInput, false);
 
@@ -45,6 +45,7 @@ class SessionMutationControllerTest extends BaseFactory {
 
     @Disabled
     void deleteSession() {
+        // TODO
         SessionResult session = userFactory.session();
         userFactory.viewer(session);
         mutate("deleteSession", session).errors().verify();

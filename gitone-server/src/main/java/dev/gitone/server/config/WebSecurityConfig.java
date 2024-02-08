@@ -1,8 +1,14 @@
 package dev.gitone.server.config;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -12,10 +18,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +40,25 @@ public class WebSecurityConfig {
     private CustomProperties properties;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Order(1)
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .oidc(Customizer.withDefaults());
+        http.oauth2ResourceServer((resourceServer) -> resourceServer
+                .jwt(Customizer.withDefaults()));
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.httpBasic(Customizer.withDefaults());
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(request -> request.getCookies() == null));
+
         http.formLogin(login -> login
                 .loginPage(String.join("/", properties.getBaseUrl(), "session/new"))
                 .loginProcessingUrl("/login")
@@ -34,13 +66,12 @@ public class WebSecurityConfig {
                 .failureHandler(new ExceptionMappingAuthenticationFailureHandler())
         );
         http.logout(Customizer.withDefaults());
-        http.httpBasic(Customizer.withDefaults());
-        http.csrf(csrf -> csrf.ignoringRequestMatchers(request -> request.getCookies() == null));
         http.securityMatcher("/git/**")
                 .httpBasic(h -> h.realmName("GitOne"))
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.NEVER));
         http.securityMatcher("/**")
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+
         return http.build();
     }
 
@@ -58,7 +89,38 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
+    public JWKSource<SecurityContext> jwkSource() {
+        KeyPair keyPair = generateRsaKey();
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        RSAKey rsaKey = new RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
+                .keyID(UUID.randomUUID().toString())
+                .build();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return new ImmutableJWKSet<>(jwkSet);
+    }
+
+    private static KeyPair generateRsaKey() {
+        KeyPair keyPair;
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            keyPair = keyPairGenerator.generateKeyPair();
+        }
+        catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+        return keyPair;
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
+
+    @Bean
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder().build();
     }
 }

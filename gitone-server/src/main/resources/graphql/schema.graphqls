@@ -68,6 +68,15 @@ type Query {
     orderBy: SshKeyOrder = { field: CREATED_AT, direction: DESC }
   ): SshKeyConnection
 
+  registeredClient(id: ID!): RegisteredClient!
+  registeredClients(
+    fullPath: String!
+    first: Int = 20
+    after: String
+    filterBy: RegisteredClientFilter
+    orderBy: RegisteredClientOrder = { field: CREATED_AT, direction: DESC }
+  ): RegisteredClientConnection
+
   existFullPath(fullPath: String!): Boolean!
   namespace(fullPath: String!): Namespace!
   namespacePolicy(fullPath: String!): Policy!
@@ -158,6 +167,12 @@ type Mutation {
   createSshKey(input: CreateSshKeyInput!): CreateSshKeyPayload
   updateSshKey(input: UpdateSshKeyInput!): UpdateSshKeyPayload
   deleteSshKey(input: DeleteSshKeyInput!): DeleteSshKeyPayload
+
+  # oauth2 / open connect id
+
+  createRegisteredClient(input: CreateRegisteredClientInput!): CreateRegisteredClientPayload
+  updateRegisteredClient(input: UpdateRegisteredClientInput!): UpdateRegisteredClientPayload
+  deleteRegisteredClient(input: DeleteRegisteredClientInput!): DeleteRegisteredClientPayload
 
   # repository
 
@@ -716,6 +731,78 @@ input DeleteSshKeyInput {
 
 type DeleteSshKeyPayload {
   sshKey: SshKey
+}
+
+# oauth2
+
+type RegisteredClient implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  clientId: String
+  clientName: String
+  clientSecret: String
+  redirectUris: [String!]
+  scopes: [String!]
+  description: String
+  namespace: Namespace
+}
+
+type RegisteredClientEdge {
+  node: RegisteredClient!
+  cursor: String!
+}
+
+type RegisteredClientConnection {
+  edges: [RegisteredClientEdge!]
+  pageInfo: PageInfo
+}
+
+input RegisteredClientFilter {
+  query: String
+}
+
+input RegisteredClientOrder {
+  direction: OrderDirection!
+  field: RegisteredClientOrderField!
+}
+
+enum RegisteredClientOrderField {
+  CREATED_AT
+  UPDATED_AT
+  CLIENT_ID
+}
+
+input CreateRegisteredClientInput {
+  fullPath: String!
+  clientName: String!
+  redirectUris: [String!]!
+  scopes: [String!]!
+  description: String
+}
+
+type CreateRegisteredClientPayload {
+  registeredClient: RegisteredClient
+}
+
+input DeleteRegisteredClientInput {
+  id: ID!
+}
+
+type DeleteRegisteredClientPayload {
+  registeredClient: RegisteredClient
+}
+
+input UpdateRegisteredClientInput {
+  id: ID!
+  clientName: String!
+  redirectUris: [String!]!
+  scopes: [String!]!
+  description: String
+}
+
+type UpdateRegisteredClientPayload {
+  registeredClient: RegisteredClient
 }
 
 # repository

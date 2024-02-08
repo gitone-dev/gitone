@@ -66,13 +66,21 @@ const router = createBrowserRouter([
   },
   {
     path: "-/settings",
-    element: <Layout.Settings/>,
+    element: <Layout.Settings />,
     children: [
       { index: true, element: <Settings.Index /> },
       { path: "account", element: <Settings.Account /> },
       { path: "emails", element: <Settings.Emails /> },
       { path: "password", element: <Settings.Password /> },
       { path: "ssh-keys", element: <Settings.SshKeys /> },
+      {
+        path: "registered-clients",
+        children: [
+          { index: true, element: <Settings.RegisteredClients.Index /> },
+          { path: "new", element: <Settings.RegisteredClients.New /> },
+          { path: ":id", element: <Settings.RegisteredClients.Show /> },
+        ],
+      },
     ],
   },
   ...paths.map((path) => ({

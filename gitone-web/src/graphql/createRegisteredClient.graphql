@@ -1,0 +1,7 @@
+mutation CreateRegisteredClient($input: CreateRegisteredClientInput!) {
+  payload: createRegisteredClient(input: $input) {
+    registeredClient {
+      ...RegisteredClientFragment
+    }
+  }
+}

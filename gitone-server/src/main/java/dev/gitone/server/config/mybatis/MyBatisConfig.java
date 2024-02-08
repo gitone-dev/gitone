@@ -17,4 +17,14 @@ public class MyBatisConfig {
     public IntegerArrayTypeHandler integerArrayTypeHandler() {
         return new IntegerArrayTypeHandler();
     }
+
+    @Bean
+    public StringArrayTypeHandler stringArrayTypeHandler() {
+        return new StringArrayTypeHandler();
+    }
+
+    @Bean
+    public OAuth2MapTypeHandler mapTypeHandler() {
+        return new OAuth2MapTypeHandler();
+    }
 }

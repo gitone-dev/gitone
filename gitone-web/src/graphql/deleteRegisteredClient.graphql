@@ -1,0 +1,7 @@
+mutation DeleteRegisteredClient($input: DeleteRegisteredClientInput!) {
+  payload: deleteRegisteredClient(input: $input) {
+    registeredClient {
+      ...RegisteredClientFragment
+    }
+  }
+}

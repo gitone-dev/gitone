@@ -6,6 +6,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import KeyIcon from "@mui/icons-material/Key";
 import LockIcon from "@mui/icons-material/Lock";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import WifiTetheringIcon from "@mui/icons-material/WifiTethering";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
@@ -44,6 +45,12 @@ const items = [
     text: "SSH 公钥",
     to: "/-/settings/ssh-keys",
   },
+  {
+    key: "/-/settings/registered-clients",
+    icon: <WifiTetheringIcon />,
+    text: "OIDC 客户端",
+    to: "/-/settings/registered-clients",
+  },
 ];
 
 const breadcrumbItems: BreadcrumbItems = {
@@ -66,6 +73,14 @@ const breadcrumbItems: BreadcrumbItems = {
   "/-/settings/ssh-keys": [
     { to: "/-/settings", text: "用户设置" },
     { to: "/-/settings/ssh-keys", text: "SSH 公钥" },
+  ],
+  "/-/settings/registered-clients": [
+    { to: "/-/settings", text: "用户设置" },
+    { to: "/-/settings/registered-clients", text: "OIDC 客户端" },
+  ],
+  "/-/settings/registered-clients/new": [
+    { to: "/-/settings", text: "用户设置" },
+    { to: "/-/settings/registered-clients", text: "OIDC 客户端" },
   ],
 };
 

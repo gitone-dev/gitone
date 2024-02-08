@@ -40,8 +40,7 @@ dev:
         port: 50051
 logging:
   level:
-    cn:
-      notfound:
-        gitone:
-          server:
-            mappers: DEBUG
+    dev:
+      gitone:
+        server:
+          mappers: DEBUG

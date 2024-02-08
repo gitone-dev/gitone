@@ -1,0 +1,25 @@
+query RegisteredClients(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: RegisteredClientFilter
+  $orderBy: RegisteredClientOrder
+) {
+  registeredClients(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...RegisteredClientFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

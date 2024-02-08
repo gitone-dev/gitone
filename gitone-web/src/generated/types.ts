@@ -218,6 +218,19 @@ export type CreateProjectPayload = {
   project?: Maybe<Project>;
 };
 
+export type CreateRegisteredClientInput = {
+  clientName: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  fullPath: Scalars['String']['input'];
+  redirectUris: Array<Scalars['String']['input']>;
+  scopes: Array<Scalars['String']['input']>;
+};
+
+export type CreateRegisteredClientPayload = {
+  __typename?: 'CreateRegisteredClientPayload';
+  registeredClient?: Maybe<RegisteredClient>;
+};
+
 export type CreateSshKeyInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   fullPath: Scalars['String']['input'];
@@ -301,6 +314,15 @@ export type DeleteProjectInput = {
 export type DeleteProjectPayload = {
   __typename?: 'DeleteProjectPayload';
   project?: Maybe<Project>;
+};
+
+export type DeleteRegisteredClientInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteRegisteredClientPayload = {
+  __typename?: 'DeleteRegisteredClientPayload';
+  registeredClient?: Maybe<RegisteredClient>;
 };
 
 export type DeleteSshKeyInput = {
@@ -511,6 +533,8 @@ export type Mutation = {
   createMember?: Maybe<CreateMemberPayload>;
   /**  project */
   createProject?: Maybe<CreateProjectPayload>;
+  /**  oauth2 / open connect id */
+  createRegisteredClient?: Maybe<CreateRegisteredClientPayload>;
   /**  ssh key */
   createSshKey?: Maybe<CreateSshKeyPayload>;
   createTag?: Maybe<CreateTagPayload>;
@@ -521,6 +545,7 @@ export type Mutation = {
   deleteGroup?: Maybe<DeleteGroupPayload>;
   deleteMember?: Maybe<DeleteMemberPayload>;
   deleteProject?: Maybe<DeleteProjectPayload>;
+  deleteRegisteredClient?: Maybe<DeleteRegisteredClientPayload>;
   deleteSshKey?: Maybe<DeleteSshKeyPayload>;
   deleteTag?: Maybe<DeleteTagPayload>;
   deleteUser?: Maybe<DeleteUserPayload>;
@@ -534,6 +559,7 @@ export type Mutation = {
   updatePassword?: Maybe<UpdatePasswordPayload>;
   updatePath?: Maybe<UpdatePathPayload>;
   updateProject?: Maybe<UpdateProjectPayload>;
+  updateRegisteredClient?: Maybe<UpdateRegisteredClientPayload>;
   updateSshKey?: Maybe<UpdateSshKeyPayload>;
   updateUser?: Maybe<UpdateUserPayload>;
   /**  namespaces */
@@ -576,6 +602,11 @@ export type MutationCreateProjectArgs = {
 };
 
 
+export type MutationCreateRegisteredClientArgs = {
+  input: CreateRegisteredClientInput;
+};
+
+
 export type MutationCreateSshKeyArgs = {
   input: CreateSshKeyInput;
 };
@@ -613,6 +644,11 @@ export type MutationDeleteMemberArgs = {
 
 export type MutationDeleteProjectArgs = {
   input: DeleteProjectInput;
+};
+
+
+export type MutationDeleteRegisteredClientArgs = {
+  input: DeleteRegisteredClientInput;
 };
 
 
@@ -678,6 +714,11 @@ export type MutationUpdatePathArgs = {
 
 export type MutationUpdateProjectArgs = {
   input: UpdateProjectInput;
+};
+
+
+export type MutationUpdateRegisteredClientArgs = {
+  input: UpdateRegisteredClientInput;
 };
 
 
@@ -828,6 +869,8 @@ export type Query = {
   ping: Scalars['String']['output'];
   project: Project;
   projects?: Maybe<ProjectConnection>;
+  registeredClient: RegisteredClient;
+  registeredClients?: Maybe<RegisteredClientConnection>;
   repository: Repository;
   sshKeys?: Maybe<SshKeyConnection>;
   user: User;
@@ -900,6 +943,20 @@ export type QueryProjectsArgs = {
 };
 
 
+export type QueryRegisteredClientArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryRegisteredClientsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<RegisteredClientFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  fullPath: Scalars['String']['input'];
+  orderBy?: InputMaybe<RegisteredClientOrder>;
+};
+
+
 export type QueryRepositoryArgs = {
   fullPath: Scalars['String']['input'];
 };
@@ -925,6 +982,48 @@ export type QueryUsersArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<UserOrder>;
 };
+
+/**  oauth2 */
+export type RegisteredClient = Node & {
+  __typename?: 'RegisteredClient';
+  clientId?: Maybe<Scalars['String']['output']>;
+  clientName?: Maybe<Scalars['String']['output']>;
+  clientSecret?: Maybe<Scalars['String']['output']>;
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  namespace?: Maybe<Namespace>;
+  redirectUris?: Maybe<Array<Scalars['String']['output']>>;
+  scopes?: Maybe<Array<Scalars['String']['output']>>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type RegisteredClientConnection = {
+  __typename?: 'RegisteredClientConnection';
+  edges?: Maybe<Array<RegisteredClientEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type RegisteredClientEdge = {
+  __typename?: 'RegisteredClientEdge';
+  cursor: Scalars['String']['output'];
+  node: RegisteredClient;
+};
+
+export type RegisteredClientFilter = {
+  query?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type RegisteredClientOrder = {
+  direction: OrderDirection;
+  field: RegisteredClientOrderField;
+};
+
+export enum RegisteredClientOrderField {
+  ClientId = 'CLIENT_ID',
+  CreatedAt = 'CREATED_AT',
+  UpdatedAt = 'UPDATED_AT'
+}
 
 /**  repository */
 export type Repository = Node & {
@@ -1225,6 +1324,19 @@ export type UpdateProjectPayload = {
   project?: Maybe<Project>;
 };
 
+export type UpdateRegisteredClientInput = {
+  clientName: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  redirectUris: Array<Scalars['String']['input']>;
+  scopes: Array<Scalars['String']['input']>;
+};
+
+export type UpdateRegisteredClientPayload = {
+  __typename?: 'UpdateRegisteredClientPayload';
+  registeredClient?: Maybe<RegisteredClient>;
+};
+
 export type UpdateSshKeyInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   id: Scalars['ID']['input'];
@@ -1417,6 +1529,13 @@ export type CreateProjectMutationVariables = Exact<{
 
 export type CreateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
 
+export type CreateRegisteredClientMutationVariables = Exact<{
+  input: CreateRegisteredClientInput;
+}>;
+
+
+export type CreateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+
 export type CreateSshKeyMutationVariables = Exact<{
   input: CreateSshKeyInput;
 }>;
@@ -1458,6 +1577,13 @@ export type DeleteMemberMutationVariables = Exact<{
 
 
 export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+
+export type DeleteRegisteredClientMutationVariables = Exact<{
+  input: DeleteRegisteredClientInput;
+}>;
+
+
+export type DeleteRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type DeleteSshKeyMutationVariables = Exact<{
   input: DeleteSshKeyInput;
@@ -1588,6 +1714,26 @@ export type ProjectsQueryVariables = Exact<{
 
 export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', edges?: Array<{ __typename?: 'ProjectEdge', cursor: string, node: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
+export type RegisteredClientFragmentFragment = { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
+
+export type RegisteredClientQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type RegisteredClientQuery = { __typename?: 'Query', registeredClient: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } };
+
+export type RegisteredClientsQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<RegisteredClientFilter>;
+  orderBy?: InputMaybe<RegisteredClientOrder>;
+}>;
+
+
+export type RegisteredClientsQuery = { __typename?: 'Query', registeredClients?: { __typename?: 'RegisteredClientConnection', edges?: Array<{ __typename?: 'RegisteredClientEdge', cursor: string, node: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
 }>;
@@ -1702,6 +1848,13 @@ export type UpdateProjectMutationVariables = Exact<{
 
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+
+export type UpdateRegisteredClientMutationVariables = Exact<{
+  input: UpdateRegisteredClientInput;
+}>;
+
+
+export type UpdateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type UpdateSshKeyMutationVariables = Exact<{
   input: UpdateSshKeyInput;
@@ -1919,6 +2072,26 @@ export const PolicyFragmentFragmentDoc = gql`
   actions
 }
     `;
+export const RegisteredClientFragmentFragmentDoc = gql`
+    fragment RegisteredClientFragment on RegisteredClient {
+  id
+  createdAt
+  updatedAt
+  clientId
+  clientName
+  clientSecret
+  redirectUris
+  scopes
+  description
+  namespace {
+    ...UserFragment
+    ...GroupFragment
+    ...ProjectFragment
+  }
+}
+    ${UserFragmentFragmentDoc}
+${GroupFragmentFragmentDoc}
+${ProjectFragmentFragmentDoc}`;
 export const SshKeyFragmentFragmentDoc = gql`
     fragment SshKeyFragment on SshKey {
   id
@@ -2467,6 +2640,41 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export const CreateRegisteredClientDocument = gql`
+    mutation CreateRegisteredClient($input: CreateRegisteredClientInput!) {
+  payload: createRegisteredClient(input: $input) {
+    registeredClient {
+      ...RegisteredClientFragment
+    }
+  }
+}
+    ${RegisteredClientFragmentFragmentDoc}`;
+export type CreateRegisteredClientMutationFn = Apollo.MutationFunction<CreateRegisteredClientMutation, CreateRegisteredClientMutationVariables>;
+
+/**
+ * __useCreateRegisteredClientMutation__
+ *
+ * To run a mutation, you first call `useCreateRegisteredClientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateRegisteredClientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createRegisteredClientMutation, { data, loading, error }] = useCreateRegisteredClientMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateRegisteredClientMutation(baseOptions?: Apollo.MutationHookOptions<CreateRegisteredClientMutation, CreateRegisteredClientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateRegisteredClientMutation, CreateRegisteredClientMutationVariables>(CreateRegisteredClientDocument, options);
+      }
+export type CreateRegisteredClientMutationHookResult = ReturnType<typeof useCreateRegisteredClientMutation>;
+export type CreateRegisteredClientMutationResult = Apollo.MutationResult<CreateRegisteredClientMutation>;
+export type CreateRegisteredClientMutationOptions = Apollo.BaseMutationOptions<CreateRegisteredClientMutation, CreateRegisteredClientMutationVariables>;
 export const CreateSshKeyDocument = gql`
     mutation CreateSshKey($input: CreateSshKeyInput!) {
   payload: createSshKey(input: $input) {
@@ -2679,6 +2887,41 @@ export function useDeleteMemberMutation(baseOptions?: Apollo.MutationHookOptions
 export type DeleteMemberMutationHookResult = ReturnType<typeof useDeleteMemberMutation>;
 export type DeleteMemberMutationResult = Apollo.MutationResult<DeleteMemberMutation>;
 export type DeleteMemberMutationOptions = Apollo.BaseMutationOptions<DeleteMemberMutation, DeleteMemberMutationVariables>;
+export const DeleteRegisteredClientDocument = gql`
+    mutation DeleteRegisteredClient($input: DeleteRegisteredClientInput!) {
+  payload: deleteRegisteredClient(input: $input) {
+    registeredClient {
+      ...RegisteredClientFragment
+    }
+  }
+}
+    ${RegisteredClientFragmentFragmentDoc}`;
+export type DeleteRegisteredClientMutationFn = Apollo.MutationFunction<DeleteRegisteredClientMutation, DeleteRegisteredClientMutationVariables>;
+
+/**
+ * __useDeleteRegisteredClientMutation__
+ *
+ * To run a mutation, you first call `useDeleteRegisteredClientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteRegisteredClientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteRegisteredClientMutation, { data, loading, error }] = useDeleteRegisteredClientMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteRegisteredClientMutation(baseOptions?: Apollo.MutationHookOptions<DeleteRegisteredClientMutation, DeleteRegisteredClientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteRegisteredClientMutation, DeleteRegisteredClientMutationVariables>(DeleteRegisteredClientDocument, options);
+      }
+export type DeleteRegisteredClientMutationHookResult = ReturnType<typeof useDeleteRegisteredClientMutation>;
+export type DeleteRegisteredClientMutationResult = Apollo.MutationResult<DeleteRegisteredClientMutation>;
+export type DeleteRegisteredClientMutationOptions = Apollo.BaseMutationOptions<DeleteRegisteredClientMutation, DeleteRegisteredClientMutationVariables>;
 export const DeleteSshKeyDocument = gql`
     mutation DeleteSshKey($input: DeleteSshKeyInput!) {
   payload: deleteSshKey(input: $input) {
@@ -3276,6 +3519,95 @@ export function useProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<P
 export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
 export type ProjectsQueryResult = Apollo.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
+export const RegisteredClientDocument = gql`
+    query RegisteredClient($id: ID!) {
+  registeredClient(id: $id) {
+    ...RegisteredClientFragment
+  }
+}
+    ${RegisteredClientFragmentFragmentDoc}`;
+
+/**
+ * __useRegisteredClientQuery__
+ *
+ * To run a query within a React component, call `useRegisteredClientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRegisteredClientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRegisteredClientQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRegisteredClientQuery(baseOptions: Apollo.QueryHookOptions<RegisteredClientQuery, RegisteredClientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RegisteredClientQuery, RegisteredClientQueryVariables>(RegisteredClientDocument, options);
+      }
+export function useRegisteredClientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RegisteredClientQuery, RegisteredClientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RegisteredClientQuery, RegisteredClientQueryVariables>(RegisteredClientDocument, options);
+        }
+export type RegisteredClientQueryHookResult = ReturnType<typeof useRegisteredClientQuery>;
+export type RegisteredClientLazyQueryHookResult = ReturnType<typeof useRegisteredClientLazyQuery>;
+export type RegisteredClientQueryResult = Apollo.QueryResult<RegisteredClientQuery, RegisteredClientQueryVariables>;
+export const RegisteredClientsDocument = gql`
+    query RegisteredClients($fullPath: String!, $first: Int!, $after: String, $filterBy: RegisteredClientFilter, $orderBy: RegisteredClientOrder) {
+  registeredClients(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...RegisteredClientFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}
+    ${RegisteredClientFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useRegisteredClientsQuery__
+ *
+ * To run a query within a React component, call `useRegisteredClientsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRegisteredClientsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRegisteredClientsQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useRegisteredClientsQuery(baseOptions: Apollo.QueryHookOptions<RegisteredClientsQuery, RegisteredClientsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RegisteredClientsQuery, RegisteredClientsQueryVariables>(RegisteredClientsDocument, options);
+      }
+export function useRegisteredClientsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RegisteredClientsQuery, RegisteredClientsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RegisteredClientsQuery, RegisteredClientsQueryVariables>(RegisteredClientsDocument, options);
+        }
+export type RegisteredClientsQueryHookResult = ReturnType<typeof useRegisteredClientsQuery>;
+export type RegisteredClientsLazyQueryHookResult = ReturnType<typeof useRegisteredClientsLazyQuery>;
+export type RegisteredClientsQueryResult = Apollo.QueryResult<RegisteredClientsQuery, RegisteredClientsQueryVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: ResetPasswordInput!) {
   payload: resetPassword(input: $input) {
@@ -3822,6 +4154,41 @@ export function useUpdateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProjectMutationHookResult = ReturnType<typeof useUpdateProjectMutation>;
 export type UpdateProjectMutationResult = Apollo.MutationResult<UpdateProjectMutation>;
 export type UpdateProjectMutationOptions = Apollo.BaseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export const UpdateRegisteredClientDocument = gql`
+    mutation UpdateRegisteredClient($input: UpdateRegisteredClientInput!) {
+  payload: updateRegisteredClient(input: $input) {
+    registeredClient {
+      ...RegisteredClientFragment
+    }
+  }
+}
+    ${RegisteredClientFragmentFragmentDoc}`;
+export type UpdateRegisteredClientMutationFn = Apollo.MutationFunction<UpdateRegisteredClientMutation, UpdateRegisteredClientMutationVariables>;
+
+/**
+ * __useUpdateRegisteredClientMutation__
+ *
+ * To run a mutation, you first call `useUpdateRegisteredClientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateRegisteredClientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateRegisteredClientMutation, { data, loading, error }] = useUpdateRegisteredClientMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateRegisteredClientMutation(baseOptions?: Apollo.MutationHookOptions<UpdateRegisteredClientMutation, UpdateRegisteredClientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateRegisteredClientMutation, UpdateRegisteredClientMutationVariables>(UpdateRegisteredClientDocument, options);
+      }
+export type UpdateRegisteredClientMutationHookResult = ReturnType<typeof useUpdateRegisteredClientMutation>;
+export type UpdateRegisteredClientMutationResult = Apollo.MutationResult<UpdateRegisteredClientMutation>;
+export type UpdateRegisteredClientMutationOptions = Apollo.BaseMutationOptions<UpdateRegisteredClientMutation, UpdateRegisteredClientMutationVariables>;
 export const UpdateSshKeyDocument = gql`
     mutation UpdateSshKey($input: UpdateSshKeyInput!) {
   payload: updateSshKey(input: $input) {
