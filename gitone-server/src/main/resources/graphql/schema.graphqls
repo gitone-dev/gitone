@@ -78,8 +78,8 @@ type Query {
   ): RegisteredClientConnection
 
   existFullPath(fullPath: String!): Boolean!
-  namespace(fullPath: String!): Namespace!
-  namespacePolicy(fullPath: String!): Policy!
+  namespace(fullPath: String): Namespace!
+  namespacePolicy(fullPath: String): Policy!
   namespaces(
     first: Int = 20
     after: String

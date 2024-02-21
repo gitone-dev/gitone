@@ -81,6 +81,7 @@ const breadcrumbItems: BreadcrumbItems = {
   "/-/settings/registered-clients/new": [
     { to: "/-/settings", text: "用户设置" },
     { to: "/-/settings/registered-clients", text: "OIDC 客户端" },
+    { to: "/-/settings/registered-clients/new", text: "新建" },
   ],
 };
 

@@ -914,12 +914,12 @@ export type QueryMembersArgs = {
 
 
 export type QueryNamespaceArgs = {
-  fullPath: Scalars['String']['input'];
+  fullPath?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryNamespacePolicyArgs = {
-  fullPath: Scalars['String']['input'];
+  fullPath?: InputMaybe<Scalars['String']['input']>;
 };
 
 

@@ -19,8 +19,8 @@ const router = createBrowserRouter([
     element: <Layout.Explore />,
     children: [
       { index: true, element: <Explore.Projects /> },
-      { path: "/explore/projects", element: <Explore.Projects /> },
-      { path: "/explore/groups", element: <Explore.Groups /> },
+      { path: "projects", element: <Explore.Projects /> },
+      { path: "groups", element: <Explore.Groups /> },
     ],
   },
   { path: "/session/new", element: <Session.New /> },
@@ -72,13 +72,25 @@ const router = createBrowserRouter([
       { path: "account", element: <Settings.Account /> },
       { path: "emails", element: <Settings.Emails /> },
       { path: "password", element: <Settings.Password /> },
-      { path: "ssh-keys", element: <Settings.SshKeys /> },
+      {
+        path: "ssh-keys",
+        element: <Namespace.Settings.SshKeys.Index />,
+      },
       {
         path: "registered-clients",
         children: [
-          { index: true, element: <Settings.RegisteredClients.Index /> },
-          { path: "new", element: <Settings.RegisteredClients.New /> },
-          { path: ":id", element: <Settings.RegisteredClients.Show /> },
+          {
+            index: true,
+            element: <Namespace.Settings.RegisteredClients.Index />,
+          },
+          {
+            path: "new",
+            element: <Namespace.Settings.RegisteredClients.New />,
+          },
+          {
+            path: ":id",
+            element: <Namespace.Settings.RegisteredClients.Show />,
+          },
         ],
       },
     ],
@@ -88,21 +100,38 @@ const router = createBrowserRouter([
     element: <Layout.Namespace />,
     children: [
       { index: true, element: <Namespace.Show /> },
-      { path: "-/blob/*", element: <Namespace.Blob /> },
-      { path: "-/branches", element: <Namespace.Branches /> },
-      { path: "-/commit/*", element: <Namespace.Commit /> },
-      { path: "-/commits/*", element: <Namespace.Commits /> },
-      { path: "-/projects", element: <Namespace.Projects /> },
+      { path: "-/blob/*", element: <Projects.Blob /> },
+      { path: "-/branches", element: <Projects.Branches /> },
+      { path: "-/commit/*", element: <Projects.Commit /> },
+      { path: "-/commits/*", element: <Projects.Commits /> },
+      { path: "-/projects", element: <Groups.Projects /> },
       { path: "-/members", element: <Namespace.Members /> },
-      { path: "-/tags", element: <Namespace.Tags /> },
-      { path: "-/tree/*", element: <Namespace.Tree /> },
+      { path: "-/tags", element: <Projects.Tags /> },
+      { path: "-/tree/*", element: <Projects.Tree /> },
       {
         path: "-/settings",
         children: [
           { index: true, element: <Namespace.Settings.Settings /> },
           {
             path: "ssh-keys",
-            element: <Namespace.Settings.SshKeys />,
+            element: <Namespace.Settings.SshKeys.Index />,
+          },
+          {
+            path: "registered-clients",
+            children: [
+              {
+                index: true,
+                element: <Namespace.Settings.RegisteredClients.Index />,
+              },
+              {
+                path: "new",
+                element: <Namespace.Settings.RegisteredClients.New />,
+              },
+              {
+                path: ":id",
+                element: <Namespace.Settings.RegisteredClients.Show />,
+              },
+            ],
           },
         ],
       },

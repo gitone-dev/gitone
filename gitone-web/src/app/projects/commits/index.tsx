@@ -1,107 +1,37 @@
-import { Policy, RevisionPath, useRevisionPathQuery } from "@/generated/types";
-import Breadcrumbs, { BreadcrumbItems } from "@/layout/Breadcrumbs";
-import ChunkPaper from "@/shared/ChunkPaper";
-import ErrorBox from "@/shared/ErrorBox";
-import LoadingBox from "@/shared/LoadingBox";
-import RefSwitcher from "@/shared/RefSwitcher";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import IconButton from "@mui/material/IconButton";
-import Stack from "@mui/material/Stack";
-import copy from "copy-to-clipboard";
-import { useSnackbar } from "notistack";
-import CommitsContainer from "./CommitsContainer";
+import ErrorPage from "@/app/ErrorPage";
+import LoadingPage from "@/app/LoadingPage";
+import { Action, useNamespaceQuery } from "@/generated/types";
+import { useFullPath } from "@/utils/router";
+import Commits from "./Commits";
 
-const breadcrumbItems = (
-  fullPath: string,
-  revisionPath: RevisionPath
-): BreadcrumbItems => {
-  const items = [];
-  const paths = revisionPath.path.split("/");
-
-  for (let i = 1; i < paths.length; i++) {
-    const path = paths.slice(0, i).join("/");
-    items.push({
-      to: `/${fullPath}/-/commits/${revisionPath.revision}/${path}`,
-      text: paths[i - 1],
-    });
-  }
-  items.push({
-    to: `/${fullPath}/-/commits/${revisionPath.revision}/${revisionPath.path}`,
-    text: paths[paths.length - 1],
+export default function Show() {
+  const { fullPath, star } = useFullPath();
+  const { data, loading, error } = useNamespaceQuery({
+    variables: { fullPath },
   });
-
-  return {
-    [`/${fullPath}/-/commits/${revisionPath.revision}/${revisionPath.path}`]: [
-      ...items,
-    ],
-  };
-};
-
-interface Props {
-  fullPath: string;
-  policy: Policy;
-  star: string | null | undefined;
-}
-
-function Commits(props: Props) {
-  const { fullPath, policy, star } = props;
-  const { enqueueSnackbar } = useSnackbar();
-  const { data, loading, error } = useRevisionPathQuery({
-    variables: { fullPath, revisionPath: star },
-  });
-
-  const revisionPath = data?.repository.revisionPath;
-
-  const onClick = () => {
-    if (!revisionPath?.path) return;
-
-    copy(revisionPath.path);
-    enqueueSnackbar(`已复制：${revisionPath.path}`, { variant: "info" });
-  };
 
   if (loading) {
-    return <LoadingBox />;
+    return <LoadingPage />;
   } else if (error) {
-    return <ErrorBox message={error.message} />;
-  } else if (!revisionPath) {
-    return <ErrorBox message="客户端查询条件错误：revision" />;
+    return <ErrorPage message={error.message} />;
+  } else if (!data?.namespace.fullPath) {
+    return (
+      <ErrorPage message="客户查询条件出错 @/app/namespace/commits/index.tsx" />
+    );
+  } else if (!data.namespacePolicy.actions?.includes(Action.Read)) {
+    return <ErrorPage message="无权限" />;
   }
 
-  return (
-    <>
-      <Stack
-        direction="row"
-        spacing={1}
-        alignItems="center"
-        sx={{
-          backgroundColor: "white",
-          pt: 2,
-          position: "sticky",
-          top: 60,
-          zIndex: 1,
-        }}
-      >
-        <RefSwitcher
+  switch (data.namespace.__typename) {
+    case "Project":
+      return (
+        <Commits
           fullPath={fullPath}
-          type="commits"
-          revisionPath={revisionPath}
+          policy={data.namespacePolicy}
+          star={star}
         />
-        <Breadcrumbs items={breadcrumbItems(fullPath, revisionPath)} />
-        {revisionPath.path && (
-          <IconButton onClick={onClick}>
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
-        )}
-      </Stack>
-      <ChunkPaper primary="提交列表">
-        <CommitsContainer
-          fullPath={fullPath}
-          policy={policy}
-          revisionPath={revisionPath}
-        />
-      </ChunkPaper>
-    </>
-  );
+      );
+    default:
+      return <ErrorPage message={`未知类型：${data.namespace.__typename}`} />;
+  }
 }
-
-export default Commits;

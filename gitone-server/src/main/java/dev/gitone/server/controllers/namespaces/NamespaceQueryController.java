@@ -2,6 +2,7 @@ package dev.gitone.server.controllers.namespaces;
 
 import dev.gitone.server.ViewerContext;
 import dev.gitone.server.config.exception.NotFound;
+import dev.gitone.server.config.exception.Unauthorized;
 import dev.gitone.server.daos.MemberDao;
 import dev.gitone.server.daos.NamespaceDao;
 import dev.gitone.server.daos.UserDao;
@@ -11,6 +12,8 @@ import dev.gitone.server.entities.Visibility;
 import dev.gitone.server.policies.Action;
 import dev.gitone.server.policies.NamespacePolicy;
 import dev.gitone.server.policies.Policy;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -39,8 +42,7 @@ public class NamespaceQueryController extends ViewerContext {
 
     @QueryMapping
     public NamespaceEntity namespace(@Argument String fullPath) {
-        NamespaceEntity namespaceEntity = namespaceDao.findByFullPath(fullPath);
-        NotFound.notNull(namespaceEntity, fullPath);
+        NamespaceEntity namespaceEntity = findNamespace(fullPath);
 
         if (!namespacePolicy.policy(namespaceEntity).getActions().contains(Action.READ)) {
             namespaceEntity.setCreatedAt(null);
@@ -55,7 +57,7 @@ public class NamespaceQueryController extends ViewerContext {
 
     @QueryMapping
     public Policy namespacePolicy(@Argument String fullPath) {
-        NamespaceEntity namespaceEntity = namespaceDao.findByFullPath(fullPath);
+        NamespaceEntity namespaceEntity = findNamespace(fullPath);
         return namespacePolicy.policy(namespaceEntity);
     }
 
@@ -83,6 +85,19 @@ public class NamespaceQueryController extends ViewerContext {
         NamespacePage page = new NamespacePage(first, after, orderBy).validate();
         List<NamespaceEntity> namespaces = namespaceDao.findAll(filter, page);
         return new NamespaceConnection(namespaces, page);
+    }
+
+    @NotNull
+    private NamespaceEntity findNamespace(@Nullable String fullPath) {
+        NamespaceEntity namespaceEntity;
+        if (fullPath == null || fullPath.isEmpty()) {
+            Unauthorized.isTrue(isAuthenticated(), "未登录且 fullPath 参数为空");
+            namespaceEntity = namespaceDao.find(viewerId());
+        } else {
+            namespaceEntity = namespaceDao.findByFullPath(fullPath);
+        }
+        NotFound.notNull(namespaceEntity, fullPath);
+        return namespaceEntity;
     }
 
     private void root(NamespaceFilter filter) {

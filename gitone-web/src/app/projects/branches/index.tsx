@@ -1,28 +1,29 @@
-import { Policy } from "@/generated/types";
-import ChunkPaper from "@/shared/ChunkPaper";
-import BranchesContainer, { Header, useSearch } from "./BranchesContainer";
+import ErrorPage from "@/app/ErrorPage";
+import LoadingPage from "@/app/LoadingPage";
+import { Action, useNamespaceQuery } from "@/generated/types";
+import { useFullPath } from "@/utils/router";
+import Branches from "./Branches";
 
-interface Props {
-  fullPath: string;
-  policy: Policy;
+export default function Index() {
+  const { fullPath } = useFullPath();
+  const { data, loading, error } = useNamespaceQuery({
+    variables: { fullPath },
+  });
+
+  if (loading) {
+    return <LoadingPage />;
+  } else if (error) {
+    return <ErrorPage message={error.message} />;
+  } else if (!data?.namespace.fullPath) {
+    return <ErrorPage message="查询出错 projects/branches" />;
+  } else if (!data.namespacePolicy.actions?.includes(Action.Read)) {
+    return <ErrorPage message="无权限" />;
+  }
+
+  switch (data.namespace.__typename) {
+    case "Project":
+      return <Branches fullPath={fullPath} policy={data.namespacePolicy} />;
+    default:
+      return <ErrorPage message={`未知类型：${data.namespace.__typename}`} />;
+  }
 }
-
-function Branches(props: Props) {
-  const { fullPath, policy } = props;
-  const { query, orderField, orderDirection } = useSearch();
-
-  return (
-    <ChunkPaper primary="分支列表">
-      <Header fullPath={fullPath} policy={policy} />
-      <BranchesContainer
-        fullPath={fullPath}
-        policy={policy}
-        query={query}
-        orderField={orderField}
-        orderDirection={orderDirection}
-      />
-    </ChunkPaper>
-  );
-}
-
-export default Branches;

@@ -51,6 +51,12 @@ const items = (fullPath: string, actions: Array<Action>): SidebarItems => [
         to: `/${fullPath}/-/settings/ssh-keys`,
         hidden: !actions.includes(Action.Update),
       },
+      {
+        key: `/${fullPath}/-/settings/registered-clients`,
+        text: "OIDC 客户端",
+        to: `/${fullPath}/-/settings/registered-clients`,
+        hidden: !actions.includes(Action.Update),
+      },
     ],
   },
 ];
@@ -80,6 +86,15 @@ const breadcrumbItems = (paths: Array<string>): BreadcrumbItems => {
     [`/${fullPath}/-/settings/ssh-keys`]: [
       ...fullPathItems,
       { to: `/${fullPath}/-/settings/ssh-keys`, text: "SSH 公钥" },
+    ],
+    [`/${fullPath}/-/settings/registered-clients`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/settings/registered-clients`, text: "OIDC 客户端" },
+    ],
+    [`/${fullPath}/-/settings/registered-clients/new`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/settings/registered-clients`, text: "OIDC 客户端" },
+      { to: `/${fullPath}/-/settings/registered-clients/new`, text: "新建" },
     ],
   };
 };

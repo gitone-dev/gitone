@@ -1,29 +1,31 @@
-import { useRevisionPathQuery } from "@/generated/types";
-import ErrorBox from "@/shared/ErrorBox";
-import LoadingBox from "@/shared/LoadingBox";
+import ErrorPage from "@/app/ErrorPage";
+import LoadingPage from "@/app/LoadingPage";
+import { Action, useNamespaceQuery } from "@/generated/types";
 import { useFullPath } from "@/utils/router";
-import CommitContainer from "./CommitContainer";
+import Commit from "./Commit";
 
-function Show() {
-  const { fullPath, star: revisionPath } = useFullPath();
-  const { data, loading, error } = useRevisionPathQuery({
-    variables: { fullPath, revisionPath },
+export default function Show() {
+  const { fullPath } = useFullPath();
+  const { data, loading, error } = useNamespaceQuery({
+    variables: { fullPath },
   });
 
-  const revision = data?.repository.revisionPath?.revision;
-  const path = data?.repository.revisionPath?.path;
-
   if (loading) {
-    return <LoadingBox />;
+    return <LoadingPage />;
   } else if (error) {
-    return <ErrorBox message={error.message} />;
-  } else if (!revision) {
-    return <ErrorBox message="客户端查询条件错误：revision" />;
+    return <ErrorPage message={error.message} />;
+  } else if (!data?.namespace.fullPath) {
+    return (
+      <ErrorPage message="客户查询条件出错 @/app/namespace/branches/index.tsx" />
+    );
+  } else if (!data.namespacePolicy.actions?.includes(Action.Read)) {
+    return <ErrorPage message="无权限" />;
   }
 
-  return (
-    <CommitContainer fullPath={fullPath} revision={revision} path={path} />
-  );
+  switch (data.namespace.__typename) {
+    case "Project":
+      return <Commit />;
+    default:
+      return <ErrorPage message={`未知类型：${data.namespace.__typename}`} />;
+  }
 }
-
-export default Show;

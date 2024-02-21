@@ -1,44 +1,31 @@
-import { useGroupQuery, useViewerQuery } from "@/generated/types";
-import ChunkPaper from "@/shared/ChunkPaper";
+import { Action, useNamespaceQuery } from "@/generated/types";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
-import ProjectsContainer, {
-  Header,
-  useSearch,
-} from "@/shared/ProjectsContainer";
 import { useFullPath } from "@/utils/router";
+import Projects from "./Projects";
 
-function Projects() {
+export default function Index() {
   const { fullPath } = useFullPath();
-  const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
-  const isViewer = Boolean(viewer);
-  const { query, visibility, orderField } = useSearch({ isViewer });
-  const { data, loading, error } = useGroupQuery({
+  const { data, loading, error } = useNamespaceQuery({
     variables: { fullPath },
   });
 
-  const group = data?.group;
-  const policy = data?.namespacePolicy;
   if (loading) {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
-  } else if (!group || !policy) {
-    return <ErrorBox message="客户端查询条件错误" />;
+  } else if (!data?.namespace.fullPath) {
+    return (
+      <ErrorBox message="客户查询条件出错 @/app/namespace/projects/index.tsx" />
+    );
+  } else if (!data.namespacePolicy.actions?.includes(Action.Read)) {
+    return <ErrorBox message="无权限" />;
   }
 
-  return (
-    <ChunkPaper primary="项目列表">
-      <Header isViewer={isViewer} />
-      <ProjectsContainer
-        parentId={group.id}
-        query={query}
-        visibility={visibility}
-        orderField={orderField}
-        recursive={true}
-      />
-    </ChunkPaper>
-  );
+  switch (data.namespace.__typename) {
+    case "Group":
+      return <Projects />;
+    default:
+      return <ErrorBox message={`未知类型：${data.namespace.__typename}`} />;
+  }
 }
-
-export default Projects;
