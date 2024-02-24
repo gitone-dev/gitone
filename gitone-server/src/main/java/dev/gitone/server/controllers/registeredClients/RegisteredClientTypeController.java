@@ -28,8 +28,13 @@ public class RegisteredClientTypeController {
     }
 
     @SchemaMapping
+    public String avatarUrl(OAuth2RegisteredClientEntity entity) {
+        return String.format("/avatars/a/%d", entity.getId());
+    }
+
+    @SchemaMapping
     public String clientSecret(OAuth2RegisteredClientEntity entity) {
-        // {noop}
+        // {noop}, FIXME 加密？
         return entity.getClientSecret().substring(6);
     }
 

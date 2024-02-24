@@ -13,4 +13,9 @@ public class ProjectTypeController {
     public String id(ProjectEntity projectEntity) {
         return Relay.toGlobalId(ProjectEntity.TYPE, projectEntity.getId());
     }
+
+    @SchemaMapping
+    public String avatarUrl(ProjectEntity projectEntity) {
+        return String.format("/avatars/n/%d", projectEntity.getId());
+    }
 }

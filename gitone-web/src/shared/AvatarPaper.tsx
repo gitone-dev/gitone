@@ -24,10 +24,10 @@ const Input = styled("input")({
 });
 
 interface Props {
-  avatarUrl?: string | null;
+  avatarUrl: string;
 }
 
-function AvatarPaper(props: Props) {
+export default function AvatarPaper(props: Props) {
   const { avatarUrl } = props;
   const [avatar, setAvatar] = useState(avatarUrl || "");
   const [open, setOpen] = useState<boolean>(false);
@@ -70,7 +70,7 @@ function AvatarPaper(props: Props) {
     }
     const formData = new FormData();
     formData.append("file", data.files[0]);
-    fetch("/avatars/u", {
+    fetch(avatarUrl, {
       method: "POST",
       headers: headers,
       body: formData,
@@ -113,7 +113,7 @@ function AvatarPaper(props: Props) {
             />
             <label htmlFor="upload-avatar">
               <Input
-                accept="images/*"
+                accept="image/*"
                 id="upload-avatar"
                 type="file"
                 {...register("files", { validate: validateAvatar })}
@@ -137,5 +137,3 @@ function AvatarPaper(props: Props) {
     </ChunkPaper>
   );
 }
-
-export default AvatarPaper;

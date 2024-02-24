@@ -1,4 +1,5 @@
 import { useRegisteredClientQuery } from "@/generated/types";
+import AvatarPaper from "@/shared/AvatarPaper";
 import ChunkPaper from "@/shared/ChunkPaper";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
@@ -18,13 +19,16 @@ export default function Show() {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
-  } else if (!registeredClient) {
-    return <ErrorBox message="客户端查询条件错误" />;
+  } else if (!registeredClient || !registeredClient.avatarUrl) {
+    return <ErrorBox message="查询错误" />;
   }
 
   return (
-    <ChunkPaper primary="修改">
-      <Form registeredClient={registeredClient} />
-    </ChunkPaper>
+    <>
+      <AvatarPaper avatarUrl={registeredClient.avatarUrl} />
+      <ChunkPaper primary="修改">
+        <Form registeredClient={registeredClient} />
+      </ChunkPaper>
+    </>
   );
 }

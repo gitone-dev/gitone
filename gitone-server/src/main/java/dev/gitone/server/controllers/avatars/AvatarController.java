@@ -25,21 +25,37 @@ public class AvatarController {
 
     private AvatarService avatarService;
 
-    @GetMapping("/avatars/u/{userId}")
-    public ResponseEntity<Resource> show(@PathVariable Integer userId) throws IOException {
-        Resource resource = avatarService.find(userId);
+    @GetMapping("/avatars/n/{id}")
+    public ResponseEntity<Resource> namespace(@PathVariable Integer id) throws IOException {
+        Resource resource = avatarService.find(AvatarService.Type.N, id);
+        return resource(resource);
+    }
 
+    @Secured({ Role.ROLE_USER })
+    @PostMapping("/avatars/n/{id}")
+    public ResponseEntity<Map<String, String>> namespace(@PathVariable Integer id, @RequestParam("file") MultipartFile file) throws IOException {
+        String message = avatarService.create(AvatarService.Type.N, id, file);
+        return ResponseEntity.ok(Map.of("message", message));
+    }
+
+    @GetMapping("/avatars/a/{id}")
+    public ResponseEntity<Resource> application(@PathVariable Integer id) throws IOException {
+        Resource resource = avatarService.find(AvatarService.Type.A, id);
+        return resource(resource);
+    }
+
+    @Secured({ Role.ROLE_USER })
+    @PostMapping("/avatars/a/{id}")
+    public ResponseEntity<Map<String, String>> application(@PathVariable Integer id, @RequestParam("file") MultipartFile file) throws IOException {
+        String message = avatarService.create(AvatarService.Type.A, id, file);
+        return ResponseEntity.ok(Map.of("message", message));
+    }
+
+    private ResponseEntity<Resource> resource(Resource resource) throws IOException {
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(Duration.ofMinutes(5)).cachePublic())
                 .lastModified(resource.lastModified())
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);
-    }
-
-    @Secured({ Role.ROLE_USER })
-    @PostMapping("/avatars/u")
-    public ResponseEntity<Map<String, String>> create(@RequestParam("file") MultipartFile file) throws IOException {
-        String message = avatarService.create(file);
-        return ResponseEntity.ok(Map.of("message", message));
     }
 }

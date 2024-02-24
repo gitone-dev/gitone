@@ -1,6 +1,7 @@
 import UpdatePathPaper from "@/app/namespace/settings/UpdatePathPaper";
 import UpdateVisibilityPaper from "@/app/namespace/settings/UpdateVisibilityPaper";
 import { useGroupQuery } from "@/generated/types";
+import AvatarPaper from "@/shared/AvatarPaper";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
 import { useFullPath } from "@/utils/router";
@@ -18,12 +19,13 @@ function Settings() {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
-  } else if (!group?.fullPath || !group.path) {
-    return <ErrorBox message="客户端查询条件错误" />;
+  } else if (!group?.fullPath || !group.path || !group.avatarUrl) {
+    return <ErrorBox message="查询错误" />;
   }
 
   return (
     <>
+      <AvatarPaper avatarUrl={group.avatarUrl} />
       <UpdatePaper group={group} />
       <UpdatePathPaper
         primary="路径"

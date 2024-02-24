@@ -201,6 +201,7 @@ interface Namespace implements Node {
   fullPath: String
   visibility: Visibility!
   description: String
+  avatarUrl: String
 }
 
 type NamespaceEdge {
@@ -263,6 +264,7 @@ type Group implements Node & Namespace {
   fullPath: String
   visibility: Visibility!
   description: String
+  avatarUrl: String
 }
 
 type GroupEdge {
@@ -336,6 +338,7 @@ type Project implements Node & Namespace {
   fullPath: String
   visibility: Visibility!
   description: String
+  avatarUrl: String
 }
 
 type ProjectEdge {
@@ -410,10 +413,10 @@ type User implements Node & Namespace {
   username: String
   visibility: Visibility!
   description: String
+  avatarUrl: String
 
   active: Boolean
   role: Role
-  avatarUrl: String
   location: String
   websiteUrl: String
 
@@ -743,9 +746,9 @@ type RegisteredClient implements Node {
   clientName: String
   clientSecret: String
   redirectUris: [String!]
-  scopes: [String!]
   description: String
   namespace: Namespace
+  avatarUrl: String
 }
 
 type RegisteredClientEdge {
@@ -777,7 +780,6 @@ input CreateRegisteredClientInput {
   fullPath: String!
   clientName: String!
   redirectUris: [String!]!
-  scopes: [String!]!
   description: String
 }
 
@@ -797,7 +799,6 @@ input UpdateRegisteredClientInput {
   id: ID!
   clientName: String!
   redirectUris: [String!]!
-  scopes: [String!]!
   description: String
 }
 

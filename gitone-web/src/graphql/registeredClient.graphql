@@ -6,8 +6,8 @@ fragment RegisteredClientFragment on RegisteredClient {
   clientName
   clientSecret
   redirectUris
-  scopes
   description
+  avatarUrl
   namespace {
     ...UserFragment
     ...GroupFragment

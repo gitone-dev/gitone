@@ -8,6 +8,7 @@ fragment GroupFragment on Group {
   fullPath
   visibility
   description
+  avatarUrl
 }
 
 query Group($fullPath: String!) {

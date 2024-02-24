@@ -62,7 +62,7 @@ public class UserTypeController extends ViewerContext {
 
     @SchemaMapping
     public String avatarUrl(UserEntity userEntity) {
-        return String.format("/avatars/u/%d", userEntity.getId());
+        return String.format("/avatars/n/%d", userEntity.getId());
     }
 
     @SchemaMapping

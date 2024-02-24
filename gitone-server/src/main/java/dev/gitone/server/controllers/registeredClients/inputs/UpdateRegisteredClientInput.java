@@ -16,8 +16,6 @@ public class UpdateRegisteredClientInput {
     private String clientName;
     @NotBlank
     private List<String> redirectUris;
-    @NotBlank
-    private List<String> scopes;
 
     private String description = "";
 

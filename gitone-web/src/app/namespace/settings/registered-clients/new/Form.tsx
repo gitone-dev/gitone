@@ -10,11 +10,6 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { Grid, IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import { useSnackbar } from "notistack";
@@ -38,7 +33,6 @@ export default function Form(props: Props) {
   } = useForm<CreateRegisteredClientInput>({
     defaultValues: {
       clientName: "",
-      scopes: [],
       redirectUris: redirectUris,
     },
   });
@@ -121,24 +115,6 @@ export default function Form(props: Props) {
         minRows={3}
         {...register("description", { ...pattern.description.rules })}
       />
-      <FormControl component="fieldset" fullWidth>
-        <FormLabel component="legend">Scopes</FormLabel>
-        <FormGroup row>
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="openid"
-            value="openid"
-            {...register("scopes")}
-          />
-          <FormControlLabel
-            control={<Checkbox size="small" />}
-            label="profile"
-            value="profile"
-            {...register("scopes")}
-          />
-        </FormGroup>
-        <FormHelperText></FormHelperText>
-      </FormControl>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <FormLabel>Redirect Uris</FormLabel>

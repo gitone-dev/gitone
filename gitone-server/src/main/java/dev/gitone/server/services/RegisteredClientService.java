@@ -12,14 +12,11 @@ import dev.gitone.server.entities.OAuth2RegisteredClientEntity;
 import dev.gitone.server.policies.Action;
 import dev.gitone.server.policies.NamespacePolicy;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
 public class RegisteredClientService extends ViewerContext {
-
-    private PasswordEncoder passwordEncoder;
 
     private final NamespaceDao namespaceDao;
 
@@ -33,7 +30,7 @@ public class RegisteredClientService extends ViewerContext {
         namespacePolicy.assertPermission(namespaceEntity, Action.UPDATE);
 
         // FIXME
-        OAuth2RegisteredClientEntity registeredClientEntity = input.entity(passwordEncoder);
+        OAuth2RegisteredClientEntity registeredClientEntity = input.entity();
         registeredClientEntity.setNamespaceId(namespaceEntity.getId());
         registeredClientEntity.setCreatedById(viewerId());
         return registeredClientDao.create(registeredClientEntity);
@@ -48,7 +45,6 @@ public class RegisteredClientService extends ViewerContext {
 
         registeredClientEntity.setClientName(input.getClientName());
         registeredClientEntity.setRedirectUris(input.getRedirectUris().toArray(new String[0]));
-        registeredClientEntity.setScopes(input.getScopes().toArray(new String[0]));
         registeredClientEntity.setDescription(input.getDescription());
         return registeredClientDao.update(registeredClientEntity);
     }

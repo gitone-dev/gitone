@@ -76,8 +76,8 @@ type LoginInput = {
   password: string;
 };
 
-function login(input: LoginInput) {
-  return fetch("/login", {
+async function login(input: LoginInput): Promise<string> {
+  const response = await fetch("/login", {
     method: "POST",
     headers: {
       "X-Csrf-Token": localStorage.getItem("X-Csrf-Token") || "",
@@ -85,6 +85,23 @@ function login(input: LoginInput) {
     },
     body: new URLSearchParams(input),
   });
+
+  const data = await response.json();
+
+  switch (response.status) {
+    case 200:
+      return data.message || "登录成功";
+    case 401:
+      throw new Error(data.message || "登录失败");
+    case 403:
+      const token = response.headers.get("X-Csrf-Token");
+      if (token) {
+        localStorage.setItem("X-Csrf-Token", token);
+      }
+      throw new Error(response.statusText);
+    default:
+      throw new Error(response.statusText);
+  }
 }
 
 function logout() {

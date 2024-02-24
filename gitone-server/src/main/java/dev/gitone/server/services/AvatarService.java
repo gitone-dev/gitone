@@ -3,6 +3,12 @@ package dev.gitone.server.services;
 import dev.gitone.server.ViewerContext;
 import dev.gitone.server.config.CustomProperties;
 import dev.gitone.server.controllers.avatars.AvatarController;
+import dev.gitone.server.daos.NamespaceDao;
+import dev.gitone.server.daos.OAuth2RegisteredClientDao;
+import dev.gitone.server.entities.NamespaceEntity;
+import dev.gitone.server.entities.OAuth2RegisteredClientEntity;
+import dev.gitone.server.policies.Action;
+import dev.gitone.server.policies.NamespacePolicy;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -25,32 +31,54 @@ import java.util.Iterator;
 @Service
 public class AvatarService extends ViewerContext {
 
+    public enum Type {
+        N, // namespace
+        A  // application
+    }
+
     private static final int MB = 1024 * 1024;
 
     private static final String BLANK_AVATAR = "static/images/avatar.jpeg";
 
     private CustomProperties properties;
 
-    public Resource find(Integer userId) {
-        File avatarFile = properties.getUserAvatar(userId).toFile();
+    private NamespaceDao namespaceDao;
+
+    private NamespacePolicy namespacePolicy;
+
+    private OAuth2RegisteredClientDao registeredClientDao;
+
+    public Resource find(Type type, Integer id) {
+        File avatarFile = properties.findAvatar(type, id).toFile();
         if (avatarFile.exists()) {
             return new FileSystemResource(avatarFile);
         }
 
         URL url = AvatarController.class.getClassLoader().getResource(BLANK_AVATAR);
-        Assert.notNull(url, "头像不存在");
+        Assert.notNull(url, "图片不存在");
         return new UrlResource(url);
     }
 
-    public String create(MultipartFile multipartFile) throws IOException {
+    public String create(Type type, Integer id, MultipartFile multipartFile) throws IOException {
         Assert.notNull(multipartFile, "上传文件出错");
         Assert.isTrue(multipartFile.getSize() <= 2 * MB, "文件大小超出 2MB");
+        NamespaceEntity namespaceEntity = null;
 
-        File tempFile = File.createTempFile("avatar-u-", ".unknown");
+        switch (type) {
+            case N -> namespaceEntity = namespaceDao.find(id);
+            case A -> {
+                OAuth2RegisteredClientEntity registeredClientEntity = registeredClientDao.find(id);
+                Assert.notNull(registeredClientEntity, "不存在");
+                namespaceEntity = namespaceDao.find(registeredClientEntity.getNamespaceId());
+            }
+        }
+        namespacePolicy.assertPermission(namespaceEntity, Action.UPDATE);
+
+        File tempFile = File.createTempFile("avatar-", ".unknown");
         try {
             multipartFile.transferTo(tempFile);
             validateExtension(tempFile, multipartFile.getContentType());
-            transferToFile(tempFile);
+            transferToFile(type, id, tempFile);
         } finally {
             tempFile.delete();
         }
@@ -77,8 +105,8 @@ public class AvatarService extends ViewerContext {
         }
     }
 
-    private void transferToFile(File tempFile) throws IOException {
-        File outFile = properties.getUserAvatar(viewerId()).toFile();
+    private void transferToFile(Type type, Integer id, File tempFile) throws IOException {
+        File outFile = properties.findAvatar(type, id).toFile();
         File parentFile = outFile.getParentFile();
         Assert.isTrue(parentFile.exists() || parentFile.mkdirs(), "创建目录失败");
 

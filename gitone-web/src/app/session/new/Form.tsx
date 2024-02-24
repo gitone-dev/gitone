@@ -21,19 +21,8 @@ function Form() {
   const onSubmit = handleSubmit((input: LoginInput) => {
     login(input)
       .then((data) => {
-        switch (data.status) {
-          case 200:
-            data.json().then((data) => {
-              enqueueSnackbar(data.message || "登录成功", { variant: "success" });
-              navigate("/", { replace: true });
-            });
-            break;
-          case 401:
-            data.json().then((data) => {
-              enqueueSnackbar(data.message || '登录失败', { variant: "error" });
-            });
-            break;
-        }
+        enqueueSnackbar(data || "登录成功", { variant: "success" });
+        navigate("/", { replace: true });
       })
       .catch((error) => {
         enqueueSnackbar(error.message, { variant: "error" });

@@ -223,7 +223,6 @@ export type CreateRegisteredClientInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   fullPath: Scalars['String']['input'];
   redirectUris: Array<Scalars['String']['input']>;
-  scopes: Array<Scalars['String']['input']>;
 };
 
 export type CreateRegisteredClientPayload = {
@@ -439,6 +438,7 @@ export type GitUser = {
 /**  group */
 export type Group = Namespace & Node & {
   __typename?: 'Group';
+  avatarUrl?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   fullName?: Maybe<Scalars['String']['output']>;
@@ -737,6 +737,7 @@ export type MutationUpdateVisibilityArgs = {
 };
 
 export type Namespace = {
+  avatarUrl?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   fullName?: Maybe<Scalars['String']['output']>;
@@ -814,6 +815,7 @@ export type Policy = Node & {
 /**  project */
 export type Project = Namespace & Node & {
   __typename?: 'Project';
+  avatarUrl?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   fullName?: Maybe<Scalars['String']['output']>;
@@ -986,6 +988,7 @@ export type QueryUsersArgs = {
 /**  oauth2 */
 export type RegisteredClient = Node & {
   __typename?: 'RegisteredClient';
+  avatarUrl?: Maybe<Scalars['String']['output']>;
   clientId?: Maybe<Scalars['String']['output']>;
   clientName?: Maybe<Scalars['String']['output']>;
   clientSecret?: Maybe<Scalars['String']['output']>;
@@ -994,7 +997,6 @@ export type RegisteredClient = Node & {
   id: Scalars['ID']['output'];
   namespace?: Maybe<Namespace>;
   redirectUris?: Maybe<Array<Scalars['String']['output']>>;
-  scopes?: Maybe<Array<Scalars['String']['output']>>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
@@ -1329,7 +1331,6 @@ export type UpdateRegisteredClientInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   redirectUris: Array<Scalars['String']['input']>;
-  scopes: Array<Scalars['String']['input']>;
 };
 
 export type UpdateRegisteredClientPayload = {
@@ -1513,35 +1514,35 @@ export type CreateGroupMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateGroupPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+export type CreateGroupMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateGroupPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type CreateMemberMutationVariables = Exact<{
   input: CreateMemberInput;
 }>;
 
 
-export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type CreateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+export type CreateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type CreateRegisteredClientMutationVariables = Exact<{
   input: CreateRegisteredClientInput;
 }>;
 
 
-export type CreateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type CreateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type CreateSshKeyMutationVariables = Exact<{
   input: CreateSshKeyInput;
 }>;
 
 
-export type CreateSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type CreateSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type CreateTagMutationVariables = Exact<{
   input: CreateTagInput;
@@ -1576,21 +1577,21 @@ export type DeleteMemberMutationVariables = Exact<{
 }>;
 
 
-export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type DeleteMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type DeleteRegisteredClientMutationVariables = Exact<{
   input: DeleteRegisteredClientInput;
 }>;
 
 
-export type DeleteRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type DeleteRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type DeleteSshKeyMutationVariables = Exact<{
   input: DeleteSshKeyInput;
 }>;
 
 
-export type DeleteSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type DeleteSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type DeleteTagMutationVariables = Exact<{
   input: DeleteTagInput;
@@ -1636,14 +1637,14 @@ export type ExistFullPathQuery = { __typename?: 'Query', existFullPath: boolean 
 
 export type GitUserFragmentFragment = { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null };
 
-export type GroupFragmentFragment = { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null };
+export type GroupFragmentFragment = { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null };
 
 export type GroupQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
 }>;
 
 
-export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type GroupsQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1653,9 +1654,9 @@ export type GroupsQueryVariables = Exact<{
 }>;
 
 
-export type GroupsQuery = { __typename?: 'Query', groups?: { __typename?: 'GroupConnection', edges?: Array<{ __typename?: 'GroupEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+export type GroupsQuery = { __typename?: 'Query', groups?: { __typename?: 'GroupConnection', edges?: Array<{ __typename?: 'GroupEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
-export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
+export type MemberFragmentFragment = { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
 
 export type MembersQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -1666,14 +1667,14 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', edges?: Array<{ __typename?: 'MemberEdge', cursor: string, node: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type NamespaceQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
 }>;
 
 
-export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
+export type NamespaceQuery = { __typename?: 'Query', namespace: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> } };
 
 export type NamespacesQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1683,7 +1684,7 @@ export type NamespacesQueryVariables = Exact<{
 }>;
 
 
-export type NamespacesQuery = { __typename?: 'Query', namespaces?: { __typename?: 'NamespaceConnection', edges?: Array<{ __typename?: 'NamespaceEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+export type NamespacesQuery = { __typename?: 'Query', namespaces?: { __typename?: 'NamespaceConnection', edges?: Array<{ __typename?: 'NamespaceEdge', cursor: string, node: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type PageInfoFragmentFragment = { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null };
 
@@ -1694,7 +1695,7 @@ export type PingQuery = { __typename?: 'Query', ping: string };
 
 export type PolicyFragmentFragment = { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> };
 
-export type ProjectFragmentFragment = { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null };
+export type ProjectFragmentFragment = { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null };
 
 export type ProjectQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -1702,7 +1703,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> }, repository: { __typename?: 'Repository', id: string, empty?: boolean | null, defaultBranch?: { __typename?: 'Branch', name: string } | null, revisionPath?: { __typename?: 'RevisionPath', id: string, revision: string, path: string, type: string } | null } };
+export type ProjectQuery = { __typename?: 'Query', project: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null }, namespacePolicy: { __typename?: 'Policy', id: string, access: Access, actions: Array<Action> }, repository: { __typename?: 'Repository', id: string, empty?: boolean | null, defaultBranch?: { __typename?: 'Branch', name: string } | null, revisionPath?: { __typename?: 'RevisionPath', id: string, revision: string, path: string, type: string } | null } };
 
 export type ProjectsQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -1712,16 +1713,16 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', edges?: Array<{ __typename?: 'ProjectEdge', cursor: string, node: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', edges?: Array<{ __typename?: 'ProjectEdge', cursor: string, node: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
-export type RegisteredClientFragmentFragment = { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
+export type RegisteredClientFragmentFragment = { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
 
 export type RegisteredClientQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type RegisteredClientQuery = { __typename?: 'Query', registeredClient: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } };
+export type RegisteredClientQuery = { __typename?: 'Query', registeredClient: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } };
 
 export type RegisteredClientsQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -1732,7 +1733,7 @@ export type RegisteredClientsQueryVariables = Exact<{
 }>;
 
 
-export type RegisteredClientsQuery = { __typename?: 'Query', registeredClients?: { __typename?: 'RegisteredClientConnection', edges?: Array<{ __typename?: 'RegisteredClientEdge', cursor: string, node: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+export type RegisteredClientsQuery = { __typename?: 'Query', registeredClients?: { __typename?: 'RegisteredClientConnection', edges?: Array<{ __typename?: 'RegisteredClientEdge', cursor: string, node: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
@@ -1770,7 +1771,7 @@ export type SetPrimaryEmailMutationVariables = Exact<{
 
 export type SetPrimaryEmailMutation = { __typename?: 'Mutation', payload?: { __typename?: 'SetPrimaryEmailPayload', email?: { __typename?: 'Email', id: string, createdAt?: any | null, updatedAt?: any | null, email: string, primary: boolean } | null } | null };
 
-export type SshKeyFragmentFragment = { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
+export type SshKeyFragmentFragment = { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null };
 
 export type SshKeysQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -1781,7 +1782,7 @@ export type SshKeysQueryVariables = Exact<{
 }>;
 
 
-export type SshKeysQuery = { __typename?: 'Query', sshKeys?: { __typename?: 'SshKeyConnection', edges?: Array<{ __typename?: 'SshKeyEdge', cursor: string, node: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+export type SshKeysQuery = { __typename?: 'Query', sshKeys?: { __typename?: 'SshKeyConnection', edges?: Array<{ __typename?: 'SshKeyEdge', cursor: string, node: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
 export type TagFragmentFragment = { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null };
 
@@ -1819,14 +1820,14 @@ export type UpdateGroupMutationVariables = Exact<{
 }>;
 
 
-export type UpdateGroupMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+export type UpdateGroupMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateGroupPayload', group?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type UpdateMemberMutationVariables = Exact<{
   input: UpdateMemberInput;
 }>;
 
 
-export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type UpdateMemberMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateMemberPayload', member?: { __typename?: 'Member', id: string, createdAt?: any | null, updatedAt?: any | null, access?: Access | null, user?: { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type UpdatePasswordMutationVariables = Exact<{
   input: UpdatePasswordInput;
@@ -1840,28 +1841,28 @@ export type UpdatePathMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePathMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdatePathPayload', namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
+export type UpdatePathMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdatePathPayload', namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type UpdateProjectMutationVariables = Exact<{
   input: UpdateProjectInput;
 }>;
 
 
-export type UpdateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | null } | null };
+export type UpdateProjectMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type UpdateRegisteredClientMutationVariables = Exact<{
   input: UpdateRegisteredClientInput;
 }>;
 
 
-export type UpdateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, scopes?: Array<string> | null, description?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type UpdateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type UpdateSshKeyMutationVariables = Exact<{
   input: UpdateSshKeyInput;
 }>;
 
 
-export type UpdateSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+export type UpdateSshKeyMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateSshKeyPayload', sshKey?: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
 export type UpdateUserMutationVariables = Exact<{
   input: UpdateUserInput;
@@ -1875,7 +1876,7 @@ export type UpdateVisibilityMutationVariables = Exact<{
 }>;
 
 
-export type UpdateVisibilityMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateVisibilityPayload', namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
+export type UpdateVisibilityMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateVisibilityPayload', namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null };
 
 export type UserFragmentFragment = { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null };
 
@@ -2032,6 +2033,7 @@ export const GroupFragmentFragmentDoc = gql`
   fullPath
   visibility
   description
+  avatarUrl
 }
     `;
 export const ProjectFragmentFragmentDoc = gql`
@@ -2045,6 +2047,7 @@ export const ProjectFragmentFragmentDoc = gql`
   fullPath
   visibility
   description
+  avatarUrl
 }
     `;
 export const MemberFragmentFragmentDoc = gql`
@@ -2081,8 +2084,8 @@ export const RegisteredClientFragmentFragmentDoc = gql`
   clientName
   clientSecret
   redirectUris
-  scopes
   description
+  avatarUrl
   namespace {
     ...UserFragment
     ...GroupFragment
@@ -2220,7 +2223,7 @@ ${PolicyFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useBlobQuery(baseOptions: Apollo.QueryHookOptions<BlobQuery, BlobQueryVariables>) {
+export function useBlobQuery(baseOptions: Apollo.QueryHookOptions<BlobQuery, BlobQueryVariables> & ({ variables: BlobQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<BlobQuery, BlobQueryVariables>(BlobDocument, options);
       }
@@ -2228,8 +2231,13 @@ export function useBlobLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BlobQ
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<BlobQuery, BlobQueryVariables>(BlobDocument, options);
         }
+export function useBlobSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BlobQuery, BlobQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BlobQuery, BlobQueryVariables>(BlobDocument, options);
+        }
 export type BlobQueryHookResult = ReturnType<typeof useBlobQuery>;
 export type BlobLazyQueryHookResult = ReturnType<typeof useBlobLazyQuery>;
+export type BlobSuspenseQueryHookResult = ReturnType<typeof useBlobSuspenseQuery>;
 export type BlobQueryResult = Apollo.QueryResult<BlobQuery, BlobQueryVariables>;
 export const BlobLinesDocument = gql`
     query BlobLines($fullPath: String!, $revision: String!, $path: String!, $first: Int!, $after: String) {
@@ -2274,7 +2282,7 @@ export const BlobLinesDocument = gql`
  *   },
  * });
  */
-export function useBlobLinesQuery(baseOptions: Apollo.QueryHookOptions<BlobLinesQuery, BlobLinesQueryVariables>) {
+export function useBlobLinesQuery(baseOptions: Apollo.QueryHookOptions<BlobLinesQuery, BlobLinesQueryVariables> & ({ variables: BlobLinesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<BlobLinesQuery, BlobLinesQueryVariables>(BlobLinesDocument, options);
       }
@@ -2282,8 +2290,13 @@ export function useBlobLinesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<BlobLinesQuery, BlobLinesQueryVariables>(BlobLinesDocument, options);
         }
+export function useBlobLinesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BlobLinesQuery, BlobLinesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BlobLinesQuery, BlobLinesQueryVariables>(BlobLinesDocument, options);
+        }
 export type BlobLinesQueryHookResult = ReturnType<typeof useBlobLinesQuery>;
 export type BlobLinesLazyQueryHookResult = ReturnType<typeof useBlobLinesLazyQuery>;
+export type BlobLinesSuspenseQueryHookResult = ReturnType<typeof useBlobLinesSuspenseQuery>;
 export type BlobLinesQueryResult = Apollo.QueryResult<BlobLinesQuery, BlobLinesQueryVariables>;
 export const BranchesDocument = gql`
     query Branches($fullPath: String!, $first: Int!, $after: String, $filterBy: BranchFilter, $orderBy: BranchOrder) {
@@ -2325,7 +2338,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useBranchesQuery(baseOptions: Apollo.QueryHookOptions<BranchesQuery, BranchesQueryVariables>) {
+export function useBranchesQuery(baseOptions: Apollo.QueryHookOptions<BranchesQuery, BranchesQueryVariables> & ({ variables: BranchesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<BranchesQuery, BranchesQueryVariables>(BranchesDocument, options);
       }
@@ -2333,8 +2346,13 @@ export function useBranchesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<B
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<BranchesQuery, BranchesQueryVariables>(BranchesDocument, options);
         }
+export function useBranchesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<BranchesQuery, BranchesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<BranchesQuery, BranchesQueryVariables>(BranchesDocument, options);
+        }
 export type BranchesQueryHookResult = ReturnType<typeof useBranchesQuery>;
 export type BranchesLazyQueryHookResult = ReturnType<typeof useBranchesLazyQuery>;
+export type BranchesSuspenseQueryHookResult = ReturnType<typeof useBranchesSuspenseQuery>;
 export type BranchesQueryResult = Apollo.QueryResult<BranchesQuery, BranchesQueryVariables>;
 export const CommitDocument = gql`
     query Commit($fullPath: String!, $revision: String) {
@@ -2368,7 +2386,7 @@ ${PolicyFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useCommitQuery(baseOptions: Apollo.QueryHookOptions<CommitQuery, CommitQueryVariables>) {
+export function useCommitQuery(baseOptions: Apollo.QueryHookOptions<CommitQuery, CommitQueryVariables> & ({ variables: CommitQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CommitQuery, CommitQueryVariables>(CommitDocument, options);
       }
@@ -2376,8 +2394,13 @@ export function useCommitLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Com
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CommitQuery, CommitQueryVariables>(CommitDocument, options);
         }
+export function useCommitSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CommitQuery, CommitQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CommitQuery, CommitQueryVariables>(CommitDocument, options);
+        }
 export type CommitQueryHookResult = ReturnType<typeof useCommitQuery>;
 export type CommitLazyQueryHookResult = ReturnType<typeof useCommitLazyQuery>;
+export type CommitSuspenseQueryHookResult = ReturnType<typeof useCommitSuspenseQuery>;
 export type CommitQueryResult = Apollo.QueryResult<CommitQuery, CommitQueryVariables>;
 export const CommitsDocument = gql`
     query Commits($fullPath: String!, $first: Int!, $after: String, $filterBy: CommitFilter!) {
@@ -2418,7 +2441,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useCommitsQuery(baseOptions: Apollo.QueryHookOptions<CommitsQuery, CommitsQueryVariables>) {
+export function useCommitsQuery(baseOptions: Apollo.QueryHookOptions<CommitsQuery, CommitsQueryVariables> & ({ variables: CommitsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<CommitsQuery, CommitsQueryVariables>(CommitsDocument, options);
       }
@@ -2426,8 +2449,13 @@ export function useCommitsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Co
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<CommitsQuery, CommitsQueryVariables>(CommitsDocument, options);
         }
+export function useCommitsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CommitsQuery, CommitsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CommitsQuery, CommitsQueryVariables>(CommitsDocument, options);
+        }
 export type CommitsQueryHookResult = ReturnType<typeof useCommitsQuery>;
 export type CommitsLazyQueryHookResult = ReturnType<typeof useCommitsLazyQuery>;
+export type CommitsSuspenseQueryHookResult = ReturnType<typeof useCommitsSuspenseQuery>;
 export type CommitsQueryResult = Apollo.QueryResult<CommitsQuery, CommitsQueryVariables>;
 export const ConfirmEmailDocument = gql`
     mutation ConfirmEmail($input: ConfirmEmailInput!) {
@@ -3072,7 +3100,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useDiffsQuery(baseOptions: Apollo.QueryHookOptions<DiffsQuery, DiffsQueryVariables>) {
+export function useDiffsQuery(baseOptions: Apollo.QueryHookOptions<DiffsQuery, DiffsQueryVariables> & ({ variables: DiffsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<DiffsQuery, DiffsQueryVariables>(DiffsDocument, options);
       }
@@ -3080,8 +3108,13 @@ export function useDiffsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Diff
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<DiffsQuery, DiffsQueryVariables>(DiffsDocument, options);
         }
+export function useDiffsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<DiffsQuery, DiffsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DiffsQuery, DiffsQueryVariables>(DiffsDocument, options);
+        }
 export type DiffsQueryHookResult = ReturnType<typeof useDiffsQuery>;
 export type DiffsLazyQueryHookResult = ReturnType<typeof useDiffsLazyQuery>;
+export type DiffsSuspenseQueryHookResult = ReturnType<typeof useDiffsSuspenseQuery>;
 export type DiffsQueryResult = Apollo.QueryResult<DiffsQuery, DiffsQueryVariables>;
 export const ExistEmailDocument = gql`
     query ExistEmail($email: String!) {
@@ -3105,7 +3138,7 @@ export const ExistEmailDocument = gql`
  *   },
  * });
  */
-export function useExistEmailQuery(baseOptions: Apollo.QueryHookOptions<ExistEmailQuery, ExistEmailQueryVariables>) {
+export function useExistEmailQuery(baseOptions: Apollo.QueryHookOptions<ExistEmailQuery, ExistEmailQueryVariables> & ({ variables: ExistEmailQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ExistEmailQuery, ExistEmailQueryVariables>(ExistEmailDocument, options);
       }
@@ -3113,8 +3146,13 @@ export function useExistEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ExistEmailQuery, ExistEmailQueryVariables>(ExistEmailDocument, options);
         }
+export function useExistEmailSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ExistEmailQuery, ExistEmailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExistEmailQuery, ExistEmailQueryVariables>(ExistEmailDocument, options);
+        }
 export type ExistEmailQueryHookResult = ReturnType<typeof useExistEmailQuery>;
 export type ExistEmailLazyQueryHookResult = ReturnType<typeof useExistEmailLazyQuery>;
+export type ExistEmailSuspenseQueryHookResult = ReturnType<typeof useExistEmailSuspenseQuery>;
 export type ExistEmailQueryResult = Apollo.QueryResult<ExistEmailQuery, ExistEmailQueryVariables>;
 export const ExistFullPathDocument = gql`
     query ExistFullPath($fullPath: String!) {
@@ -3138,7 +3176,7 @@ export const ExistFullPathDocument = gql`
  *   },
  * });
  */
-export function useExistFullPathQuery(baseOptions: Apollo.QueryHookOptions<ExistFullPathQuery, ExistFullPathQueryVariables>) {
+export function useExistFullPathQuery(baseOptions: Apollo.QueryHookOptions<ExistFullPathQuery, ExistFullPathQueryVariables> & ({ variables: ExistFullPathQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ExistFullPathQuery, ExistFullPathQueryVariables>(ExistFullPathDocument, options);
       }
@@ -3146,8 +3184,13 @@ export function useExistFullPathLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ExistFullPathQuery, ExistFullPathQueryVariables>(ExistFullPathDocument, options);
         }
+export function useExistFullPathSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ExistFullPathQuery, ExistFullPathQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ExistFullPathQuery, ExistFullPathQueryVariables>(ExistFullPathDocument, options);
+        }
 export type ExistFullPathQueryHookResult = ReturnType<typeof useExistFullPathQuery>;
 export type ExistFullPathLazyQueryHookResult = ReturnType<typeof useExistFullPathLazyQuery>;
+export type ExistFullPathSuspenseQueryHookResult = ReturnType<typeof useExistFullPathSuspenseQuery>;
 export type ExistFullPathQueryResult = Apollo.QueryResult<ExistFullPathQuery, ExistFullPathQueryVariables>;
 export const GroupDocument = gql`
     query Group($fullPath: String!) {
@@ -3177,7 +3220,7 @@ ${PolicyFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useGroupQuery(baseOptions: Apollo.QueryHookOptions<GroupQuery, GroupQueryVariables>) {
+export function useGroupQuery(baseOptions: Apollo.QueryHookOptions<GroupQuery, GroupQueryVariables> & ({ variables: GroupQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GroupQuery, GroupQueryVariables>(GroupDocument, options);
       }
@@ -3185,8 +3228,13 @@ export function useGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Grou
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GroupQuery, GroupQueryVariables>(GroupDocument, options);
         }
+export function useGroupSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GroupQuery, GroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GroupQuery, GroupQueryVariables>(GroupDocument, options);
+        }
 export type GroupQueryHookResult = ReturnType<typeof useGroupQuery>;
 export type GroupLazyQueryHookResult = ReturnType<typeof useGroupLazyQuery>;
+export type GroupSuspenseQueryHookResult = ReturnType<typeof useGroupSuspenseQuery>;
 export type GroupQueryResult = Apollo.QueryResult<GroupQuery, GroupQueryVariables>;
 export const GroupsDocument = gql`
     query Groups($first: Int!, $after: String, $filterBy: GroupFilter, $orderBy: GroupOrder) {
@@ -3224,7 +3272,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useGroupsQuery(baseOptions: Apollo.QueryHookOptions<GroupsQuery, GroupsQueryVariables>) {
+export function useGroupsQuery(baseOptions: Apollo.QueryHookOptions<GroupsQuery, GroupsQueryVariables> & ({ variables: GroupsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GroupsQuery, GroupsQueryVariables>(GroupsDocument, options);
       }
@@ -3232,8 +3280,13 @@ export function useGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Gro
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GroupsQuery, GroupsQueryVariables>(GroupsDocument, options);
         }
+export function useGroupsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GroupsQuery, GroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GroupsQuery, GroupsQueryVariables>(GroupsDocument, options);
+        }
 export type GroupsQueryHookResult = ReturnType<typeof useGroupsQuery>;
 export type GroupsLazyQueryHookResult = ReturnType<typeof useGroupsLazyQuery>;
+export type GroupsSuspenseQueryHookResult = ReturnType<typeof useGroupsSuspenseQuery>;
 export type GroupsQueryResult = Apollo.QueryResult<GroupsQuery, GroupsQueryVariables>;
 export const MembersDocument = gql`
     query Members($fullPath: String!, $first: Int!, $after: String, $filterBy: MemberFilter, $orderBy: MemberOrder) {
@@ -3282,7 +3335,7 @@ ${PolicyFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useMembersQuery(baseOptions: Apollo.QueryHookOptions<MembersQuery, MembersQueryVariables>) {
+export function useMembersQuery(baseOptions: Apollo.QueryHookOptions<MembersQuery, MembersQueryVariables> & ({ variables: MembersQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
       }
@@ -3290,8 +3343,13 @@ export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
         }
+export function useMembersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<MembersQuery, MembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
+        }
 export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
 export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
+export type MembersSuspenseQueryHookResult = ReturnType<typeof useMembersSuspenseQuery>;
 export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
 export const NamespaceDocument = gql`
     query Namespace($fullPath: String!) {
@@ -3325,7 +3383,7 @@ ${PolicyFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useNamespaceQuery(baseOptions: Apollo.QueryHookOptions<NamespaceQuery, NamespaceQueryVariables>) {
+export function useNamespaceQuery(baseOptions: Apollo.QueryHookOptions<NamespaceQuery, NamespaceQueryVariables> & ({ variables: NamespaceQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<NamespaceQuery, NamespaceQueryVariables>(NamespaceDocument, options);
       }
@@ -3333,8 +3391,13 @@ export function useNamespaceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<NamespaceQuery, NamespaceQueryVariables>(NamespaceDocument, options);
         }
+export function useNamespaceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<NamespaceQuery, NamespaceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NamespaceQuery, NamespaceQueryVariables>(NamespaceDocument, options);
+        }
 export type NamespaceQueryHookResult = ReturnType<typeof useNamespaceQuery>;
 export type NamespaceLazyQueryHookResult = ReturnType<typeof useNamespaceLazyQuery>;
+export type NamespaceSuspenseQueryHookResult = ReturnType<typeof useNamespaceSuspenseQuery>;
 export type NamespaceQueryResult = Apollo.QueryResult<NamespaceQuery, NamespaceQueryVariables>;
 export const NamespacesDocument = gql`
     query Namespaces($first: Int!, $after: String, $filterBy: NamespaceFilter, $orderBy: NamespaceOrder) {
@@ -3376,7 +3439,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useNamespacesQuery(baseOptions: Apollo.QueryHookOptions<NamespacesQuery, NamespacesQueryVariables>) {
+export function useNamespacesQuery(baseOptions: Apollo.QueryHookOptions<NamespacesQuery, NamespacesQueryVariables> & ({ variables: NamespacesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<NamespacesQuery, NamespacesQueryVariables>(NamespacesDocument, options);
       }
@@ -3384,8 +3447,13 @@ export function useNamespacesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<NamespacesQuery, NamespacesQueryVariables>(NamespacesDocument, options);
         }
+export function useNamespacesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<NamespacesQuery, NamespacesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<NamespacesQuery, NamespacesQueryVariables>(NamespacesDocument, options);
+        }
 export type NamespacesQueryHookResult = ReturnType<typeof useNamespacesQuery>;
 export type NamespacesLazyQueryHookResult = ReturnType<typeof useNamespacesLazyQuery>;
+export type NamespacesSuspenseQueryHookResult = ReturnType<typeof useNamespacesSuspenseQuery>;
 export type NamespacesQueryResult = Apollo.QueryResult<NamespacesQuery, NamespacesQueryVariables>;
 export const PingDocument = gql`
     query Ping {
@@ -3416,8 +3484,13 @@ export function usePingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PingQ
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<PingQuery, PingQueryVariables>(PingDocument, options);
         }
+export function usePingSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<PingQuery, PingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<PingQuery, PingQueryVariables>(PingDocument, options);
+        }
 export type PingQueryHookResult = ReturnType<typeof usePingQuery>;
 export type PingLazyQueryHookResult = ReturnType<typeof usePingLazyQuery>;
+export type PingSuspenseQueryHookResult = ReturnType<typeof usePingSuspenseQuery>;
 export type PingQueryResult = Apollo.QueryResult<PingQuery, PingQueryVariables>;
 export const ProjectDocument = gql`
     query Project($fullPath: String!, $revisionPath: String!) {
@@ -3461,7 +3534,7 @@ ${PolicyFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useProjectQuery(baseOptions: Apollo.QueryHookOptions<ProjectQuery, ProjectQueryVariables>) {
+export function useProjectQuery(baseOptions: Apollo.QueryHookOptions<ProjectQuery, ProjectQueryVariables> & ({ variables: ProjectQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ProjectQuery, ProjectQueryVariables>(ProjectDocument, options);
       }
@@ -3469,8 +3542,13 @@ export function useProjectLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pr
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ProjectQuery, ProjectQueryVariables>(ProjectDocument, options);
         }
+export function useProjectSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ProjectQuery, ProjectQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProjectQuery, ProjectQueryVariables>(ProjectDocument, options);
+        }
 export type ProjectQueryHookResult = ReturnType<typeof useProjectQuery>;
 export type ProjectLazyQueryHookResult = ReturnType<typeof useProjectLazyQuery>;
+export type ProjectSuspenseQueryHookResult = ReturnType<typeof useProjectSuspenseQuery>;
 export type ProjectQueryResult = Apollo.QueryResult<ProjectQuery, ProjectQueryVariables>;
 export const ProjectsDocument = gql`
     query Projects($first: Int!, $after: String, $filterBy: ProjectFilter, $orderBy: ProjectOrder) {
@@ -3508,7 +3586,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useProjectsQuery(baseOptions: Apollo.QueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+export function useProjectsQuery(baseOptions: Apollo.QueryHookOptions<ProjectsQuery, ProjectsQueryVariables> & ({ variables: ProjectsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
       }
@@ -3516,8 +3594,13 @@ export function useProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<P
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
         }
+export function useProjectsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, options);
+        }
 export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
+export type ProjectsSuspenseQueryHookResult = ReturnType<typeof useProjectsSuspenseQuery>;
 export type ProjectsQueryResult = Apollo.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
 export const RegisteredClientDocument = gql`
     query RegisteredClient($id: ID!) {
@@ -3543,7 +3626,7 @@ export const RegisteredClientDocument = gql`
  *   },
  * });
  */
-export function useRegisteredClientQuery(baseOptions: Apollo.QueryHookOptions<RegisteredClientQuery, RegisteredClientQueryVariables>) {
+export function useRegisteredClientQuery(baseOptions: Apollo.QueryHookOptions<RegisteredClientQuery, RegisteredClientQueryVariables> & ({ variables: RegisteredClientQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<RegisteredClientQuery, RegisteredClientQueryVariables>(RegisteredClientDocument, options);
       }
@@ -3551,8 +3634,13 @@ export function useRegisteredClientLazyQuery(baseOptions?: Apollo.LazyQueryHookO
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<RegisteredClientQuery, RegisteredClientQueryVariables>(RegisteredClientDocument, options);
         }
+export function useRegisteredClientSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RegisteredClientQuery, RegisteredClientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RegisteredClientQuery, RegisteredClientQueryVariables>(RegisteredClientDocument, options);
+        }
 export type RegisteredClientQueryHookResult = ReturnType<typeof useRegisteredClientQuery>;
 export type RegisteredClientLazyQueryHookResult = ReturnType<typeof useRegisteredClientLazyQuery>;
+export type RegisteredClientSuspenseQueryHookResult = ReturnType<typeof useRegisteredClientSuspenseQuery>;
 export type RegisteredClientQueryResult = Apollo.QueryResult<RegisteredClientQuery, RegisteredClientQueryVariables>;
 export const RegisteredClientsDocument = gql`
     query RegisteredClients($fullPath: String!, $first: Int!, $after: String, $filterBy: RegisteredClientFilter, $orderBy: RegisteredClientOrder) {
@@ -3597,7 +3685,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useRegisteredClientsQuery(baseOptions: Apollo.QueryHookOptions<RegisteredClientsQuery, RegisteredClientsQueryVariables>) {
+export function useRegisteredClientsQuery(baseOptions: Apollo.QueryHookOptions<RegisteredClientsQuery, RegisteredClientsQueryVariables> & ({ variables: RegisteredClientsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<RegisteredClientsQuery, RegisteredClientsQueryVariables>(RegisteredClientsDocument, options);
       }
@@ -3605,8 +3693,13 @@ export function useRegisteredClientsLazyQuery(baseOptions?: Apollo.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<RegisteredClientsQuery, RegisteredClientsQueryVariables>(RegisteredClientsDocument, options);
         }
+export function useRegisteredClientsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RegisteredClientsQuery, RegisteredClientsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RegisteredClientsQuery, RegisteredClientsQueryVariables>(RegisteredClientsDocument, options);
+        }
 export type RegisteredClientsQueryHookResult = ReturnType<typeof useRegisteredClientsQuery>;
 export type RegisteredClientsLazyQueryHookResult = ReturnType<typeof useRegisteredClientsLazyQuery>;
+export type RegisteredClientsSuspenseQueryHookResult = ReturnType<typeof useRegisteredClientsSuspenseQuery>;
 export type RegisteredClientsQueryResult = Apollo.QueryResult<RegisteredClientsQuery, RegisteredClientsQueryVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: ResetPasswordInput!) {
@@ -3672,7 +3765,7 @@ export const RevisionPathDocument = gql`
  *   },
  * });
  */
-export function useRevisionPathQuery(baseOptions: Apollo.QueryHookOptions<RevisionPathQuery, RevisionPathQueryVariables>) {
+export function useRevisionPathQuery(baseOptions: Apollo.QueryHookOptions<RevisionPathQuery, RevisionPathQueryVariables> & ({ variables: RevisionPathQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<RevisionPathQuery, RevisionPathQueryVariables>(RevisionPathDocument, options);
       }
@@ -3680,8 +3773,13 @@ export function useRevisionPathLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<RevisionPathQuery, RevisionPathQueryVariables>(RevisionPathDocument, options);
         }
+export function useRevisionPathSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RevisionPathQuery, RevisionPathQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RevisionPathQuery, RevisionPathQueryVariables>(RevisionPathDocument, options);
+        }
 export type RevisionPathQueryHookResult = ReturnType<typeof useRevisionPathQuery>;
 export type RevisionPathLazyQueryHookResult = ReturnType<typeof useRevisionPathLazyQuery>;
+export type RevisionPathSuspenseQueryHookResult = ReturnType<typeof useRevisionPathSuspenseQuery>;
 export type RevisionPathQueryResult = Apollo.QueryResult<RevisionPathQuery, RevisionPathQueryVariables>;
 export const SendActivationEmailDocument = gql`
     mutation SendActivationEmail($input: SendActivationEmailInput!) {
@@ -3827,7 +3925,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useSshKeysQuery(baseOptions: Apollo.QueryHookOptions<SshKeysQuery, SshKeysQueryVariables>) {
+export function useSshKeysQuery(baseOptions: Apollo.QueryHookOptions<SshKeysQuery, SshKeysQueryVariables> & ({ variables: SshKeysQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<SshKeysQuery, SshKeysQueryVariables>(SshKeysDocument, options);
       }
@@ -3835,8 +3933,13 @@ export function useSshKeysLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ss
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<SshKeysQuery, SshKeysQueryVariables>(SshKeysDocument, options);
         }
+export function useSshKeysSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SshKeysQuery, SshKeysQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SshKeysQuery, SshKeysQueryVariables>(SshKeysDocument, options);
+        }
 export type SshKeysQueryHookResult = ReturnType<typeof useSshKeysQuery>;
 export type SshKeysLazyQueryHookResult = ReturnType<typeof useSshKeysLazyQuery>;
+export type SshKeysSuspenseQueryHookResult = ReturnType<typeof useSshKeysSuspenseQuery>;
 export type SshKeysQueryResult = Apollo.QueryResult<SshKeysQuery, SshKeysQueryVariables>;
 export const TagsDocument = gql`
     query Tags($fullPath: String!, $first: Int!, $after: String, $filterBy: TagFilter, $orderBy: TagOrder) {
@@ -3878,7 +3981,7 @@ ${PageInfoFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useTagsQuery(baseOptions: Apollo.QueryHookOptions<TagsQuery, TagsQueryVariables>) {
+export function useTagsQuery(baseOptions: Apollo.QueryHookOptions<TagsQuery, TagsQueryVariables> & ({ variables: TagsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
       }
@@ -3886,8 +3989,13 @@ export function useTagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagsQ
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
         }
+export function useTagsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TagsQuery, TagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TagsQuery, TagsQueryVariables>(TagsDocument, options);
+        }
 export type TagsQueryHookResult = ReturnType<typeof useTagsQuery>;
 export type TagsLazyQueryHookResult = ReturnType<typeof useTagsLazyQuery>;
+export type TagsSuspenseQueryHookResult = ReturnType<typeof useTagsSuspenseQuery>;
 export type TagsQueryResult = Apollo.QueryResult<TagsQuery, TagsQueryVariables>;
 export const TreeDocument = gql`
     query Tree($fullPath: String!, $revision: String!, $path: String!) {
@@ -3931,7 +4039,7 @@ ${PolicyFragmentFragmentDoc}`;
  *   },
  * });
  */
-export function useTreeQuery(baseOptions: Apollo.QueryHookOptions<TreeQuery, TreeQueryVariables>) {
+export function useTreeQuery(baseOptions: Apollo.QueryHookOptions<TreeQuery, TreeQueryVariables> & ({ variables: TreeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<TreeQuery, TreeQueryVariables>(TreeDocument, options);
       }
@@ -3939,8 +4047,13 @@ export function useTreeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TreeQ
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<TreeQuery, TreeQueryVariables>(TreeDocument, options);
         }
+export function useTreeSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TreeQuery, TreeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TreeQuery, TreeQueryVariables>(TreeDocument, options);
+        }
 export type TreeQueryHookResult = ReturnType<typeof useTreeQuery>;
 export type TreeLazyQueryHookResult = ReturnType<typeof useTreeLazyQuery>;
+export type TreeSuspenseQueryHookResult = ReturnType<typeof useTreeSuspenseQuery>;
 export type TreeQueryResult = Apollo.QueryResult<TreeQuery, TreeQueryVariables>;
 export const UpdateActivationEmailDocument = gql`
     mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {
@@ -4322,7 +4435,7 @@ export const UserDocument = gql`
  *   },
  * });
  */
-export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables> & ({ variables: UserQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
       }
@@ -4330,8 +4443,13 @@ export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQ
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
         }
+export function useUserSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UserQuery, UserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        }
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserSuspenseQueryHookResult = ReturnType<typeof useUserSuspenseQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const UserDetailDocument = gql`
     query UserDetail($username: String!) {
@@ -4357,7 +4475,7 @@ export const UserDetailDocument = gql`
  *   },
  * });
  */
-export function useUserDetailQuery(baseOptions: Apollo.QueryHookOptions<UserDetailQuery, UserDetailQueryVariables>) {
+export function useUserDetailQuery(baseOptions: Apollo.QueryHookOptions<UserDetailQuery, UserDetailQueryVariables> & ({ variables: UserDetailQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<UserDetailQuery, UserDetailQueryVariables>(UserDetailDocument, options);
       }
@@ -4365,8 +4483,13 @@ export function useUserDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<UserDetailQuery, UserDetailQueryVariables>(UserDetailDocument, options);
         }
+export function useUserDetailSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UserDetailQuery, UserDetailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserDetailQuery, UserDetailQueryVariables>(UserDetailDocument, options);
+        }
 export type UserDetailQueryHookResult = ReturnType<typeof useUserDetailQuery>;
 export type UserDetailLazyQueryHookResult = ReturnType<typeof useUserDetailLazyQuery>;
+export type UserDetailSuspenseQueryHookResult = ReturnType<typeof useUserDetailSuspenseQuery>;
 export type UserDetailQueryResult = Apollo.QueryResult<UserDetailQuery, UserDetailQueryVariables>;
 export const UsersDocument = gql`
     query Users($after: String, $filterBy: UserFilter, $orderBy: UserOrder) {
@@ -4411,8 +4534,13 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
         }
+export function useUsersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersSuspenseQueryHookResult = ReturnType<typeof useUsersSuspenseQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const ViewerDocument = gql`
     query Viewer {
@@ -4449,8 +4577,13 @@ export function useViewerLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Vie
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ViewerQuery, ViewerQueryVariables>(ViewerDocument, options);
         }
+export function useViewerSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ViewerQuery, ViewerQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ViewerQuery, ViewerQueryVariables>(ViewerDocument, options);
+        }
 export type ViewerQueryHookResult = ReturnType<typeof useViewerQuery>;
 export type ViewerLazyQueryHookResult = ReturnType<typeof useViewerLazyQuery>;
+export type ViewerSuspenseQueryHookResult = ReturnType<typeof useViewerSuspenseQuery>;
 export type ViewerQueryResult = Apollo.QueryResult<ViewerQuery, ViewerQueryVariables>;
 export const ViewerDetailDocument = gql`
     query ViewerDetail {
@@ -4483,8 +4616,13 @@ export function useViewerDetailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ViewerDetailQuery, ViewerDetailQueryVariables>(ViewerDetailDocument, options);
         }
+export function useViewerDetailSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ViewerDetailQuery, ViewerDetailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ViewerDetailQuery, ViewerDetailQueryVariables>(ViewerDetailDocument, options);
+        }
 export type ViewerDetailQueryHookResult = ReturnType<typeof useViewerDetailQuery>;
 export type ViewerDetailLazyQueryHookResult = ReturnType<typeof useViewerDetailLazyQuery>;
+export type ViewerDetailSuspenseQueryHookResult = ReturnType<typeof useViewerDetailSuspenseQuery>;
 export type ViewerDetailQueryResult = Apollo.QueryResult<ViewerDetailQuery, ViewerDetailQueryVariables>;
 export const ViewerEmailsDocument = gql`
     query ViewerEmails {
@@ -4540,6 +4678,11 @@ export function useViewerEmailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<ViewerEmailsQuery, ViewerEmailsQueryVariables>(ViewerEmailsDocument, options);
         }
+export function useViewerEmailsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ViewerEmailsQuery, ViewerEmailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ViewerEmailsQuery, ViewerEmailsQueryVariables>(ViewerEmailsDocument, options);
+        }
 export type ViewerEmailsQueryHookResult = ReturnType<typeof useViewerEmailsQuery>;
 export type ViewerEmailsLazyQueryHookResult = ReturnType<typeof useViewerEmailsLazyQuery>;
+export type ViewerEmailsSuspenseQueryHookResult = ReturnType<typeof useViewerEmailsSuspenseQuery>;
 export type ViewerEmailsQueryResult = Apollo.QueryResult<ViewerEmailsQuery, ViewerEmailsQueryVariables>;

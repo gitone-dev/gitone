@@ -5,9 +5,9 @@ import dev.gitone.server.entities.OAuth2RegisteredClientEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 
 import java.time.OffsetDateTime;
@@ -23,13 +23,11 @@ public class CreateRegisteredClientInput {
     private String clientName;
     @NotNull
     private List<String> redirectUris;
-    @NotNull
-    private List<String> scopes;
 
     private String description = "";
 
-    public OAuth2RegisteredClientEntity entity(PasswordEncoder passwordEncoder) {
-        // TODO
+    public OAuth2RegisteredClientEntity entity() {
+        // TODO secret 加密？
         String uuid = UUID.randomUUID().toString();
         RegisteredClient registeredClient = RegisteredClient.withId(uuid)
                 .clientId(uuid)
@@ -48,7 +46,10 @@ public class CreateRegisteredClientInput {
                     s.add(AuthorizationGrantType.CLIENT_CREDENTIALS);
                 })
                 .redirectUris(s -> s.addAll(redirectUris))
-                .scopes(s -> s.addAll(scopes))
+                .scopes(s -> {
+                    s.add(OidcScopes.OPENID);
+                    s.add(OidcScopes.PROFILE);
+                })
                 .build();
         OAuth2RegisteredClientEntity entity = OAuth2RegisteredClientDao.toEntity(registeredClient);
         entity.setDescription(description);

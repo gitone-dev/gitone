@@ -1,6 +1,7 @@
 package dev.gitone.server.config;
 
 import dev.gitone.server.models.git.GitRepository;
+import dev.gitone.server.services.AvatarService;
 import dev.gitone.server.util.StoragePath;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -36,8 +37,8 @@ public class CustomProperties implements InitializingBean {
         GitRepository.setRootPath(gitData);
     }
 
-    public Path getUserAvatar(Integer userId) {
-        String relativePath = StoragePath.get("u", userId, ".jpeg");
+    public Path findAvatar(AvatarService.Type type, Integer id) {
+        String relativePath = StoragePath.get(type.name().toLowerCase(), id, ".jpeg");
         return Paths.get(avatars, relativePath);
     }
 

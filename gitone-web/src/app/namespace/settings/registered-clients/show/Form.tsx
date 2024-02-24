@@ -11,18 +11,13 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
-import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
 import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import copy from "copy-to-clipboard";
 import { useSnackbar } from "notistack";
 import React, { Fragment, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -37,7 +32,6 @@ export default function Form(props: Props) {
   );
   const { enqueueSnackbar } = useSnackbar();
   const {
-    control,
     formState: { errors },
     handleSubmit,
     register,
@@ -45,7 +39,6 @@ export default function Form(props: Props) {
     defaultValues: {
       id: registeredClient.id,
       clientName: registeredClient?.clientName || "",
-      scopes: registeredClient?.scopes || [],
       redirectUris: redirectUris,
     },
   });
@@ -178,40 +171,6 @@ export default function Form(props: Props) {
           ),
         }}
       />
-      <FormControl component="fieldset" fullWidth>
-        <FormLabel component="legend">Scopes</FormLabel>
-        <FormGroup row>
-          <Controller
-            control={control}
-            name="scopes"
-            render={({ field }) => (
-              <FormControlLabel
-                {...field}
-                checked={field.value.includes("openid")}
-                control={<Checkbox size="small" />}
-                label="openid"
-                value="openid"
-                {...register("scopes")}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="scopes"
-            render={({ field }) => (
-              <FormControlLabel
-                {...field}
-                checked={field.value.includes("profile")}
-                control={<Checkbox size="small" />}
-                label="profile"
-                value="profile"
-                {...register("scopes")}
-              />
-            )}
-          />
-        </FormGroup>
-        <FormHelperText></FormHelperText>
-      </FormControl>
       <Box>
         <FormLabel>Redirect Uris</FormLabel>
         {redirectUris.map((value, index) => (

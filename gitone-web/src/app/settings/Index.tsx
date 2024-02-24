@@ -1,26 +1,26 @@
 import { useViewerDetailQuery } from "@/generated/types";
+import AvatarPaper from "@/shared/AvatarPaper";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
-import AvatarPaper from "./AvatarPaper";
 import UserDetailPaper from "./UserDetailPaper";
 
-function Index() {
+export default function Index() {
   const { data, loading, error } = useViewerDetailQuery();
+
+  const viewer = data?.viewer;
 
   if (loading) {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
-  } else if (!data?.viewer) {
+  } else if (!viewer || !viewer.avatarUrl) {
     return <ErrorBox message="客户端查询条件错误" />;
   }
 
   return (
     <>
-      <AvatarPaper avatarUrl={data.viewer.avatarUrl} />
-      <UserDetailPaper viewer={data.viewer} />
+      <AvatarPaper avatarUrl={viewer.avatarUrl || ""} />
+      <UserDetailPaper viewer={viewer} />
     </>
   );
 }
-
-export default Index;

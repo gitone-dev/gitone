@@ -13,4 +13,9 @@ public class GroupTypeController {
     public String id(GroupEntity groupEntity) {
         return Relay.toGlobalId(GroupEntity.TYPE, groupEntity.getId());
     }
+
+    @SchemaMapping
+    public String avatarUrl(GroupEntity groupEntity) {
+        return String.format("/avatars/n/%d", groupEntity.getId());
+    }
 }
