@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import GroupForm from "./GroupForm";
 import SubgroupForm from "./SubgroupForm";
 
-function New() {
+export default function New() {
   const location = useLocation();
   const group = location.state as Group;
 
@@ -13,5 +13,3 @@ function New() {
     return <GroupForm />;
   }
 }
-
-export default New;

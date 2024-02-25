@@ -68,7 +68,8 @@ const router = createBrowserRouter([
     path: "-/settings",
     element: <Layout.Settings />,
     children: [
-      { index: true, element: <Settings.Index /> },
+      { index: true, element: <Settings.Profile /> },
+      { path: "profile", element: <Settings.Profile /> },
       { path: "account", element: <Settings.Account /> },
       { path: "emails", element: <Settings.Emails /> },
       { path: "password", element: <Settings.Password /> },

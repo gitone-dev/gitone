@@ -18,7 +18,7 @@ import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-function GroupForm() {
+export default function GroupForm() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -118,10 +118,9 @@ function GroupForm() {
         variant="contained"
         disabled={!isValid || isSubmitting}
       >
-        创建
+        提交
       </Button>
     </ChunkPaper>
   );
 }
 
-export default GroupForm;

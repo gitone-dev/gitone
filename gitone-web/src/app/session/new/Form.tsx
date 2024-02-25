@@ -2,6 +2,8 @@ import { LoginInput, login } from "@/client";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -9,12 +11,16 @@ import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-function Form() {
+export default function Form() {
   const {
     formState: { isSubmitting },
     handleSubmit,
     register,
-  } = useForm<LoginInput>();
+  } = useForm<LoginInput>({
+    defaultValues: {
+      rememberMe: "false",
+    },
+  });
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -79,6 +85,10 @@ function Form() {
         }
         {...register("password", { required: true })}
       />
+      <FormControlLabel
+        label="记住登录状态"
+        control={<Checkbox color="primary" {...register("rememberMe")} />}
+      />
       <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
         <Button
           disabled={isSubmitting}
@@ -95,5 +105,3 @@ function Form() {
     </Box>
   );
 }
-
-export default Form;

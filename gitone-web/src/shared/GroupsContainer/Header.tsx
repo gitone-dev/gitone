@@ -13,7 +13,7 @@ interface Props {
   isViewer: boolean;
 }
 
-function Header(props: Props) {
+export default function Header(props: Props) {
   const { isViewer } = props;
   const {
     query,
@@ -83,11 +83,9 @@ function Header(props: Props) {
       </Select>
       {isViewer && (
         <Button variant="contained" component={RouterLink} to="/groups/new">
-          新建组织
+          新建
         </Button>
       )}
     </Stack>
   );
 }
-
-export default Header;

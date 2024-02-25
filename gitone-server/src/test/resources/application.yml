@@ -28,6 +28,7 @@ dev:
     server:
       site-name: GitOne
       base-url: http://127.0.0.1:5173
+      secret-key: "1234567890"
       avatars: /srv/gitone/avatars
       git-data: /srv/gitone/git-data
       ssh:

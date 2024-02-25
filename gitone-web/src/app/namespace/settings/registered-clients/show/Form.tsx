@@ -32,7 +32,7 @@ export default function Form(props: Props) {
   );
   const { enqueueSnackbar } = useSnackbar();
   const {
-    formState: { errors },
+    formState: { errors, isDirty },
     handleSubmit,
     register,
   } = useForm<UpdateRegisteredClientInput>({
@@ -194,11 +194,11 @@ export default function Form(props: Props) {
         <Button fullWidth startIcon={<AddIcon />} onClick={onAddRedirectUri}>
           添加
         </Button>
-        <Button type="submit" variant="contained">
-          修改
-        </Button>
-        <Button onClick={onDelete}>删除</Button>
       </Box>
+      <Button type="submit" variant="contained" disabled={!isDirty}>
+        修改
+      </Button>
+      <Button onClick={onDelete}>删除</Button>
     </Box>
   );
 }

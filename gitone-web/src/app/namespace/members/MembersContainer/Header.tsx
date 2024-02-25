@@ -1,9 +1,4 @@
-import {
-  Access,
-  Action,
-  MemberOrderField,
-  Policy,
-} from "@/generated/types";
+import { Access, Action, MemberOrderField, Policy } from "@/generated/types";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -88,8 +83,8 @@ export default function Header(props: Props) {
         <MenuItem value={MemberOrderField.Username}>用户名</MenuItem>
       </Select>
       {actions.includes(Action.CreateMember) && (
-        <Button size="small" variant="contained" onClick={onClick}>
-          添加成员
+        <Button variant="contained" onClick={onClick}>
+          添加
         </Button>
       )}
     </Stack>

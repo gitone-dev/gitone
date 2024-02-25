@@ -17,7 +17,7 @@ interface Props {
   path: string;
 }
 
-function UpdatePathPaper(props: Props) {
+export default function UpdatePathPaper(props: Props) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -88,5 +88,3 @@ function UpdatePathPaper(props: Props) {
     </ChunkPaper>
   );
 }
-
-export default UpdatePathPaper;

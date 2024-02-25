@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Page from "./Page";
 
-function Center(props: BoxProps) {
+export default function Center(props: BoxProps) {
   return (
     <Page>
       <Container component="main" maxWidth="sm">
@@ -14,16 +14,19 @@ function Center(props: BoxProps) {
           <Box
             sx={{
               backgroundColor: "primary.main",
-              minWidth: 160,
-              maxWidthh: 160,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Typography variant="h4" color="white">
-              GitOne
-            </Typography>
+            <Box width={160} p={2}>
+              <Typography variant="h4" color="white" textAlign="left">
+                GitOne
+              </Typography>
+              <Typography variant="subtitle1" color="white" textAlign="right">
+                —— 代码管理平台
+              </Typography>
+            </Box>
           </Box>
           <Box {...props} flexGrow={1} />
         </Stack>
@@ -31,5 +34,3 @@ function Center(props: BoxProps) {
     </Page>
   );
 }
-
-export default Center;

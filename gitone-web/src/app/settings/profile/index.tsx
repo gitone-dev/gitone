@@ -2,9 +2,9 @@ import { useViewerDetailQuery } from "@/generated/types";
 import AvatarPaper from "@/shared/AvatarPaper";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
-import UserDetailPaper from "./UserDetailPaper";
+import Form from "./Form";
 
-export default function Index() {
+export default function Profile() {
   const { data, loading, error } = useViewerDetailQuery();
 
   const viewer = data?.viewer;
@@ -20,7 +20,7 @@ export default function Index() {
   return (
     <>
       <AvatarPaper avatarUrl={viewer.avatarUrl || ""} />
-      <UserDetailPaper viewer={viewer} />
+      <Form viewer={viewer} />
     </>
   );
 }

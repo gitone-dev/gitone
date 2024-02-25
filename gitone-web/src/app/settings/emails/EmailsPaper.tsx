@@ -16,7 +16,7 @@ interface Props {
   onDelete: (input: DeleteEmailInput) => void;
 }
 
-function EmailsPaper(props: Props) {
+export default function EmailsPaper(props: Props) {
   const [open, setOpen] = useState(false);
   const onClick = () => setOpen(true);
   const onClose = () => setOpen(false);
@@ -25,7 +25,7 @@ function EmailsPaper(props: Props) {
       primary="邮箱列表"
       action={
         <Button variant="contained" onClick={onClick}>
-          添加邮箱
+          添加
         </Button>
       }
     >
@@ -38,5 +38,3 @@ function EmailsPaper(props: Props) {
     </ChunkPaper>
   );
 }
-
-export default EmailsPaper;

@@ -21,7 +21,11 @@ function ListItemProject(props: Props) {
   return (
     <ListItem divider>
       <ListItemIcon>
-        <Avatar component={RouterLink} to={projectPath}>
+        <Avatar
+          component={RouterLink}
+          to={projectPath}
+          src={project.avatarUrl || ""}
+        >
           <GroupIcon />
         </Avatar>
       </ListItemIcon>

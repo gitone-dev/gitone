@@ -13,7 +13,7 @@ import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-function Form() {
+export default function Form() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -145,5 +145,3 @@ function Form() {
     </Box>
   );
 }
-
-export default Form;

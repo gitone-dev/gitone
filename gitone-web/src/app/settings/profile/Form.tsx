@@ -15,7 +15,7 @@ interface Props {
   viewer: User;
 }
 
-function UserDetailPaper(props: Props) {
+export default function Form(props: Props) {
   const { viewer } = props;
   const { enqueueSnackbar } = useSnackbar();
 
@@ -101,5 +101,3 @@ function UserDetailPaper(props: Props) {
     </ChunkPaper>
   );
 }
-
-export default UserDetailPaper;

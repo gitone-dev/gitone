@@ -65,6 +65,10 @@ public class WebSecurityConfig {
                 .successHandler(new CustomAuthenticationSuccessHandler())
                 .failureHandler(new ExceptionMappingAuthenticationFailureHandler())
         );
+        http.rememberMe(rememberMe -> rememberMe
+                .key(properties.getSecretKey())
+                .rememberMeParameter("rememberMe")
+        );
         http.logout(Customizer.withDefaults());
         http.securityMatcher("/git/**")
                 .httpBasic(h -> h.realmName("GitOne"))

@@ -13,7 +13,7 @@ interface Props {
   group: Group;
 }
 
-function ListItemGroup(props: Props) {
+export default function ListItemGroup(props: Props) {
   const { group } = props;
 
   const groupPath = `/${group.fullPath}`;
@@ -21,7 +21,11 @@ function ListItemGroup(props: Props) {
   return (
     <ListItem divider>
       <ListItemIcon>
-        <Avatar component={RouterLink} to={groupPath}>
+        <Avatar
+          component={RouterLink}
+          to={groupPath}
+          src={group.avatarUrl || ""}
+        >
           <GroupIcon />
         </Avatar>
       </ListItemIcon>
@@ -48,5 +52,3 @@ function ListItemGroup(props: Props) {
     </ListItem>
   );
 }
-
-export default ListItemGroup;

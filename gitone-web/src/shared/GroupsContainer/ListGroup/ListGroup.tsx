@@ -10,7 +10,7 @@ interface Props {
   loadMore: () => void;
 }
 
-function ListGroup(props: Props) {
+export default function ListGroup(props: Props) {
   const { edges, pageInfo, loadMore } = props;
 
   return (
@@ -26,5 +26,3 @@ function ListGroup(props: Props) {
     </List>
   );
 }
-
-export default ListGroup;

@@ -4,7 +4,7 @@ import { BoxProps } from "@mui/material/Box";
 import { Navigate } from "react-router-dom";
 import Center from "./Center";
 
-function Unauthorized(props: BoxProps) {
+export default function Unauthorized(props: BoxProps) {
   const { data, loading } = useViewerQuery();
 
   if (loading) {
@@ -15,5 +15,3 @@ function Unauthorized(props: BoxProps) {
 
   return <Center {...props} />;
 }
-
-export default Unauthorized;

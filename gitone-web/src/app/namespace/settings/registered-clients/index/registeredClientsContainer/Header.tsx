@@ -111,7 +111,7 @@ export default function Header(props: Props) {
       </Select>
       {actions.includes(Action.Update) && (
         <Button variant="contained" component={RouterLink} to="new">
-          新建
+          添加
         </Button>
       )}
     </Stack>

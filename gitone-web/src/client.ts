@@ -74,6 +74,7 @@ const client = new ApolloClient({
 type LoginInput = {
   username: string;
   password: string;
+  rememberMe: "true" | "false";
 };
 
 async function login(input: LoginInput): Promise<string> {

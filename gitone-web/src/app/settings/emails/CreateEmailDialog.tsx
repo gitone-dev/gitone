@@ -17,7 +17,7 @@ interface Props {
   onCreate: (input: CreateEmailInput) => void;
 }
 
-function CreateEmailDialog(props: Props) {
+export default function CreateEmailDialog(props: Props) {
   const { open, onClose, onCreate } = props;
 
   const {
@@ -78,12 +78,10 @@ function CreateEmailDialog(props: Props) {
       </DialogContent>
       <DialogActions>
         <Button type="submit" variant="contained">
-          添加
+          提交
         </Button>
         <Button onClick={onClose}>关闭</Button>
       </DialogActions>
     </Dialog>
   );
 }
-
-export default CreateEmailDialog;

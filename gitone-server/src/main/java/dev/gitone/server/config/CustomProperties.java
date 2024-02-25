@@ -22,6 +22,8 @@ public class CustomProperties implements InitializingBean {
     @NotEmpty
     private String siteName;
     @NotEmpty
+    private String secretKey;
+    @NotEmpty
     private String baseUrl;
     @NotEmpty
     private String avatars;

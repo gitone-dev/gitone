@@ -83,7 +83,7 @@ export default function Header(props: Props) {
       </Select>
       {isViewer && (
         <Button variant="contained" component={RouterLink} to="/projects/new">
-          新建项目
+          新建
         </Button>
       )}
     </Stack>

@@ -1,13 +1,13 @@
-import Index from "./Index";
 import Account from "./account";
 import Emails from "./emails";
 import Password from "./password";
+import Profile from "./profile";
 
 const Settings = {
   Account,
   Emails,
-  Index,
   Password,
+  Profile,
 };
 
 export default Settings;

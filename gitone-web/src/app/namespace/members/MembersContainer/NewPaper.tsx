@@ -37,7 +37,7 @@ interface Props {
   onCreate: (input: CreateMemberInput) => void;
 }
 
-function NewDialog(props: Props) {
+export default function NewDialog(props: Props) {
   const {
     fullPath,
     policy: { access },
@@ -153,5 +153,3 @@ function NewDialog(props: Props) {
     </Dialog>
   );
 }
-
-export default NewDialog;

@@ -11,14 +11,14 @@ import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-function Form() {
+export default function Form() {
   const {
     clearErrors,
     formState: { errors, isSubmitting, isValid },
     handleSubmit,
     register,
     setError,
-  } = useForm<SendPasswordResetEmailInput>();
+  } = useForm<SendPasswordResetEmailInput>({ mode: "onBlur" });
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [existEmailLazyQuery] = useExistEmailLazyQuery();
@@ -38,7 +38,7 @@ function Form() {
         setError("email", { message: error.message });
       },
     });
-    return !data?.existEmail;
+    return !!data?.existEmail;
   };
 
   const onSubmit = handleSubmit((input: SendPasswordResetEmailInput) => {
@@ -83,5 +83,3 @@ function Form() {
     </Box>
   );
 }
-
-export default Form;

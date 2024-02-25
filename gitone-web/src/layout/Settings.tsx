@@ -16,10 +16,10 @@ import Sidebar from "./Sidebar";
 
 const items = [
   {
-    key: "/-/settings",
+    key: "/-/settings/profile",
     icon: <AccountCircleIcon />,
     text: "个人资料",
-    to: "/-/settings",
+    to: "/-/settings/profile",
   },
   {
     key: "/-/settings/account",
@@ -54,9 +54,10 @@ const items = [
 ];
 
 const breadcrumbItems: BreadcrumbItems = {
-  "/-/settings": [
+  "/-/settings": [{ to: "/-/settings", text: "用户设置" }],
+  "/-/settings/profile": [
     { to: "/-/settings", text: "用户设置" },
-    { to: "/-/settings", text: "个人资料" },
+    { to: "/-/settings/profile", text: "个人资料" },
   ],
   "/-/settings/account": [
     { to: "/-/settings", text: "用户设置" },

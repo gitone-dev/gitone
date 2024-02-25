@@ -1,7 +1,4 @@
-import {
-  EmailConnection,
-  SetPrimaryEmailInput,
-} from "@/generated/types";
+import { EmailConnection, SetPrimaryEmailInput } from "@/generated/types";
 import ChunkPaper from "@/shared/ChunkPaper";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,7 +10,7 @@ interface Props {
   onSetPrimary: (input: SetPrimaryEmailInput) => void;
 }
 
-function SetPrimaryEmailPaper(props: Props) {
+export default function SetPrimaryEmailPaper(props: Props) {
   const { emails, onSetPrimary } = props;
   const primaryEdge = emails.edges?.find((edge) => edge.node.primary);
   const {
@@ -55,5 +52,3 @@ function SetPrimaryEmailPaper(props: Props) {
     </ChunkPaper>
   );
 }
-
-export default SetPrimaryEmailPaper;

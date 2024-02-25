@@ -1,15 +1,8 @@
-import {
-  Action,
-  useGroupQuery,
-  useViewerQuery,
-} from "@/generated/types";
+import { Action, useGroupQuery, useViewerQuery } from "@/generated/types";
 import ChunkPaper from "@/shared/ChunkPaper";
 import Descriptions, { Item } from "@/shared/Descriptions";
 import ErrorBox from "@/shared/ErrorBox";
-import GroupsContainer, {
-  Header,
-  useSearch,
-} from "@/shared/GroupsContainer";
+import GroupsContainer, { Header, useSearch } from "@/shared/GroupsContainer";
 import LoadingBox from "@/shared/LoadingBox";
 import RelativeTime from "@/shared/RelativeTime";
 import { useFullPath } from "@/utils/router";
@@ -17,7 +10,7 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { Link as RouterLink } from "react-router-dom";
 
-function Show() {
+export default function Show() {
   const { fullPath } = useFullPath();
   const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
   const isViewer = Boolean(viewer);
@@ -44,11 +37,12 @@ function Show() {
           <Stack direction="row" spacing={1}>
             <Button
               disabled={!policy.actions.includes(Action.Update)}
+              variant="outlined"
               component={RouterLink}
               to={`/groups/new`}
               state={group}
             >
-              创建子组
+              添加子组
             </Button>
             <Button
               disabled={!policy.actions.includes(Action.Update)}
@@ -57,7 +51,7 @@ function Show() {
               to={`/projects/new`}
               state={group}
             >
-              创建项目
+              添加项目
             </Button>
           </Stack>
         }
@@ -88,5 +82,3 @@ function Show() {
     </>
   );
 }
-
-export default Show;

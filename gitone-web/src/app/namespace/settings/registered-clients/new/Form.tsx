@@ -8,9 +8,10 @@ import { registeredClient as pattern } from "@/utils/regex";
 import { fromGlobalId } from "@/utils/relay";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { Grid, IconButton } from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormLabel from "@mui/material/FormLabel";
+import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import { useSnackbar } from "notistack";
 import { Fragment, useState } from "react";
@@ -37,11 +38,24 @@ export default function Form(props: Props) {
     },
   });
 
-  const [createRegisteredClientMutation] = useCreateRegisteredClientMutation();
-
-  const onAdd = () => {
+  const onAddRedirectUri = () => {
     setRedirectUris([...redirectUris, ""]);
   };
+
+  const onChangeRedirectUri = (index: number) => {
+    return (event: React.ChangeEvent<HTMLInputElement>) => {
+      redirectUris[index] = event.target.value;
+      setRedirectUris(redirectUris);
+    };
+  };
+
+  const onDeleteRedirectUri = (index: number) => {
+    return () => {
+      setRedirectUris(redirectUris.filter((_, i) => i != index));
+    };
+  };
+
+  const [createRegisteredClientMutation] = useCreateRegisteredClientMutation();
 
   const onCreate = handleSubmit((input: CreateRegisteredClientInput) => {
     createRegisteredClientMutation({
@@ -115,32 +129,30 @@ export default function Form(props: Props) {
         minRows={3}
         {...register("description", { ...pattern.description.rules })}
       />
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <FormLabel>Redirect Uris</FormLabel>
-        </Grid>
+      <Box>
+        <FormLabel>Redirect Uris</FormLabel>
         {redirectUris.map((value, index) => (
           <Fragment key={`${index}-${value}`}>
-            <Grid item xs={11} key={`left-${value}-${index}`}>
-              <TextField
-                fullWidth
-                size="small"
-                {...register(`redirectUris.${index}`)}
-              />
-            </Grid>
-            <Grid item xs={1} key={`right-${value}-${index}`}>
-              <IconButton>
-                <RemoveIcon />
-              </IconButton>
-            </Grid>
+            <TextField
+              defaultValue={value}
+              fullWidth
+              size="small"
+              onChange={onChangeRedirectUri(index)}
+              margin="dense"
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={onDeleteRedirectUri(index)}>
+                    <RemoveIcon />
+                  </IconButton>
+                ),
+              }}
+            />
           </Fragment>
         ))}
-        <Grid item xs={12}>
-          <Button fullWidth startIcon={<AddIcon />} onClick={onAdd}>
-            添加
-          </Button>
-        </Grid>
-      </Grid>
+        <Button fullWidth startIcon={<AddIcon />} onClick={onAddRedirectUri}>
+          添加
+        </Button>
+      </Box>
       <Button type="submit" variant="contained">
         提交
       </Button>
