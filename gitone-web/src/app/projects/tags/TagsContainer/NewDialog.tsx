@@ -19,7 +19,7 @@ interface Props {
   onClose: () => void;
 }
 
-function NewDialog(props: Props) {
+export default function NewDialog(props: Props) {
   const { open, fullPath, onClose } = props;
   const { enqueueSnackbar } = useSnackbar();
   const {
@@ -122,12 +122,10 @@ function NewDialog(props: Props) {
       </DialogContent>
       <DialogActions>
         <Button type="submit" variant="contained">
-          添加
+          提交
         </Button>
         <Button onClick={onClose}>关闭</Button>
       </DialogActions>
     </Dialog>
   );
 }
-
-export default NewDialog;

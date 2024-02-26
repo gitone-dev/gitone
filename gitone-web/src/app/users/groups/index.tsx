@@ -6,15 +6,15 @@ import GroupsContainer, {
 } from "@/shared/GroupsContainer";
 import { useFullPath } from "@/utils/router";
 
-function Groups() {
+export default function Groups() {
   const { fullPath: username } = useFullPath();
   const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
-  const isViewer = Boolean(viewer);
-  const { query, visibility, orderField } = useSearch({ isViewer });
+  const isLoggedIn = Boolean(viewer);
+  const { query, visibility, orderField } = useSearch({ isLoggedIn });
 
   return (
     <ChunkPaper primary="组织列表">
-      <Header isViewer={isViewer} />
+      <Header isLoggedIn={isLoggedIn} />
       <GroupsContainer
         username={username}
         query={query}
@@ -25,4 +25,3 @@ function Groups() {
   );
 }
 
-export default Groups;

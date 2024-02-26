@@ -1,4 +1,4 @@
-import { useGroupQuery, useViewerQuery } from "@/generated/types";
+import { Action, useGroupQuery, useViewerQuery } from "@/generated/types";
 import ChunkPaper from "@/shared/ChunkPaper";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
@@ -11,8 +11,8 @@ import { useFullPath } from "@/utils/router";
 export default function Projects() {
   const { fullPath } = useFullPath();
   const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
-  const isViewer = Boolean(viewer);
-  const { query, visibility, orderField } = useSearch({ isViewer });
+  const isLoggedIn = Boolean(viewer);
+  const { query, visibility, orderField } = useSearch({ isLoggedIn });
   const { data, loading, error } = useGroupQuery({
     variables: { fullPath },
   });
@@ -29,7 +29,11 @@ export default function Projects() {
 
   return (
     <ChunkPaper primary="项目列表">
-      <Header isViewer={isViewer} />
+      <Header
+        isLoggedIn={isLoggedIn}
+        canCreate={policy.actions.includes(Action.Update)}
+        namespace={group}
+      />
       <ProjectsContainer
         parentId={group.id}
         query={query}

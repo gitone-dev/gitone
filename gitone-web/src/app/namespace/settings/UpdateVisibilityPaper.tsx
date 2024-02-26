@@ -20,7 +20,7 @@ interface Props {
   visibility: Visibility;
 }
 
-function UpdateVisibilityPaper(props: Props) {
+export default function UpdateVisibilityPaper(props: Props) {
   const { fullPath, visibility } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { handleSubmit, register } = useForm<UpdateVisibilityInput>();
@@ -68,5 +68,3 @@ function UpdateVisibilityPaper(props: Props) {
     </ChunkPaper>
   );
 }
-
-export default UpdateVisibilityPaper;

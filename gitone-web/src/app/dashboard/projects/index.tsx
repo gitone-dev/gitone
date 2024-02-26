@@ -5,14 +5,14 @@ import ProjectsContainer, {
   useSearch,
 } from "@/shared/ProjectsContainer";
 
-function Projects() {
+export default function Projects() {
   const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
-  const isViewer = Boolean(viewer);
-  const { query, visibility, orderField } = useSearch({ isViewer });
+  const isLoggedIn = Boolean(viewer);
+  const { query, visibility, orderField } = useSearch({ isLoggedIn });
 
   return (
     <ChunkPaper primary="项目列表">
-      <Header isViewer={isViewer} />
+      <Header isLoggedIn={isLoggedIn} canCreate={isLoggedIn} />
       <ProjectsContainer
         username={viewer?.username || ""}
         query={query}
@@ -23,5 +23,3 @@ function Projects() {
     </ChunkPaper>
   );
 }
-
-export default Projects;

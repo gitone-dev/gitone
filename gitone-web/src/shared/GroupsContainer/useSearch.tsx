@@ -3,14 +3,14 @@ import debounce from "@mui/material/utils/debounce";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
-  isViewer: boolean;
+  isLoggedIn: boolean;
 }
 
 export default function useSearch(props: Props) {
-  const { isViewer } = props;
+  const { isLoggedIn } = props;
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("query");
-  const visibility = isViewer
+  const visibility = isLoggedIn
     ? (searchParams.get("visibility") as Visibility)
     : Visibility.Public;
   const orderField =

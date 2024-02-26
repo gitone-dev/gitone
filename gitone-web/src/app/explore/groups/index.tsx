@@ -1,18 +1,15 @@
 import { useViewerQuery } from "@/generated/types";
 import ChunkPaper from "@/shared/ChunkPaper";
-import GroupsContainer, {
-  Header,
-  useSearch,
-} from "@/shared/GroupsContainer";
+import GroupsContainer, { Header, useSearch } from "@/shared/GroupsContainer";
 
-function Groups() {
+export default function Groups() {
   const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
-  const isViewer = Boolean(viewer);
-  const { query, visibility, orderField } = useSearch({ isViewer });
+  const isLoggedIn = Boolean(viewer);
+  const { query, visibility, orderField } = useSearch({ isLoggedIn });
 
   return (
     <ChunkPaper primary="组织列表">
-      <Header isViewer={isViewer} />
+      <Header isLoggedIn={isLoggedIn} canCreate={isLoggedIn} />
       <GroupsContainer
         query={query}
         visibility={visibility}
@@ -21,5 +18,3 @@ function Groups() {
     </ChunkPaper>
   );
 }
-
-export default Groups;

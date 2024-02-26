@@ -119,7 +119,7 @@ export default function Header(props: Props) {
       </Select>
       {actions.includes(Action.Update) && (
         <Button variant="contained" onClick={onClick}>
-          新建分支
+          新建
         </Button>
       )}
       <NewDialog fullPath={fullPath} open={open} onClose={onClose} />

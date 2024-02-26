@@ -7,7 +7,7 @@ import LoadingBox from "@/shared/LoadingBox";
 import { useFullPath } from "@/utils/router";
 import UpdatePaper from "./UpdatePaper";
 
-function Settings() {
+export default function Settings() {
   const { fullPath } = useFullPath();
   const { data, loading, error } = useGroupQuery({
     variables: { fullPath },
@@ -39,5 +39,3 @@ function Settings() {
     </>
   );
 }
-
-export default Settings;

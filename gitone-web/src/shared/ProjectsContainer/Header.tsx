@@ -1,4 +1,4 @@
-import { ProjectOrderField, Visibility } from "@/generated/types";
+import { Namespace, ProjectOrderField, Visibility } from "@/generated/types";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -10,11 +10,13 @@ import { Link as RouterLink } from "react-router-dom";
 import useSearch from "./useSearch";
 
 interface Props {
-  isViewer: boolean;
+  isLoggedIn: boolean;
+  canCreate?: boolean;
+  namespace?: Namespace;
 }
 
 export default function Header(props: Props) {
-  const { isViewer } = props;
+  const { isLoggedIn, canCreate, namespace } = props;
   const {
     query,
     setQuery,
@@ -55,7 +57,7 @@ export default function Header(props: Props) {
       <Select
         size="small"
         displayEmpty
-        disabled={!isViewer}
+        disabled={!isLoggedIn}
         value={visibility || ""}
         name="visibility"
         onChange={onChangeVisibility}
@@ -81,8 +83,13 @@ export default function Header(props: Props) {
         <MenuItem value={ProjectOrderField.UpdatedAt}>更新时间</MenuItem>
         <MenuItem value={ProjectOrderField.Path}>路径</MenuItem>
       </Select>
-      {isViewer && (
-        <Button variant="contained" component={RouterLink} to="/projects/new">
+      {canCreate && (
+        <Button
+          variant="contained"
+          component={RouterLink}
+          to="/projects/new"
+          state={namespace}
+        >
           新建
         </Button>
       )}

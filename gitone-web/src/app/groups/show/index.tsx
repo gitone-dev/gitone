@@ -6,15 +6,12 @@ import GroupsContainer, { Header, useSearch } from "@/shared/GroupsContainer";
 import LoadingBox from "@/shared/LoadingBox";
 import RelativeTime from "@/shared/RelativeTime";
 import { useFullPath } from "@/utils/router";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import { Link as RouterLink } from "react-router-dom";
 
 export default function Show() {
   const { fullPath } = useFullPath();
   const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
-  const isViewer = Boolean(viewer);
-  const { query, visibility, orderField } = useSearch({ isViewer });
+  const isLoggedIn = Boolean(viewer);
+  const { query, visibility, orderField } = useSearch({ isLoggedIn });
   const { data, loading, error } = useGroupQuery({
     variables: { fullPath },
   });
@@ -31,31 +28,7 @@ export default function Show() {
 
   return (
     <>
-      <ChunkPaper
-        primary="组织概览"
-        action={
-          <Stack direction="row" spacing={1}>
-            <Button
-              disabled={!policy.actions.includes(Action.Update)}
-              variant="outlined"
-              component={RouterLink}
-              to={`/groups/new`}
-              state={group}
-            >
-              添加子组
-            </Button>
-            <Button
-              disabled={!policy.actions.includes(Action.Update)}
-              variant="contained"
-              component={RouterLink}
-              to={`/projects/new`}
-              state={group}
-            >
-              添加项目
-            </Button>
-          </Stack>
-        }
-      >
+      <ChunkPaper primary="组织概览">
         <Descriptions>
           <Item label="ID">{group.id}</Item>
           <Item label="名称">{group.fullName}</Item>
@@ -71,7 +44,11 @@ export default function Show() {
         </Descriptions>
       </ChunkPaper>
       <ChunkPaper primary="组织列表">
-        <Header isViewer={isViewer} />
+        <Header
+          isLoggedIn={isLoggedIn}
+          canCreate={policy.actions.includes(Action.Update)}
+          group={group}
+        />
         <GroupsContainer
           parentId={group.id}
           query={query}

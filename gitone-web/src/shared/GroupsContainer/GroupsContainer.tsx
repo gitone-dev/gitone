@@ -18,7 +18,7 @@ interface Props {
   orderField: GroupOrderField;
 }
 
-function GroupsContainer(props: Props) {
+export default function GroupsContainer(props: Props) {
   const { parentId, username, query, visibility, orderField } = props;
   const { data, loading, error, fetchMore } = useGroupsQuery({
     fetchPolicy: "network-only",
@@ -65,5 +65,3 @@ function GroupsContainer(props: Props) {
 
   return <ListGroup edges={edges} pageInfo={pageInfo} loadMore={onScroll} />;
 }
-
-export default GroupsContainer;

@@ -15,7 +15,7 @@ interface Props {
   group: Group;
 }
 
-function UpdatePaper(props: Props) {
+export default function UpdatePaper(props: Props) {
   const { group } = props;
 
   const {
@@ -87,5 +87,3 @@ function UpdatePaper(props: Props) {
     </ChunkPaper>
   );
 }
-
-export default UpdatePaper;

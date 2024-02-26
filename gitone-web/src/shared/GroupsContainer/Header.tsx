@@ -1,4 +1,4 @@
-import { GroupOrderField, Visibility } from "@/generated/types";
+import { Group, GroupOrderField, Visibility } from "@/generated/types";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -10,11 +10,13 @@ import { Link as RouterLink } from "react-router-dom";
 import useSearch from "./useSearch";
 
 interface Props {
-  isViewer: boolean;
+  isLoggedIn: boolean;
+  canCreate?: boolean;
+  group?: Group;
 }
 
 export default function Header(props: Props) {
-  const { isViewer } = props;
+  const { isLoggedIn, canCreate, group } = props;
   const {
     query,
     setQuery,
@@ -55,7 +57,7 @@ export default function Header(props: Props) {
       <Select
         size="small"
         displayEmpty
-        disabled={!isViewer}
+        disabled={!isLoggedIn}
         value={visibility || ""}
         name="visibility"
         onChange={onChangeVisibility}
@@ -81,9 +83,14 @@ export default function Header(props: Props) {
         <MenuItem value={GroupOrderField.UpdatedAt}>更新时间</MenuItem>
         <MenuItem value={GroupOrderField.Path}>路径</MenuItem>
       </Select>
-      {isViewer && (
-        <Button variant="contained" component={RouterLink} to="/groups/new">
-          新建
+      {canCreate && (
+        <Button
+          variant="contained"
+          component={RouterLink}
+          to="/groups/new"
+          state={group}
+        >
+          {group ? "添加" : "新建"}
         </Button>
       )}
     </Stack>
