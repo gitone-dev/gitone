@@ -1,6 +1,5 @@
 import {
   BranchOrderField,
-  Maybe,
   OrderDirection,
   useBranchesQuery,
 } from "@/generated/types";

@@ -141,11 +141,12 @@ public class GitCommit implements Node<String> {
 
             final RevCommit base2 = walk.next();
             if (base2 != null) {
-                throw new NoMergeBaseException(
-                        NoMergeBaseException.MergeBaseFailureReason.MULTIPLE_MERGE_BASES_NOT_SUPPORTED,
-                        MessageFormat.format(
-                                JGitText.get().multipleMergeBasesFor, left.getSha(), right.getSha(),
-                                base.name(), base2.name()));
+                System.out.println("multiple merge base");
+                // throw new NoMergeBaseException(
+                //         NoMergeBaseException.MergeBaseFailureReason.MULTIPLE_MERGE_BASES_NOT_SUPPORTED,
+                //         MessageFormat.format(
+                //                 JGitText.get().multipleMergeBasesFor, left.getSha(), right.getSha(),
+                //                 base.name(), base2.name()));
             }
 
             // FIXME jgit BUG? left=new right=old

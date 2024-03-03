@@ -20,12 +20,21 @@ export default function Header(props: Props) {
     setQuery(event.target.value);
   };
 
+  const getPathname = (
+    type: string,
+    revision: string,
+    path: string
+  ): string => {
+    return `/${fullPath}/-/${type}/${revision}/${path}`;
+  };
+
   return (
     <Stack direction="row" spacing={1}>
       <RefSwitcher
         fullPath={fullPath}
         type="commits"
         revisionPath={revisionPath}
+        getPathname={getPathname}
       />
       <TextField
         sx={{ flexGrow: 1 }}
