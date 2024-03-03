@@ -147,8 +147,9 @@ export type CommitEdge = {
 
 export type CommitFilter = {
   email?: InputMaybe<Scalars['String']['input']>;
+  left?: InputMaybe<Scalars['String']['input']>;
   path?: InputMaybe<Scalars['String']['input']>;
-  revision: Scalars['String']['input'];
+  right: Scalars['String']['input'];
 };
 
 export type ConfirmEmailInput = {
@@ -1078,8 +1079,8 @@ export type RepositoryCommitsArgs = {
 export type RepositoryDiffsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
-  newRevision: Scalars['String']['input'];
-  oldRevision?: InputMaybe<Scalars['String']['input']>;
+  leftRevision?: InputMaybe<Scalars['String']['input']>;
+  rightRevision: Scalars['String']['input'];
 };
 
 
@@ -1612,8 +1613,8 @@ export type DiffFragmentFragment = { __typename?: 'Diff', id: string, type?: Dif
 export type DiffsQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
   after?: InputMaybe<Scalars['String']['input']>;
-  oldRevision?: InputMaybe<Scalars['String']['input']>;
-  newRevision: Scalars['String']['input'];
+  leftRevision?: InputMaybe<Scalars['String']['input']>;
+  rightRevision: Scalars['String']['input'];
 }>;
 
 
@@ -3057,14 +3058,14 @@ export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutati
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const DiffsDocument = gql`
-    query Diffs($fullPath: String!, $after: String, $oldRevision: String, $newRevision: String!) {
+    query Diffs($fullPath: String!, $after: String, $leftRevision: String, $rightRevision: String!) {
   repository(fullPath: $fullPath) {
     id
     diffs(
       first: 20
       after: $after
-      oldRevision: $oldRevision
-      newRevision: $newRevision
+      leftRevision: $leftRevision
+      rightRevision: $rightRevision
     ) {
       edges {
         node {
@@ -3095,8 +3096,8 @@ ${PageInfoFragmentFragmentDoc}`;
  *   variables: {
  *      fullPath: // value for 'fullPath'
  *      after: // value for 'after'
- *      oldRevision: // value for 'oldRevision'
- *      newRevision: // value for 'newRevision'
+ *      leftRevision: // value for 'leftRevision'
+ *      rightRevision: // value for 'rightRevision'
  *   },
  * });
  */

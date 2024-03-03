@@ -1,4 +1,3 @@
-import { pathEqual } from "@/utils/git";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
@@ -7,7 +6,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import React, { useState } from "react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 interface Props {
   key?: string;
@@ -15,6 +14,7 @@ interface Props {
   text: string;
   to: string;
   hidden?: boolean;
+  selected: boolean;
   children?: Array<SubProps>;
 }
 
@@ -24,25 +24,22 @@ interface SubProps {
   text: string;
   to: string;
   hidden?: boolean;
+  selected: boolean;
 }
 
-function ListItemLink(props: Props) {
-  const { icon, text, to, hidden, children } = props;
-  const { pathname } = useLocation();
+export default function ListItemLink(props: Props) {
+  const { icon, text, to, hidden, selected, children } = props;
   const [open, setOpen] = useState<boolean>(
-    !!(
-      children &&
-      (pathEqual(to, pathname) ||
-        children.find((e) => pathEqual(e.to, pathname)))
-    )
+    !!children?.find((e) => e.selected)
   );
 
   const onClick = () => setOpen(!open);
 
   if (hidden) return <></>;
+
   if (!children) {
     return (
-      <ListItemButton component={RouterLink} to={to} selected={pathname === to}>
+      <ListItemButton component={RouterLink} to={to} selected={selected}>
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
         <ListItemText primary={text} />
       </ListItemButton>
@@ -51,7 +48,7 @@ function ListItemLink(props: Props) {
 
   return (
     <>
-      <ListItemButton selected={pathname === to} onClick={onClick}>
+      <ListItemButton onClick={onClick}>
         {icon && <ListItemIcon>{icon}</ListItemIcon>}
         <ListItemText primary={text} />
         {open ? <ExpandLess /> : <ExpandMore />}
@@ -64,7 +61,7 @@ function ListItemLink(props: Props) {
               key={item.key}
               component={RouterLink}
               to={item.to}
-              selected={pathEqual(pathname, item.to)}
+              selected={item.selected}
             >
               {item.icon && <ListItemIcon>{item.icon}</ListItemIcon>}
               <ListItemText primary={item.text} />
@@ -76,5 +73,4 @@ function ListItemLink(props: Props) {
   );
 }
 
-export default ListItemLink;
 export type { Props as Item };

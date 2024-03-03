@@ -1,9 +1,4 @@
-import {
-  Maybe,
-  OrderDirection,
-  TagOrderField,
-  useTagsQuery,
-} from "@/generated/types";
+import { OrderDirection, TagOrderField, useTagsQuery } from "@/generated/types";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -15,11 +10,12 @@ interface Props {
   revision: string;
   type: string;
   path: string;
-  query?: Maybe<string>;
+  query: string | null | undefined;
+  getPathname: (type: string, revision: string, path: string) => string;
 }
 
 export function ListTagName(props: Props) {
-  const { fullPath, revision, type, path, query } = props;
+  const { fullPath, revision, type, path, query, getPathname } = props;
 
   const { data } = useTagsQuery({
     fetchPolicy: "network-only",
@@ -43,7 +39,7 @@ export function ListTagName(props: Props) {
           <ListItemButton
             selected={revision === edge.node.name}
             component={RouterLink}
-            to={`/${fullPath}/-/${type}/${edge.node.name}/${path}`}
+            to={getPathname(type, edge.node.name, path)}
           >
             <ListItemText primary={edge.node.name} />
           </ListItemButton>

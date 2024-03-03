@@ -18,7 +18,7 @@ export default function Commit() {
   } else if (error) {
     return <ErrorBox message={error.message} />;
   } else if (!revision) {
-    return <ErrorBox message="客户端查询条件错误：revision" />;
+    return <ErrorBox message="查询出错" />;
   }
 
   return (

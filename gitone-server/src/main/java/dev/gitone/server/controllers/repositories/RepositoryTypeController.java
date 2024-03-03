@@ -124,16 +124,16 @@ public class RepositoryTypeController {
     @SchemaMapping
     public DiffConnection diffs(
             GitRepository gitRepository,
-            @Argument String oldRevision,
-            @Argument String newRevision,
+            @Argument String leftRevision,
+            @Argument String rightRevision,
             @Argument Integer first,
             @Argument String after
     ) throws IOException {
         DiffPage page = new DiffPage(first, after);
 
-        GitCommit oldCommit = GitCommit.find(gitRepository, oldRevision);
-        GitCommit newCommit = GitCommit.find(gitRepository, newRevision);
-        List<GitDiff> diffs = GitDiff.between(gitRepository, oldCommit, newCommit);
+        GitCommit leftCommit = GitCommit.find(gitRepository, leftRevision);
+        GitCommit rightCommit = GitCommit.find(gitRepository, rightRevision);
+        List<GitDiff> diffs = GitDiff.between(gitRepository, leftCommit, rightCommit);
         if (page.getAfter() != null) {
             String id = page.getAfter().getId();
             if (id != null) {

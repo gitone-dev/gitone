@@ -15,9 +15,7 @@ export default function Show() {
   } else if (error) {
     return <ErrorPage message={error.message} />;
   } else if (!data?.namespace.fullPath) {
-    return (
-      <ErrorPage message="客户查询条件出错 @/app/namespace/branches/index.tsx" />
-    );
+    return <ErrorPage message="查询出错" />;
   } else if (!data.namespacePolicy.actions?.includes(Action.Read)) {
     return <ErrorPage message="无权限" />;
   }

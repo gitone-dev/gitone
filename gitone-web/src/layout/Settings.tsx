@@ -9,49 +9,57 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import WifiTetheringIcon from "@mui/icons-material/WifiTethering";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
-import Sidebar from "./Sidebar";
+import Sidebar, { SidebarItems } from "./Sidebar";
 
-const items = [
-  {
-    key: "/-/settings/profile",
-    icon: <AccountCircleIcon />,
-    text: "个人资料",
-    to: "/-/settings/profile",
-  },
-  {
-    key: "/-/settings/account",
-    icon: <ManageAccountsIcon />,
-    text: "账号管理",
-    to: "/-/settings/account",
-  },
-  {
-    key: "/-/settings/emails",
-    icon: <EmailIcon />,
-    text: "邮箱管理",
-    to: "/-/settings/emails",
-  },
-  {
-    key: "/-/settings/password",
-    icon: <LockIcon />,
-    text: "密码管理",
-    to: "/-/settings/password",
-  },
-  {
-    key: "/-/settings/ssh-keys",
-    icon: <KeyIcon />,
-    text: "SSH 公钥",
-    to: "/-/settings/ssh-keys",
-  },
-  {
-    key: "/-/settings/registered-clients",
-    icon: <WifiTetheringIcon />,
-    text: "OIDC 客户端",
-    to: "/-/settings/registered-clients",
-  },
-];
+function sidebarItems(pathname: string): SidebarItems {
+  return [
+    {
+      key: "/-/settings/profile",
+      icon: <AccountCircleIcon />,
+      text: "个人资料",
+      to: "/-/settings/profile",
+      selected: "/-/settings/profile" === pathname,
+    },
+    {
+      key: "/-/settings/account",
+      icon: <ManageAccountsIcon />,
+      text: "账号管理",
+      to: "/-/settings/account",
+      selected: "/-/settings/account" === pathname,
+    },
+    {
+      key: "/-/settings/emails",
+      icon: <EmailIcon />,
+      text: "邮箱管理",
+      to: "/-/settings/emails",
+      selected: "/-/settings/emails" === pathname,
+    },
+    {
+      key: "/-/settings/password",
+      icon: <LockIcon />,
+      text: "密码管理",
+      to: "/-/settings/password",
+      selected: "/-/settings/password" === pathname,
+    },
+    {
+      key: "/-/settings/ssh-keys",
+      icon: <KeyIcon />,
+      text: "SSH 公钥",
+      to: "/-/settings/ssh-keys",
+      selected: "/-/settings/ssh-keys" === pathname,
+    },
+    {
+      key: "/-/settings/registered-clients",
+      icon: <WifiTetheringIcon />,
+      text: "OIDC 客户端",
+      to: "/-/settings/registered-clients",
+      selected: pathname.startsWith("/-/settings/registered-clients"),
+    },
+  ];
+}
 
 const breadcrumbItems: BreadcrumbItems = {
   "/-/settings": [{ to: "/-/settings", text: "用户设置" }],
@@ -87,6 +95,7 @@ const breadcrumbItems: BreadcrumbItems = {
 };
 
 export default function Settings() {
+  const { pathname } = useLocation();
   const { loading, error } = useViewerQuery();
 
   if (loading) {
@@ -97,7 +106,7 @@ export default function Settings() {
 
   return (
     <Page sx={{ display: "flex" }}>
-      <Sidebar items={items} />
+      <Sidebar items={sidebarItems(pathname)} />
       <Box sx={{ mx: 2, my: 1, width: "100%" }}>
         <Toolbar />
         <Breadcrumbs items={breadcrumbItems} />

@@ -1,9 +1,4 @@
-import {
-  CommitEdge,
-  PageInfo,
-  Policy,
-  RevisionPath,
-} from "@/generated/types";
+import { CommitEdge, PageInfo, RevisionPath } from "@/generated/types";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -12,14 +7,13 @@ import ListItemCommit from "./ListItemCommit";
 interface Props {
   fullPath: string;
   revisionPath: RevisionPath;
-  policy: Policy;
   edges: Array<CommitEdge>;
   pageInfo: PageInfo;
   loadMore: () => void;
 }
 
-function ListCommit(props: Props) {
-  const { fullPath, revisionPath, policy, edges, pageInfo, loadMore } = props;
+export default function ListCommit(props: Props) {
+  const { fullPath, revisionPath, edges, pageInfo, loadMore } = props;
 
   return (
     <List>
@@ -28,7 +22,6 @@ function ListCommit(props: Props) {
           fullPath={fullPath}
           revisionPath={revisionPath}
           key={edge.cursor}
-          policy={policy}
           commit={edge.node}
         />
       ))}
@@ -40,5 +33,3 @@ function ListCommit(props: Props) {
     </List>
   );
 }
-
-export default ListCommit;

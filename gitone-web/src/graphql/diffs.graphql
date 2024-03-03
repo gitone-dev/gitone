@@ -1,16 +1,16 @@
 query Diffs(
   $fullPath: String!
   $after: String
-  $oldRevision: String
-  $newRevision: String!
+  $leftRevision: String
+  $rightRevision: String!
 ) {
   repository(fullPath: $fullPath) {
     id
     diffs(
       first: 20
       after: $after
-      oldRevision: $oldRevision
-      newRevision: $newRevision
+      leftRevision: $leftRevision
+      rightRevision: $rightRevision
     ) {
       edges {
         node {

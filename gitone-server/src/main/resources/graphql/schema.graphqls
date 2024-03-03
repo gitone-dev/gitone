@@ -840,8 +840,8 @@ type Repository implements Node {
     path: String
   ): TreeEntryConnection
   diffs(
-    oldRevision: String
-    newRevision: String!
+    leftRevision: String
+    rightRevision: String!
     first: Int = 20
     after: String
   ): DiffConnection
@@ -991,7 +991,8 @@ type CommitConnection {
 }
 
 input CommitFilter {
-  revision: String!
+  left: String
+  right: String!
   path: String
   email: String
 }

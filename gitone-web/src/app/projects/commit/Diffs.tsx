@@ -5,8 +5,8 @@ import DiffAccordion from "./DiffAccordion";
 
 interface Props {
   fullPath: string;
-  oldRevision: string | undefined | null;
-  newRevision: string;
+  leftRevision: string | undefined | null;
+  rightRevision: string;
   edges: Array<DiffEdge>;
   pageInfo: PageInfo;
   loadMore: () => void;
@@ -15,8 +15,8 @@ interface Props {
 export default function Diffs(props: Props & BoxProps) {
   const {
     fullPath,
-    oldRevision,
-    newRevision,
+    leftRevision,
+    rightRevision,
     edges,
     pageInfo,
     loadMore,
@@ -29,8 +29,8 @@ export default function Diffs(props: Props & BoxProps) {
         <DiffAccordion
           key={edge.cursor}
           fullPath={fullPath}
-          oldRevision={oldRevision}
-          newRevision={newRevision}
+          leftRevision={leftRevision}
+          rightRevision={rightRevision}
           diff={edge.node}
         />
       ))}

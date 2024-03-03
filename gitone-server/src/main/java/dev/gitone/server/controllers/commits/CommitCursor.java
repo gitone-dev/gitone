@@ -11,14 +11,14 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommitCursor extends CustomCursor {
 
-    public static ConnectionCursor create(String reversion, int skip) {
+    public static ConnectionCursor create(String right, int skip) {
         CommitCursor cursor = new CommitCursor();
-        cursor.setReversion(reversion);
+        cursor.setRight(right);
         cursor.setSkip(skip);
         return cursor;
     }
 
-    private String reversion;
+    private String right;
 
     private int skip;
 }

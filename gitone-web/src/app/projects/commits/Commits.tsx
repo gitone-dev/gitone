@@ -1,4 +1,4 @@
-import { Policy, RevisionPath, useRevisionPathQuery } from "@/generated/types";
+import { RevisionPath, useRevisionPathQuery } from "@/generated/types";
 import Breadcrumbs, { BreadcrumbItems } from "@/layout/Breadcrumbs";
 import ChunkPaper from "@/shared/ChunkPaper";
 import ErrorBox from "@/shared/ErrorBox";
@@ -39,12 +39,11 @@ const breadcrumbItems = (
 
 interface Props {
   fullPath: string;
-  policy: Policy;
   star: string | null | undefined;
 }
 
 export default function Commits(props: Props) {
-  const { fullPath, policy, star } = props;
+  const { fullPath, star } = props;
   const { enqueueSnackbar } = useSnackbar();
   const { data, loading, error } = useRevisionPathQuery({
     variables: { fullPath, revisionPath: star },
@@ -59,12 +58,20 @@ export default function Commits(props: Props) {
     enqueueSnackbar(`已复制：${revisionPath.path}`, { variant: "info" });
   };
 
+  const getPathname = (
+    type: string,
+    revision: string,
+    path: string
+  ): string => {
+    return `/${fullPath}/-/${type}/${revision}/${path}`;
+  };
+
   if (loading) {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
   } else if (!revisionPath) {
-    return <ErrorBox message="客户端查询条件错误：revision" />;
+    return <ErrorBox message="查询错误" />;
   }
 
   return (
@@ -85,6 +92,7 @@ export default function Commits(props: Props) {
           fullPath={fullPath}
           type="commits"
           revisionPath={revisionPath}
+          getPathname={getPathname}
         />
         <Breadcrumbs items={breadcrumbItems(fullPath, revisionPath)} />
         {revisionPath.path && (
@@ -94,11 +102,7 @@ export default function Commits(props: Props) {
         )}
       </Stack>
       <ChunkPaper primary="提交列表">
-        <CommitsContainer
-          fullPath={fullPath}
-          policy={policy}
-          revisionPath={revisionPath}
-        />
+        <CommitsContainer fullPath={fullPath} revisionPath={revisionPath} />
       </ChunkPaper>
     </>
   );

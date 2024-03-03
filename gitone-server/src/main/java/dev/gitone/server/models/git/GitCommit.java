@@ -7,11 +7,16 @@ import org.apache.logging.log4j.util.Strings;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.errors.NoMergeBaseException;
+import org.eclipse.jgit.internal.JGitText;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +67,8 @@ public class GitCommit implements Node<String> {
     }
 
     public static GitCommit find(GitRepository gitRepository, String revision) throws IOException {
+        if (Strings.isEmpty(revision)) return null;
+
         Repository repository = gitRepository.repository;
         ObjectId objectId = null;
 
@@ -92,17 +99,19 @@ public class GitCommit implements Node<String> {
         List<GitCommit> commits = new ArrayList<>();
         Repository repository = gitRepository.repository;
 
-        GitCommit gitCommit;
-        if (page.getAfter() != null && page.getAfter().getReversion() != null) {
-            gitCommit = find(gitRepository, page.getAfter().getReversion());
+        GitCommit leftCommit = find(gitRepository, filterBy.getLeft());
+        GitCommit rightCommit;
+        if (page.getAfter() != null && page.getAfter().getRight() != null) {
+            rightCommit = find(gitRepository, page.getAfter().getRight());
         } else {
-            gitCommit = find(gitRepository, filterBy.getRevision());
+            rightCommit = find(gitRepository, filterBy.getRight());
         }
-        if (gitCommit == null) return commits;
+        if (rightCommit == null) return commits;
 
         try (Git git = new Git(repository)) {
             LogCommand command = git.log();
-            command.add(gitCommit.revCommit);
+            command.add(rightCommit.revCommit);
+            if (leftCommit != null) command.not(leftCommit.revCommit);
             if (Strings.isNotEmpty(filterBy.getPath())) command.addPath(filterBy.getPath());
             if (page.getAfter() != null) command.setSkip(page.getAfter().getSkip());
             if (page.getFirst() != null) command.setMaxCount(page.getLimit());
@@ -116,5 +125,32 @@ public class GitCommit implements Node<String> {
         }
 
         return commits;
+    }
+
+    public static GitCommit mergeBase(GitRepository gitRepository, GitCommit left, GitCommit right) throws IOException {
+        if (left == null || right == null)
+            return null;
+
+        try (RevWalk walk = new RevWalk(gitRepository.repository)) {
+            walk.reset();
+            walk.setRevFilter(RevFilter.MERGE_BASE);
+            walk.markStart(left.revCommit);
+            walk.markStart(right.revCommit);
+            final RevCommit base = walk.next();
+            if (base == null) return null;
+
+            final RevCommit base2 = walk.next();
+            if (base2 != null) {
+                throw new NoMergeBaseException(
+                        NoMergeBaseException.MergeBaseFailureReason.MULTIPLE_MERGE_BASES_NOT_SUPPORTED,
+                        MessageFormat.format(
+                                JGitText.get().multipleMergeBasesFor, left.getSha(), right.getSha(),
+                                base.name(), base2.name()));
+            }
+
+            // FIXME jgit BUG? left=new right=old
+            System.out.printf("merge-base %s %s -> %s\n", left.revCommit.name(), right.revCommit.name(), base.name());
+            return new GitCommit(gitRepository, base);
+        }
     }
 }

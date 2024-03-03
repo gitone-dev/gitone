@@ -53,6 +53,14 @@ export default function Blob() {
     enqueueSnackbar(`已复制：${revisionPath.path}`, { variant: "info" });
   };
 
+  const getPathname = (
+    type: string,
+    revision: string,
+    path: string
+  ): string => {
+    return `/${fullPath}/-/${type}/${revision}/${path}`;
+  };
+
   if (loading) {
     return <LoadingBox />;
   } else if (error) {
@@ -79,6 +87,7 @@ export default function Blob() {
           fullPath={fullPath}
           type="blob"
           revisionPath={revisionPath}
+          getPathname={getPathname}
         />
         <Breadcrumbs items={breadcrumbItems(fullPath, revisionPath)} />
         {revisionPath.path && (

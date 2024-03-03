@@ -50,6 +50,14 @@ export default function Tree() {
     enqueueSnackbar(`已复制：${revisionPath.path}`, { variant: "info" });
   };
 
+  const getPathname = (
+    type: string,
+    revision: string,
+    path: string
+  ): string => {
+    return `/${fullPath}/-/${type}/${revision}/${path}`;
+  };
+
   if (loading) {
     return <LoadingBox />;
   } else if (error) {
@@ -76,6 +84,7 @@ export default function Tree() {
           fullPath={fullPath}
           type="tree"
           revisionPath={revisionPath}
+          getPathname={getPathname}
         />
         <Breadcrumbs items={breadcrumbItems(fullPath, revisionPath)} />
         {revisionPath.path && (

@@ -10,9 +10,9 @@ import Settings from "@/app/settings";
 import Users from "@/app/users";
 import Layout from "@/layout";
 import { paths } from "@/utils/router";
-import { createBrowserRouter } from "react-router-dom";
+import { RouteObject } from "react-router-dom";
 
-const router = createBrowserRouter([
+const routes: RouteObject[] = [
   { path: "/", element: <App /> },
   {
     path: "/explore",
@@ -102,13 +102,14 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Namespace.Show /> },
       { path: "-/blob/*", element: <Projects.Blob /> },
-      { path: "-/branches", element: <Projects.Branches /> },
+      { path: "-/tree/*", element: <Projects.Tree /> },
       { path: "-/commit/*", element: <Projects.Commit /> },
       { path: "-/commits/*", element: <Projects.Commits /> },
-      { path: "-/projects", element: <Groups.Projects /> },
-      { path: "-/members", element: <Namespace.Members /> },
+      { path: "-/compare/*", element: <Projects.Compare /> },
+      { path: "-/branches", element: <Projects.Branches /> },
       { path: "-/tags", element: <Projects.Tags /> },
-      { path: "-/tree/*", element: <Projects.Tree /> },
+      { path: "-/members", element: <Namespace.Members /> },
+      { path: "-/projects", element: <Groups.Projects /> },
       {
         path: "-/settings",
         children: [
@@ -139,6 +140,6 @@ const router = createBrowserRouter([
     ],
   })),
   { path: "*", element: <NotFoundPage /> },
-]);
+];
 
-export default router;
+export default routes;

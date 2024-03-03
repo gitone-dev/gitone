@@ -1,8 +1,4 @@
-import {
-  Policy,
-  RevisionPath,
-  useCommitsQuery,
-} from "@/generated/types";
+import { RevisionPath, useCommitsQuery } from "@/generated/types";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
 import { useEffect } from "react";
@@ -10,19 +6,23 @@ import ListCommit from "./ListCommit";
 
 interface Props {
   fullPath: string;
-  policy: Policy;
   revisionPath: RevisionPath;
+  left?: string;
 }
 
-function CommitsContainer(props: Props) {
-  const { fullPath, policy, revisionPath } = props;
+export default function CommitsContainer(props: Props) {
+  const { fullPath, left, revisionPath } = props;
 
   const { data, loading, error, fetchMore } = useCommitsQuery({
     fetchPolicy: "network-only",
     variables: {
       fullPath,
       first: 20,
-      filterBy: { revision: revisionPath.revision, path: revisionPath.path },
+      filterBy: {
+        left: left,
+        right: revisionPath.revision,
+        path: revisionPath.path,
+      },
     },
   });
   const edges = data?.repository?.commits?.edges;
@@ -50,7 +50,7 @@ function CommitsContainer(props: Props) {
     return <LoadingBox />;
   } else if (error) {
     return <ErrorBox message={error.message} />;
-  } else if (!edges || !pageInfo || !policy) {
+  } else if (!edges || !pageInfo) {
     return <ErrorBox message="客户端查询条件错误" />;
   }
 
@@ -58,12 +58,9 @@ function CommitsContainer(props: Props) {
     <ListCommit
       fullPath={fullPath}
       revisionPath={revisionPath}
-      policy={policy}
       edges={edges}
       pageInfo={pageInfo}
       loadMore={onScroll}
     />
   );
 }
-
-export default CommitsContainer;

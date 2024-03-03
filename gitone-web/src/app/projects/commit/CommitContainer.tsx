@@ -17,7 +17,7 @@ interface Props {
   path?: string;
 }
 
-function CommitContainer(props: Props) {
+export default function CommitContainer(props: Props) {
   const { fullPath, revision } = props;
 
   const { data, loading, error } = useCommitQuery({
@@ -78,11 +78,9 @@ function CommitContainer(props: Props) {
       </ChunkPaper>
       <DiffsContainer
         fullPath={fullPath}
-        oldSha={commit.parentShas && commit.parentShas[0]}
-        newSha={commit.sha}
+        leftRevision={commit.parentShas && commit.parentShas[0]}
+        rightRevision={commit.sha}
       />
     </>
   );
 }
-
-export default CommitContainer;

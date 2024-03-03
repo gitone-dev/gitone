@@ -1,24 +1,24 @@
 import { useDiffsQuery } from "@/generated/types";
 import ErrorBox from "@/shared/ErrorBox";
 import LoadingBox from "@/shared/LoadingBox";
-import Diffs from "./Diffs";
 import { useEffect } from "react";
+import Diffs from "./Diffs";
 
 interface Props {
   fullPath: string;
-  oldSha: string | undefined | null;
-  newSha: string;
+  leftRevision: string | undefined | null;
+  rightRevision: string;
 }
 
-function DiffsContainer(props: Props) {
-  const { fullPath, oldSha, newSha } = props;
+export default function DiffsContainer(props: Props) {
+  const { fullPath, leftRevision, rightRevision } = props;
 
   const { data, loading, error, fetchMore } = useDiffsQuery({
-    fetchPolicy: "network-only",
+    // fetchPolicy: "network-only",
     variables: {
       fullPath,
-      oldRevision: oldSha,
-      newRevision: newSha,
+      leftRevision,
+      rightRevision,
     },
   });
   const edges = data?.repository.diffs?.edges;
@@ -54,13 +54,11 @@ function DiffsContainer(props: Props) {
     <Diffs
       sx={{ mt: 2 }}
       fullPath={fullPath}
-      oldRevision={oldSha}
-      newRevision={newSha}
+      leftRevision={leftRevision}
+      rightRevision={rightRevision}
       edges={edges}
       pageInfo={pageInfo}
       loadMore={onScroll}
     />
   );
 }
-
-export default DiffsContainer;

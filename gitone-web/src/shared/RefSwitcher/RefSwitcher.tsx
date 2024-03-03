@@ -19,13 +19,15 @@ interface Props {
   fullPath: string;
   type: "blob" | "tree" | "commits";
   revisionPath: RevisionPath;
+  getPathname: (type: string, revision: string, path: string) => string;
 }
 
-function RefSwitcher(props: Props) {
+export default function RefSwitcher(props: Props) {
   const {
     fullPath,
     type,
     revisionPath: { revision, path },
+    getPathname,
   } = props;
   const [value, setValue] = useState("branches");
   const [query, setQuery] = useState<string | null>();
@@ -57,9 +59,11 @@ function RefSwitcher(props: Props) {
           size="small"
           component={RouterLink}
           sx={{ textTransform: "none" }}
-          to={`/${fullPath}/-/${
-            type === "commits" ? "commits" : "tree"
-          }/${revision}`}
+          to={getPathname(
+            type === "commits" ? "commits" : "tree",
+            revision,
+            ""
+          )}
         >
           <code>{revision}</code>
         </Button>
@@ -68,6 +72,7 @@ function RefSwitcher(props: Props) {
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         placement="bottom-start"
+        sx={{ zIndex: 100 }}
       >
         <ClickAwayListener onClickAway={onClose}>
           <Paper sx={{ pt: 2, px: 2, width: 300 }}>
@@ -92,6 +97,7 @@ function RefSwitcher(props: Props) {
                   type={type}
                   path={path}
                   query={query}
+                  getPathname={getPathname}
                 />
               </TabPanel>
               <TabPanel value="tags" sx={{ p: 0, m: 0 }}>
@@ -101,6 +107,7 @@ function RefSwitcher(props: Props) {
                   type={type}
                   path={path}
                   query={query}
+                  getPathname={getPathname}
                 />
               </TabPanel>
             </TabContext>
@@ -110,5 +117,3 @@ function RefSwitcher(props: Props) {
     </>
   );
 }
-
-export default RefSwitcher;

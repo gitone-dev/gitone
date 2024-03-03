@@ -4,17 +4,17 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import client from "./client";
 import "./index.css";
-import router from "./routes/router";
+import routes from "./routes/routes";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <SnackbarProvider maxSnack={3}>
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="zh-cn">
-          <RouterProvider router={router} />
+          <RouterProvider router={createBrowserRouter(routes)} />
         </LocalizationProvider>
       </SnackbarProvider>
     </ApolloProvider>

@@ -6,10 +6,9 @@ import lombok.Data;
 @Data
 public class CommitFilter {
 
+    private String left;
     @NotEmpty
-    private String revision;
-
-    private String query;
+    private String right;
 
     private String path;
 }

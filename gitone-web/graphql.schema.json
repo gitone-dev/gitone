@@ -895,6 +895,18 @@
             "deprecationReason": null
           },
           {
+            "name": "left",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "path",
             "description": null,
             "type": {
@@ -907,7 +919,7 @@
             "deprecationReason": null
           },
           {
-            "name": "revision",
+            "name": "right",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -7166,7 +7178,19 @@
                 "deprecationReason": null
               },
               {
-                "name": "newRevision",
+                "name": "leftRevision",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "rightRevision",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -7176,18 +7200,6 @@
                     "name": "String",
                     "ofType": null
                   }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              },
-              {
-                "name": "oldRevision",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,

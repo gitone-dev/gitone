@@ -8,60 +8,75 @@ import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
 import Sidebar, { SidebarItems } from "./Sidebar";
 
-const items = (fullPath: string, actions: Array<Action>): SidebarItems => [
-  {
-    key: `/${fullPath}`,
-    icon: <GroupIcon />,
-    text: "概览",
-    to: `/${fullPath}`,
-  },
-  {
-    key: `/${fullPath}/-/projects`,
-    icon: <CodeIcon />,
-    text: "项目",
-    to: `/${fullPath}/-/projects`,
-  },
-  {
-    key: `/${fullPath}/-/members`,
-    icon: <PeopleIcon />,
-    text: "成员",
-    to: `/${fullPath}/-/members`,
-  },
-  {
-    key: `/${fullPath}/-/settings`,
-    icon: <SettingsIcon />,
-    text: "设置",
-    to: `/${fullPath}/-/settings`,
-    hidden: !actions.includes(Action.Update),
-    children: [
-      {
-        key: `/${fullPath}/-/settings`,
-        text: "基本设置",
-        to: `/${fullPath}/-/settings`,
-        hidden: !actions.includes(Action.Update),
-      },
-      {
-        key: `/${fullPath}/-/settings/ssh-keys`,
-        text: "SSH 公钥",
-        to: `/${fullPath}/-/settings/ssh-keys`,
-        hidden: !actions.includes(Action.Update),
-      },
-      {
-        key: `/${fullPath}/-/settings/registered-clients`,
-        text: "OIDC 客户端",
-        to: `/${fullPath}/-/settings/registered-clients`,
-        hidden: !actions.includes(Action.Update),
-      },
-    ],
-  },
-];
+function sidebarItems(
+  pathname: string,
+  fullPath: string,
+  actions: Array<Action>
+): SidebarItems {
+  return [
+    {
+      key: `/${fullPath}`,
+      icon: <GroupIcon />,
+      text: "概览",
+      to: `/${fullPath}`,
+      selected: `/${fullPath}` === pathname,
+    },
+    {
+      key: `/${fullPath}/-/projects`,
+      icon: <CodeIcon />,
+      text: "项目",
+      to: `/${fullPath}/-/projects`,
+      selected: `/${fullPath}/-/projects` === pathname,
+    },
+    {
+      key: `/${fullPath}/-/members`,
+      icon: <PeopleIcon />,
+      text: "成员",
+      to: `/${fullPath}/-/members`,
+      selected: `/${fullPath}/-/members` === pathname,
+    },
+    {
+      key: `/${fullPath}/-/settings`,
+      icon: <SettingsIcon />,
+      text: "设置",
+      to: `/${fullPath}/-/settings`,
+      hidden: !actions.includes(Action.Update),
+      selected: false,
+      children: [
+        {
+          key: `/${fullPath}/-/settings`,
+          text: "基本设置",
+          to: `/${fullPath}/-/settings`,
+          hidden: !actions.includes(Action.Update),
+          selected: `/${fullPath}/-/settings` === pathname,
+        },
+        {
+          key: `/${fullPath}/-/settings/ssh-keys`,
+          text: "SSH 公钥",
+          to: `/${fullPath}/-/settings/ssh-keys`,
+          hidden: !actions.includes(Action.Update),
+          selected: `/${fullPath}/-/settings/ssh-keys` === pathname,
+        },
+        {
+          key: `/${fullPath}/-/settings/registered-clients`,
+          text: "OIDC 客户端",
+          to: `/${fullPath}/-/settings/registered-clients`,
+          hidden: !actions.includes(Action.Update),
+          selected: pathname.startsWith(
+            `/${fullPath}/-/settings/registered-clients`
+          ),
+        },
+      ],
+    },
+  ];
+}
 
-const breadcrumbItems = (paths: Array<string>): BreadcrumbItems => {
+function breadcrumbItems(paths: Array<string>): BreadcrumbItems {
   const fullPathItems = [];
   for (let i = 0; i < paths.length; i++) {
     const fullPath = paths.slice(0, i + 1).join("/");
@@ -97,9 +112,10 @@ const breadcrumbItems = (paths: Array<string>): BreadcrumbItems => {
       { to: `/${fullPath}/-/settings/registered-clients/new`, text: "新建" },
     ],
   };
-};
+}
 
-function Group() {
+export default function Group() {
+  const { pathname } = useLocation();
   const { fullPath, paths } = useFullPath();
   const { loading: loadingViewer } = useViewerQuery();
   const { data, loading, error } = useGroupQuery({
@@ -117,7 +133,7 @@ function Group() {
 
   return (
     <Page sx={{ display: "flex" }}>
-      <Sidebar items={items(fullPath, actions)} />
+      <Sidebar items={sidebarItems(pathname, fullPath, actions)} />
       <Box sx={{ mx: 2, my: 1, width: "100%" }}>
         <Toolbar />
         <Breadcrumbs items={breadcrumbItems(paths)} />
@@ -128,5 +144,3 @@ function Group() {
     </Page>
   );
 }
-
-export default Group;

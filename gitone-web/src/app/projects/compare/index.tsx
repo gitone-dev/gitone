@@ -2,10 +2,10 @@ import ErrorPage from "@/app/ErrorPage";
 import LoadingPage from "@/app/LoadingPage";
 import { Action, useNamespaceQuery } from "@/generated/types";
 import { useFullPath } from "@/utils/router";
-import Commits from "./Commits";
+import Compare from "./Compare";
 
 export default function Show() {
-  const { fullPath, star } = useFullPath();
+  const { fullPath, left, right } = useFullPath();
   const { data, loading, error } = useNamespaceQuery({
     variables: { fullPath },
   });
@@ -22,7 +22,7 @@ export default function Show() {
 
   switch (data.namespace.__typename) {
     case "Project":
-      return <Commits fullPath={fullPath} star={star} />;
+      return <Compare fullPath={fullPath} left={left} right={right} />;
     default:
       return <ErrorPage message={`未知类型：${data.namespace.__typename}`} />;
   }

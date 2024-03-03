@@ -12,16 +12,18 @@ import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Breadcrumbs, { BreadcrumbItems } from "./Breadcrumbs";
 import Page from "./Page";
 import Sidebar, { SidebarItems } from "./Sidebar";
 
-const items = (
+function sidebarItems(
+  pathname: string,
   fullPath: string,
+  defaultBranch: string | undefined,
   revisionPath: RevisionPath,
   actions: Array<Action>
-): SidebarItems => {
+): SidebarItems {
   const { type, revision, path } = revisionPath;
 
   const items: SidebarItems = [
@@ -30,34 +32,46 @@ const items = (
       icon: <CodeIcon />,
       text: "概览",
       to: `/${fullPath}`,
+      selected: `/${fullPath}` === pathname,
     },
   ];
-  if (revision) {
+  if (defaultBranch && revision) {
     items.push({
       key: `/${fullPath}/-/code`,
       icon: <CodeIcon />,
       text: "仓库",
       to: `/${fullPath}/-/code`,
+      selected: false,
       children: [
         {
           key: `/${fullPath}/-/${type}/${revision}/${path}`,
           text: "文件",
           to: `/${fullPath}/-/${type}/${revision}/${path}`,
+          selected: pathname.startsWith(`/${fullPath}/-/${type}/`),
         },
         {
           key: `/${fullPath}/-/commits/${revision}/${path}`,
           text: "提交",
           to: `/${fullPath}/-/commits/${revision}/${path}`,
+          selected: pathname.startsWith(`/${fullPath}/-/commit`),
         },
         {
           key: `/${fullPath}/-/branches`,
           text: "分支",
           to: `/${fullPath}/-/branches`,
+          selected: `/${fullPath}/-/branches` === pathname,
         },
         {
           key: `/${fullPath}/-/tags`,
           text: "标签",
           to: `/${fullPath}/-/tags`,
+          selected: `/${fullPath}/-/tags` === pathname,
+        },
+        {
+          key: `/${fullPath}/-/compare/${defaultBranch}...${revision}`,
+          text: "对比",
+          to: `/${fullPath}/-/compare/${defaultBranch}...${revision}`,
+          selected: pathname.startsWith(`/${fullPath}/-/compare/`),
         },
       ],
     });
@@ -67,6 +81,7 @@ const items = (
     icon: <PeopleIcon />,
     text: "成员",
     to: `/${fullPath}/-/members`,
+    selected: `/${fullPath}/-/members` === pathname,
   });
   items.push({
     key: `/${fullPath}/-/settings`,
@@ -74,28 +89,33 @@ const items = (
     text: "设置",
     to: `/${fullPath}/-/settings`,
     hidden: !actions.includes(Action.Update),
+    selected: false,
     children: [
       {
         key: `/${fullPath}/-/settings`,
         text: "基本设置",
         to: `/${fullPath}/-/settings`,
         hidden: !actions.includes(Action.Update),
+        selected: `/${fullPath}/-/settings` === pathname,
       },
       {
         key: `/${fullPath}/-/settings/ssh-keys`,
         text: "SSH 公钥",
         to: `/${fullPath}/-/settings/ssh-keys`,
         hidden: !actions.includes(Action.Update),
+        selected: `/${fullPath}/-/settings/ssh-keys` === pathname,
       },
     ],
   });
   return items;
-};
+}
 
-const breadcrumbItems = (
+function breadcrumbItems(
   paths: Array<string>,
-  revisionPath: RevisionPath
-): BreadcrumbItems => {
+  revisionPath: RevisionPath,
+  left: string,
+  right: string
+): BreadcrumbItems {
   const { revision, path } = revisionPath;
 
   const fullPathItems = [];
@@ -128,6 +148,7 @@ const breadcrumbItems = (
       ...fullPathItems,
       { to: `/${fullPath}/-/tags`, text: "标签" },
     ],
+    [`/${fullPath}/-/commit/${revision}`]: [...fullPathItems],
     [`/${fullPath}/-/commits/${revision}`]: [...fullPathItems],
     [`/${fullPath}/-/commits/${revision}/${path}`]: [
       ...fullPathItems,
@@ -135,17 +156,22 @@ const breadcrumbItems = (
     ],
     [`/${fullPath}/-/tree/${revision}`]: [...fullPathItems],
     [`/${fullPath}/-/tree/${revision}/${path}`]: [...fullPathItems],
+    [`/${fullPath}/-/blob/${revision}`]: [...fullPathItems],
     [`/${fullPath}/-/blob/${revision}/${path}`]: [...fullPathItems],
+    [`/${fullPath}/-/compare/${right}`]: [...fullPathItems],
+    [`/${fullPath}/-/compare/${left}...${right}`]: [...fullPathItems],
   };
-};
+}
 
-function Project() {
-  const { fullPath, paths, star } = useFullPath();
+export default function Project() {
+  const { pathname } = useLocation();
+  const { fullPath, paths, star, left, right } = useFullPath();
   const { loading: loadingViewer } = useViewerQuery();
   const { data, loading, error } = useProjectQuery({
     variables: { fullPath, revisionPath: star },
   });
   const actions = data?.namespacePolicy.actions;
+  const defaultBranch = data?.repository.defaultBranch?.name;
   const revisionPath = data?.repository.revisionPath;
 
   if (loading || loadingViewer) {
@@ -158,10 +184,20 @@ function Project() {
 
   return (
     <Page sx={{ display: "flex" }}>
-      <Sidebar items={items(fullPath, revisionPath, actions)} />
+      <Sidebar
+        items={sidebarItems(
+          pathname,
+          fullPath,
+          defaultBranch,
+          revisionPath,
+          actions
+        )}
+      />
       <Box sx={{ p: 1, flexGrow: 1 }}>
         <Toolbar />
-        <Breadcrumbs items={breadcrumbItems(paths, revisionPath)} />
+        <Breadcrumbs
+          items={breadcrumbItems(paths, revisionPath, left, right)}
+        />
         <Box>
           <Outlet />
         </Box>
@@ -169,5 +205,3 @@ function Project() {
     </Page>
   );
 }
-
-export default Project;

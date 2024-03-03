@@ -15,20 +15,20 @@ import TableDiff from "./TableDiff";
 
 interface Props {
   fullPath: string;
-  oldRevision: string | undefined | null;
-  newRevision: string;
+  leftRevision: string | undefined | null;
+  rightRevision: string;
   diff: Diff;
 }
 
 export default function DiffAccordion(props: Props) {
-  const { fullPath, oldRevision, newRevision, diff } = props;
+  const { fullPath, leftRevision, rightRevision, diff } = props;
   const [lines, setLines] = useState(diff.lines || []);
   const { enqueueSnackbar } = useSnackbar();
   const [blobLinesLazyQuery] = useBlobLinesLazyQuery();
   const [revision, path] =
     diff.type === DiffType.Delete
-      ? [oldRevision, diff.oldPath]
-      : [newRevision, diff.newPath];
+      ? [leftRevision, diff.oldPath]
+      : [rightRevision, diff.newPath];
 
   const onCopy = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -37,7 +37,7 @@ export default function DiffAccordion(props: Props) {
   };
 
   const onClick = (range: Range) => {
-    if (!newRevision || !diff.newPath) return;
+    if (!rightRevision || !diff.newPath) return;
 
     console.log(range);
     const first = range[1] - range[0] + 1;
@@ -48,7 +48,7 @@ export default function DiffAccordion(props: Props) {
     blobLinesLazyQuery({
       variables: {
         fullPath: fullPath,
-        revision: newRevision,
+        revision: rightRevision,
         path: diff.newPath,
         first,
         after,
@@ -90,7 +90,7 @@ export default function DiffAccordion(props: Props) {
   };
 
   return (
-    <Box pt={2}>
+    <Box pb={2}>
       <Paper
         elevation={2}
         sx={{

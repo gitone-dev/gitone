@@ -110,18 +110,19 @@ public class GitDiff implements Node<String> {
 
     public static List<GitDiff> between(
             GitRepository gitRepository,
-            GitCommit oldCommit,
-            GitCommit newCommit) throws IOException {
-        RevTree oldTree = null;
-        if (oldCommit != null) {
-            oldTree = oldCommit.revCommit.getTree();;
+            GitCommit leftCommit,
+            GitCommit rightCommit) throws IOException {
+        RevTree leftTree = null;
+        if (leftCommit != null) {
+            GitCommit baseCommit = GitCommit.mergeBase(gitRepository, leftCommit, rightCommit);
+            leftTree =  baseCommit.revCommit.getTree();
         }
-        RevTree newTree = newCommit.revCommit.getTree();
+        RevTree rightTree = rightCommit.revCommit.getTree();
         try (DiffFormatter formatter = new DiffFormatter(NullOutputStream.INSTANCE)) {
             formatter.setRepository(gitRepository.repository);
             formatter.setPathFilter(TreeFilter.ALL);
 
-            List<DiffEntry> entries = formatter.scan(oldTree, newTree);
+            List<DiffEntry> entries = formatter.scan(leftTree, rightTree);
             return entries.stream().map(entry -> new GitDiff(gitRepository, entry)).collect(Collectors.toList());
         }
     }

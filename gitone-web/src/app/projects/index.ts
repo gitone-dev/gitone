@@ -2,6 +2,7 @@ import Blob from "./blob/index";
 import Branches from "./branches";
 import Commit from "./commit";
 import Commits from "./commits";
+import Compare from "./compare";
 import New from "./new";
 import Settings from "./settings";
 import Show from "./show";
@@ -13,6 +14,7 @@ const Projects = {
   Branches,
   Commit,
   Commits,
+  Compare,
   New,
   Settings: {
     Settings,

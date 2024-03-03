@@ -1,4 +1,4 @@
-import { Commit, Policy, RevisionPath } from "@/generated/types";
+import { Commit, RevisionPath } from "@/generated/types";
 import CommitTip from "@/shared/CommitTip";
 import RelativeTime from "@/shared/RelativeTime";
 import { SHA_ABBR_LENGTH } from "@/utils/git";
@@ -20,11 +20,10 @@ import { Link as RouterLink } from "react-router-dom";
 interface Props {
   fullPath: string;
   revisionPath: RevisionPath;
-  policy: Policy;
   commit: Commit;
 }
 
-function ListItemCommit(props: Props) {
+export default function ListItemCommit(props: Props) {
   const {
     fullPath,
     revisionPath: { type, path },
@@ -97,5 +96,3 @@ function ListItemCommit(props: Props) {
     </ListItem>
   );
 }
-
-export default ListItemCommit;
