@@ -7,16 +7,12 @@ import org.apache.logging.log4j.util.Strings;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.errors.NoMergeBaseException;
-import org.eclipse.jgit.internal.JGitText;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.revwalk.filter.RevFilter;
-import org.eclipse.jgit.treewalk.filter.TreeFilter;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,7 +90,7 @@ public class GitCommit implements Node<String> {
         }
     }
 
-    // FIXME: 2023/11/2
+    // FIXME: 2023/11/2 排序问题
     public static List<GitCommit> findAll(GitRepository gitRepository, CommitFilter filterBy, CommitPage page) throws IOException  {
         List<GitCommit> commits = new ArrayList<>();
         Repository repository = gitRepository.repository;
@@ -128,29 +124,16 @@ public class GitCommit implements Node<String> {
     }
 
     public static GitCommit mergeBase(GitRepository gitRepository, GitCommit left, GitCommit right) throws IOException {
-        if (left == null || right == null)
-            return null;
+        if (left == null || right == null) return null;
 
         try (RevWalk walk = new RevWalk(gitRepository.repository)) {
-            walk.reset();
+            walk.markStart(walk.parseCommit(left.revCommit));
+            walk.markStart(walk.parseCommit(right.revCommit));
             walk.setRevFilter(RevFilter.MERGE_BASE);
-            walk.markStart(left.revCommit);
-            walk.markStart(right.revCommit);
-            final RevCommit base = walk.next();
+
+            RevCommit base = walk.next();
             if (base == null) return null;
-
-            final RevCommit base2 = walk.next();
-            if (base2 != null) {
-                System.out.println("multiple merge base");
-                // throw new NoMergeBaseException(
-                //         NoMergeBaseException.MergeBaseFailureReason.MULTIPLE_MERGE_BASES_NOT_SUPPORTED,
-                //         MessageFormat.format(
-                //                 JGitText.get().multipleMergeBasesFor, left.getSha(), right.getSha(),
-                //                 base.name(), base2.name()));
-            }
-
-            // FIXME jgit BUG? left=new right=old
-            System.out.printf("merge-base %s %s -> %s\n", left.revCommit.name(), right.revCommit.name(), base.name());
+            // TODO 多个 merge base
             return new GitCommit(gitRepository, base);
         }
     }

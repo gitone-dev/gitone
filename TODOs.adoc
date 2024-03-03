@@ -116,7 +116,6 @@
 - [ ] 差异分页
 - [ ] 差异缓存
 - [ ] 差异宽度问题
-- [ ] 差异存在 BUG：git diff new...old，jGit 的问题？
 
 ==== Pull Request
 
