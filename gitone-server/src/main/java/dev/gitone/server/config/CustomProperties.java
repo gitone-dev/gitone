@@ -1,5 +1,6 @@
 package dev.gitone.server.config;
 
+import dev.gitone.server.models.git.GitArchive;
 import dev.gitone.server.models.git.GitRepository;
 import dev.gitone.server.services.AvatarService;
 import dev.gitone.server.util.StoragePath;
@@ -36,7 +37,8 @@ public class CustomProperties implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        GitRepository.setRootPath(gitData);
+        GitRepository.setup(Paths.get(gitData));
+        GitArchive.setup(Paths.get(gitData, "archive"));
     }
 
     public Path findAvatar(AvatarService.Type type, Integer id) {

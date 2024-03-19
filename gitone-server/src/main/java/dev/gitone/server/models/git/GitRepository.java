@@ -16,7 +16,7 @@ import org.springframework.util.Assert;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 public class GitRepository implements Node<String> {
 
@@ -24,14 +24,18 @@ public class GitRepository implements Node<String> {
 
     public static final String InitialBranch = "main";
     @Getter
-    private static String rootPath;
+    private static Path rootPath;
 
-    public static void setRootPath(String rootPath) {
+    public static void setup(Path rooPath) {
+        setRootPath(rooPath);
+    }
+
+    private static void setRootPath(Path rootPath) {
         Assert.notNull(rootPath, "rootPath 为空");
 
         synchronized (GitRepository.class) {
             if (GitRepository.rootPath != null) {
-                throw new RuntimeException(GitRepository.rootPath);
+                throw new RuntimeException(GitRepository.rootPath.toString());
             }
             GitRepository.rootPath = rootPath;
         }
@@ -47,10 +51,10 @@ public class GitRepository implements Node<String> {
         this.id = projectEntity.getId().toString();
         this.relativePath = StoragePath.get(projectEntity);
 
-        Assert.hasText(rootPath, "rootPath 为空");
+        Assert.notNull(rootPath, "rootPath 为空");
         Assert.hasText(relativePath, "仓库路径为空");
 
-        this.gitDir = Paths.get(rootPath, relativePath).toFile();
+        this.gitDir = rootPath.resolve(relativePath).toFile();
         try {
             this.repository =  new FileRepositoryBuilder()
                     .setBare()

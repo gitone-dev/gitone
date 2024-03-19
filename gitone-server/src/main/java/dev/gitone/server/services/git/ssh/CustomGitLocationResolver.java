@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 
 @AllArgsConstructor
@@ -61,7 +60,7 @@ public class CustomGitLocationResolver extends AbstractLoggingBean implements Gi
         }
 
         log.info("resolveRootDirectory({})[Id-{}]", command, viewerNamespace.getId());
-        return Paths.get(GitRepository.getRootPath(), StoragePath.get(projectEntity));
+        return GitRepository.getRootPath().resolve(StoragePath.get(projectEntity));
     }
 
     private String extractFullPath(String pathArg) {

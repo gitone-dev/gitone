@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import copy from "copy-to-clipboard";
 import { useSnackbar } from "notistack";
+import CodePopper from "./CodePopper";
 import TreeContainer from "./TreeContainer";
 
 const breadcrumbItems = (
@@ -42,8 +43,9 @@ export default function Tree() {
   });
 
   const revisionPath = data?.repository.revisionPath;
+  const isRoot = !revisionPath?.path;
 
-  const onClick = () => {
+  const onCopy = () => {
     if (!revisionPath?.path) return;
 
     copy(revisionPath.path);
@@ -72,6 +74,7 @@ export default function Tree() {
         direction="row"
         spacing={1}
         alignItems="center"
+        justifyContent={isRoot ? "space-between" : "flex-start"}
         sx={{
           backgroundColor: "white",
           pt: 2,
@@ -86,11 +89,16 @@ export default function Tree() {
           revisionPath={revisionPath}
           getPathname={getPathname}
         />
-        <Breadcrumbs items={breadcrumbItems(fullPath, revisionPath)} />
-        {revisionPath.path && (
-          <IconButton onClick={onClick}>
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
+        {!isRoot && (
+          <>
+            <Breadcrumbs items={breadcrumbItems(fullPath, revisionPath)} />
+            <IconButton onClick={onCopy}>
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </>
+        )}
+        {isRoot && (
+          <CodePopper fullPath={fullPath} revision={revisionPath.revision} />
         )}
       </Stack>
       <ChunkPaper primary="">

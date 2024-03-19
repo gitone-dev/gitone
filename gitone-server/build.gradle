@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
 	id 'com.google.protobuf' version '0.9.4'
-	id 'org.springframework.boot' version '3.2.1'
+	id 'org.springframework.boot' version '3.2.3'
 	id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -29,9 +29,10 @@ dependencies {
 	compileOnly 'org.apache.tomcat:tomcat-annotations-api:9.0.73' // necessary for Java 9+
 	implementation 'com.graphql-java:graphql-java-extended-scalars:20.2'
 	implementation 'net.i2p.crypto:eddsa:0.3.0'
-	implementation 'org.eclipse.jgit:org.eclipse.jgit:6.8.0.202311291450-r'
-	implementation 'org.apache.sshd:sshd-core:2.10.0'
-	implementation 'org.apache.sshd:sshd-git:2.10.0'
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:6.9.0.202403050737-r'
+	implementation 'org.eclipse.jgit:org.eclipse.jgit.archive:6.9.0.202403050737-r'
+	implementation 'org.apache.sshd:sshd-core:2.12.1'
+	implementation 'org.apache.sshd:sshd-git:2.12.1'
 	implementation 'org.springframework.boot:spring-boot-starter-artemis'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'

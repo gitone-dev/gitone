@@ -44,12 +44,14 @@ public class GroupService extends ViewerContext {
         }
         groupDao.create(groupEntity);
 
-        MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setNamespaceId(groupEntity.getId());
-        memberEntity.setUserId(viewerId());
-        memberEntity.setAccess(Access.OWNER);
-        memberEntity.setCreatedById(viewerId());
-        memberDao.create(memberEntity);
+        if (groupEntity.getParentId() == null) {
+            MemberEntity memberEntity = new MemberEntity();
+            memberEntity.setNamespaceId(groupEntity.getId());
+            memberEntity.setUserId(viewerId());
+            memberEntity.setAccess(Access.OWNER);
+            memberEntity.setCreatedById(viewerId());
+            memberDao.create(memberEntity);
+        }
 
         return groupEntity;
     }

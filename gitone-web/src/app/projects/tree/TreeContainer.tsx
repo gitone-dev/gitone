@@ -9,7 +9,7 @@ interface Props {
   revisionPath: RevisionPath;
 }
 
-function TreeContainer(props: Props) {
+export default function TreeContainer(props: Props) {
   const { fullPath, revisionPath } = props;
 
   const { data, loading, error, fetchMore } = useTreeQuery({
@@ -52,14 +52,12 @@ function TreeContainer(props: Props) {
   }
 
   return (
-      <TableTree
-        fullPath={fullPath}
-        revision={revisionPath.revision}
-        edges={edges}
-        pageInfo={pageInfo}
-        loadMore={onScroll}
-      />
+    <TableTree
+      fullPath={fullPath}
+      revision={revisionPath.revision}
+      edges={edges}
+      pageInfo={pageInfo}
+      loadMore={onScroll}
+    />
   );
 }
-
-export default TreeContainer;

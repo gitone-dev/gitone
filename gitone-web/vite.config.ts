@@ -53,6 +53,11 @@ export default defineConfig({
         changeOrigin: false,
         secure: false,
       },
+      "^(/[0-9a-zA-Z]+){2,5}/-/archive/.*": {
+        target: "http://127.0.0.1:8080",
+        changeOrigin: false,
+        secure: false,
+      },
     },
   },
 });

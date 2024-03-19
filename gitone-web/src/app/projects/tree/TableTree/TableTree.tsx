@@ -16,7 +16,7 @@ interface Props {
   loadMore: () => void;
 }
 
-function TableTree(props: Props) {
+export default function TableTree(props: Props) {
   const { fullPath, revision, edges, pageInfo, loadMore } = props;
 
   return (
@@ -52,5 +52,3 @@ function TableTree(props: Props) {
     </TableContainer>
   );
 }
-
-export default TableTree;

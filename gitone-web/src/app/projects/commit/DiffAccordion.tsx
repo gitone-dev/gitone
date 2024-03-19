@@ -110,6 +110,7 @@ export default function DiffAccordion(props: Props) {
             <ContentCopyIcon fontSize="small" />
           </IconButton>
           <Link
+            sx={{ lineHeight: 2 }}
             component={RouterLink}
             to={`/${fullPath}/-/blob/${revision}/${path}`}
           >

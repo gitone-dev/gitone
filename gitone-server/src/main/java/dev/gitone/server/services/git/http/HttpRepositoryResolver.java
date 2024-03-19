@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.security.Principal;
 
 @AllArgsConstructor
@@ -60,7 +59,7 @@ public class HttpRepositoryResolver implements RepositoryResolver<HttpServletReq
             }
         }
 
-        File dir = Paths.get(GitRepository.getRootPath(), StoragePath.get(projectEntity)).toFile();
+        File dir = GitRepository.getRootPath().resolve(StoragePath.get(projectEntity)).toFile();
         if (!FileKey.isGitRepository(dir, FS.DETECTED)) throw new RepositoryNotFoundException(fullPath);
 
         FileKey key = FileKey.exact(dir, FS.DETECTED);
