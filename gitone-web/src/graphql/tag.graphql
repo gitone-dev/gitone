@@ -9,4 +9,14 @@ fragment TagFragment on Tag {
   }
   shortMessage
   fullMessage
+  isRelease
+}
+
+query Tag($fullPath: String!, $name: String!) {
+  repository(fullPath: $fullPath) {
+    id
+    tag(name: $name) {
+      ...TagFragment
+    }
+  }
 }

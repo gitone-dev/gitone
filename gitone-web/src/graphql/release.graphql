@@ -1,0 +1,14 @@
+fragment ReleaseFragment on Release {
+  id
+  createdAt
+  updatedAt
+  tagName
+  title
+  description
+}
+
+query Release($fullPath: String!, $tagName: String!) {
+  release(fullPath: $fullPath, tagName: $tagName) {
+    ...ReleaseFragment
+  }
+}

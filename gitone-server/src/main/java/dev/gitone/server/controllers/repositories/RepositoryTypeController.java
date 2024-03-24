@@ -86,6 +86,11 @@ public class RepositoryTypeController {
     }
 
     @SchemaMapping
+    public GitTag tag(GitRepository gitRepository, @Argument String name) throws IOException {
+        return GitTag.find(gitRepository, name);
+    }
+
+    @SchemaMapping
     public CommitConnection commits(
             GitRepository gitRepository,
             @Argument Integer first,

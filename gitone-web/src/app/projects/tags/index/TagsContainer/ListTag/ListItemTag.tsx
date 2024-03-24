@@ -1,18 +1,11 @@
-import {
-  Action,
-  DeleteTagInput,
-  Policy,
-  Tag,
-} from "@/generated/types";
+import { DeleteTagInput, Policy, Tag } from "@/generated/types";
 import CommitTip from "@/shared/CommitTip";
 import RelativeTime from "@/shared/RelativeTime";
 import TagTip from "@/shared/TagTip";
 import { SHA_ABBR_LENGTH } from "@/utils/git";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DeleteIcon from "@mui/icons-material/Delete";
 import SellIcon from "@mui/icons-material/Sell";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
+import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -22,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import copy from "copy-to-clipboard";
 import { useSnackbar } from "notistack";
 import { Link as RouterLink } from "react-router-dom";
+import TagMenu from "./TagMenu";
 
 interface Props {
   fullPath: string;
@@ -30,12 +24,8 @@ interface Props {
   onDelete: (input: DeleteTagInput) => void;
 }
 
-function ListItemTag(props: Props) {
-  const {
-    fullPath,
-    policy: { actions },
-    tag,
-  } = props;
+export default function ListItemTag(props: Props) {
+  const { fullPath, policy, tag } = props;
   const { enqueueSnackbar } = useSnackbar();
 
   const onCopy = () => {
@@ -54,17 +44,12 @@ function ListItemTag(props: Props) {
     <ListItem
       divider
       secondaryAction={
-        <ButtonGroup size="small">
-          <Button size="small" onClick={onCopy} title="复制分支名">
-            <ContentCopyIcon fontSize="small" />
-          </Button>
-
-          {actions.includes(Action.Update) && (
-            <Button size="small" onClick={onDelete} title="删除分支">
-              <DeleteIcon />
-            </Button>
-          )}
-        </ButtonGroup>
+        <TagMenu
+          fullPath={fullPath}
+          policy={policy}
+          tag={tag}
+          onDelete={onDelete}
+        />
       }
     >
       <ListItemIcon>
@@ -74,17 +59,20 @@ function ListItemTag(props: Props) {
         <Link
           color="text.primary"
           component={RouterLink}
-          to={`/${fullPath}/-/tree/${tag.name}`}
+          to={`/${fullPath}/-/tags/${tag.name}`}
           underline="hover"
           variant="body1"
         >
           {tag.name}
         </Link>
+        <IconButton size="small" onClick={onCopy} title="复制标签名">
+          <ContentCopyIcon fontSize="small" />
+        </IconButton>
         <Stack direction="row" spacing={1}>
           {tag.tagger ? (
             <>
               <Typography color="text.secondary" variant="body2">
-                {tag.tagger.name} 创建于
+                {tag.tagger.name} 标记于
               </Typography>
               <Typography color="text.secondary" variant="body2">
                 <RelativeTime date={tag.tagger.date} />
@@ -116,5 +104,3 @@ function ListItemTag(props: Props) {
     </ListItem>
   );
 }
-
-export default ListItemTag;

@@ -1,0 +1,25 @@
+query Releases(
+  $fullPath: String!
+  $first: Int!
+  $after: String
+  $filterBy: ReleaseFilter
+  $orderBy: ReleaseOrder
+) {
+  releases(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...ReleaseFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}

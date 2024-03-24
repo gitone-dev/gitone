@@ -1,0 +1,7 @@
+mutation DeleteRelease($input: DeleteReleaseInput!) {
+  payload: deleteRelease(input: $input) {
+    release {
+      ...ReleaseFragment
+    }
+  }
+}

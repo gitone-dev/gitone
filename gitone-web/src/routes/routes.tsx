@@ -107,7 +107,12 @@ const routes: RouteObject[] = [
       { path: "-/commits/*", element: <Projects.Commits /> },
       { path: "-/compare/*", element: <Projects.Compare /> },
       { path: "-/branches", element: <Projects.Branches /> },
-      { path: "-/tags", element: <Projects.Tags /> },
+      { path: "-/tags", element: <Projects.Tags.Index /> },
+      { path: "-/tags/*", element: <Projects.Tags.Show /> },
+      { path: "-/releases", element: <Projects.Releases.Index /> },
+      { path: "-/releases/new", element: <Projects.Releases.New /> },
+      { path: "-/releases/edit/*", element: <Projects.Releases.Edit /> },
+      { path: "-/releases/*", element: <Projects.Releases.Show /> },
       { path: "-/members", element: <Namespace.Members /> },
       { path: "-/projects", element: <Groups.Projects /> },
       {

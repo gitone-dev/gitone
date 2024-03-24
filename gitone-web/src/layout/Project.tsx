@@ -65,7 +65,13 @@ function sidebarItems(
           key: `/${fullPath}/-/tags`,
           text: "标签",
           to: `/${fullPath}/-/tags`,
-          selected: `/${fullPath}/-/tags` === pathname,
+          selected: pathname.startsWith(`/${fullPath}/-/tags`),
+        },
+        {
+          key: `/${fullPath}/-/releases`,
+          text: "发布",
+          to: `/${fullPath}/-/releases`,
+          selected: pathname.startsWith(`/${fullPath}/-/releases`),
         },
         {
           key: `/${fullPath}/-/compare/${defaultBranch}...${revision}`,
@@ -147,6 +153,30 @@ function breadcrumbItems(
     [`/${fullPath}/-/tags`]: [
       ...fullPathItems,
       { to: `/${fullPath}/-/tags`, text: "标签" },
+    ],
+    [`/${fullPath}/-/tags/${revision}`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/tags`, text: "标签" },
+      { to: `/${fullPath}/-/tags/${revision}`, text: revision },
+    ],
+    [`/${fullPath}/-/releases`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/releases`, text: "发布" },
+    ],
+    [`/${fullPath}/-/releases/new`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/releases`, text: "发布" },
+      { to: `/${fullPath}/-/releases/new`, text: "新建" },
+    ],
+    [`/${fullPath}/-/releases/edit/${revision}`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/releases`, text: "发布" },
+      { to: `/${fullPath}/-/releases/${revision}`, text: "编辑" },
+    ],
+    [`/${fullPath}/-/releases/${revision}`]: [
+      ...fullPathItems,
+      { to: `/${fullPath}/-/releases`, text: "发布" },
+      { to: `/${fullPath}/-/releases/${revision}`, text: revision },
     ],
     [`/${fullPath}/-/commit/${revision}`]: [...fullPathItems],
     [`/${fullPath}/-/commits/${revision}`]: [...fullPathItems],

@@ -160,6 +160,31 @@ const tag = {
   },
 };
 
+const release = {
+  tagName: {
+    helper: "长度 1~64",
+    rules: {
+      pattern: /^.{1,64}$/,
+      maxLength: 64,
+      required: true,
+    },
+  },
+  title: {
+    helper: "标题",
+    rules: {
+      pattern: /^.{0,255}$/,
+      maxLength: 255,
+    },
+  },
+  description: {
+    helper: "描述",
+    rules: {
+      pattern: /^.{0,255}$/,
+      maxLength: 255,
+    },
+  },
+};
+
 const project = group;
 
-export { branch, group, project, sshKey, registeredClient, tag, user };
+export { branch, group, project, sshKey, registeredClient, tag, release, user };

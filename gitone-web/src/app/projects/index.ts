@@ -4,6 +4,7 @@ import Commit from "./commit";
 import Commits from "./commits";
 import Compare from "./compare";
 import New from "./new";
+import Releases from "./releases";
 import Settings from "./settings";
 import Show from "./show";
 import Tags from "./tags";
@@ -16,6 +17,7 @@ const Projects = {
   Commits,
   Compare,
   New,
+  Releases,
   Settings: {
     Settings,
   },

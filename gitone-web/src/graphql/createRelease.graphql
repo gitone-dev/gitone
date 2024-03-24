@@ -1,0 +1,7 @@
+mutation CreateRelease($input: CreateReleaseInput!) {
+  payload: createRelease(input: $input) {
+    release {
+      ...ReleaseFragment
+    }
+  }
+}

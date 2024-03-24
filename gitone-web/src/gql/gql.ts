@@ -27,6 +27,7 @@ const documents = {
     "mutation CreateMember($input: CreateMemberInput!) {\n  payload: createMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}": types.CreateMemberDocument,
     "mutation CreateProject($input: CreateProjectInput!) {\n  payload: createProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.CreateProjectDocument,
     "mutation CreateRegisteredClient($input: CreateRegisteredClientInput!) {\n  payload: createRegisteredClient(input: $input) {\n    registeredClient {\n      ...RegisteredClientFragment\n    }\n  }\n}": types.CreateRegisteredClientDocument,
+    "mutation CreateRelease($input: CreateReleaseInput!) {\n  payload: createRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}": types.CreateReleaseDocument,
     "mutation CreateSshKey($input: CreateSshKeyInput!) {\n  payload: createSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}": types.CreateSshKeyDocument,
     "mutation CreateTag($input: CreateTagInput!) {\n  payload: createTag(input: $input) {\n    repositoryId\n    tag {\n      ...TagFragment\n    }\n  }\n}": types.CreateTagDocument,
     "mutation CreateUser($input: CreateUserInput!) {\n  payload: createUser(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.CreateUserDocument,
@@ -34,6 +35,7 @@ const documents = {
     "mutation DeleteEmail($input: DeleteEmailInput!) {\n  payload: deleteEmail(input: $input) {\n    email {\n      ...EmailFragment\n    }\n  }\n}": types.DeleteEmailDocument,
     "mutation DeleteMember($input: DeleteMemberInput!) {\n  payload: deleteMember(input: $input) {\n    member {\n      ...MemberFragment\n    }\n  }\n}": types.DeleteMemberDocument,
     "mutation DeleteRegisteredClient($input: DeleteRegisteredClientInput!) {\n  payload: deleteRegisteredClient(input: $input) {\n    registeredClient {\n      ...RegisteredClientFragment\n    }\n  }\n}": types.DeleteRegisteredClientDocument,
+    "mutation DeleteRelease($input: DeleteReleaseInput!) {\n  payload: deleteRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}": types.DeleteReleaseDocument,
     "mutation DeleteSshKey($input: DeleteSshKeyInput!) {\n  payload: deleteSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}": types.DeleteSshKeyDocument,
     "mutation DeleteTag($input: DeleteTagInput!) {\n  payload: deleteTag(input: $input) {\n    repositoryId\n    tag {\n      ...TagFragment\n    }\n  }\n}": types.DeleteTagDocument,
     "mutation DeleteUser($input: DeleteUserInput!) {\n  payload: deleteUser(input: $input) {\n    user {\n      ...UserFragment\n    }\n  }\n}": types.DeleteUserDocument,
@@ -56,6 +58,8 @@ const documents = {
     "query Projects($first: Int!, $after: String, $filterBy: ProjectFilter, $orderBy: ProjectOrder) {\n  projects(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n    edges {\n      node {\n        ...ProjectFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.ProjectsDocument,
     "fragment RegisteredClientFragment on RegisteredClient {\n  id\n  createdAt\n  updatedAt\n  clientId\n  clientName\n  clientSecret\n  redirectUris\n  description\n  avatarUrl\n  namespace {\n    ...UserFragment\n    ...GroupFragment\n    ...ProjectFragment\n  }\n}\n\nquery RegisteredClient($id: ID!) {\n  registeredClient(id: $id) {\n    ...RegisteredClientFragment\n  }\n}": types.RegisteredClientFragmentFragmentDoc,
     "query RegisteredClients($fullPath: String!, $first: Int!, $after: String, $filterBy: RegisteredClientFilter, $orderBy: RegisteredClientOrder) {\n  registeredClients(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...RegisteredClientFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.RegisteredClientsDocument,
+    "fragment ReleaseFragment on Release {\n  id\n  createdAt\n  updatedAt\n  tagName\n  title\n  description\n}\n\nquery Release($fullPath: String!, $tagName: String!) {\n  release(fullPath: $fullPath, tagName: $tagName) {\n    ...ReleaseFragment\n  }\n}": types.ReleaseFragmentFragmentDoc,
+    "query Releases($fullPath: String!, $first: Int!, $after: String, $filterBy: ReleaseFilter, $orderBy: ReleaseOrder) {\n  releases(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...ReleaseFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.ReleasesDocument,
     "mutation ResetPassword($input: ResetPasswordInput!) {\n  payload: resetPassword(input: $input) {\n    message\n  }\n}": types.ResetPasswordDocument,
     "query RevisionPath($fullPath: String!, $revisionPath: String) {\n  repository(fullPath: $fullPath) {\n    id\n    revisionPath(revisionPath: $revisionPath) {\n      id\n      revision\n      path\n      type\n    }\n  }\n}": types.RevisionPathDocument,
     "mutation SendActivationEmail($input: SendActivationEmailInput!) {\n  payload: sendActivationEmail(input: $input) {\n    message\n  }\n}": types.SendActivationEmailDocument,
@@ -63,7 +67,7 @@ const documents = {
     "mutation SetPrimaryEmail($input: SetPrimaryEmailInput!) {\n  payload: setPrimaryEmail(input: $input) {\n    email {\n      ...EmailFragment\n    }\n  }\n}": types.SetPrimaryEmailDocument,
     "fragment SshKeyFragment on SshKey {\n  id\n  createdAt\n  updatedAt\n  title\n  key\n  fingerprint\n  usages\n  lastUsedAt\n  expiresAt\n  isExpired\n  namespace {\n    ...UserFragment\n    ...GroupFragment\n    ...ProjectFragment\n  }\n}": types.SshKeyFragmentFragmentDoc,
     "query SshKeys($fullPath: String!, $first: Int!, $after: String, $filterBy: SshKeyFilter, $orderBy: SshKeyOrder) {\n  sshKeys(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...SshKeyFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}": types.SshKeysDocument,
-    "fragment TagFragment on Tag {\n  id\n  name\n  commit {\n    ...CommitFragment\n  }\n  tagger {\n    ...GitUserFragment\n  }\n  shortMessage\n  fullMessage\n}": types.TagFragmentFragmentDoc,
+    "fragment TagFragment on Tag {\n  id\n  name\n  commit {\n    ...CommitFragment\n  }\n  tagger {\n    ...GitUserFragment\n  }\n  shortMessage\n  fullMessage\n  isRelease\n}\n\nquery Tag($fullPath: String!, $name: String!) {\n  repository(fullPath: $fullPath) {\n    id\n    tag(name: $name) {\n      ...TagFragment\n    }\n  }\n}": types.TagFragmentFragmentDoc,
     "query Tags($fullPath: String!, $first: Int!, $after: String, $filterBy: TagFilter, $orderBy: TagOrder) {\n  repository(fullPath: $fullPath) {\n    id\n    tags(first: $first, after: $after, filterBy: $filterBy, orderBy: $orderBy) {\n      edges {\n        node {\n          ...TagFragment\n        }\n        cursor\n      }\n      pageInfo {\n        ...PageInfoFragment\n      }\n    }\n  }\n}": types.TagsDocument,
     "fragment TreeEntryFragment on TreeEntry {\n  id\n  name\n  path\n  mode\n  type\n}\n\nquery Tree($fullPath: String!, $revision: String!, $path: String!) {\n  repository(fullPath: $fullPath) {\n    id\n    tree(revision: $revision, path: $path) {\n      edges {\n        node {\n          ...TreeEntryFragment\n        }\n        cursor\n      }\n      pageInfo {\n        ...PageInfoFragment\n      }\n    }\n  }\n  namespacePolicy(fullPath: $fullPath) {\n    ...PolicyFragment\n  }\n}": types.TreeEntryFragmentFragmentDoc,
     "mutation UpdateActivationEmail($input: UpdateActivationEmailInput!) {\n  updateActivationEmail(input: $input) {\n    message\n  }\n}": types.UpdateActivationEmailDocument,
@@ -73,6 +77,7 @@ const documents = {
     "mutation UpdatePath($input: UpdatePathInput!) {\n  payload: updatePath(input: $input) {\n    namespace {\n      ...UserFragment\n      ...GroupFragment\n      ...ProjectFragment\n    }\n  }\n}": types.UpdatePathDocument,
     "mutation UpdateProject($input: UpdateProjectInput!) {\n  payload: updateProject(input: $input) {\n    project {\n      ...ProjectFragment\n    }\n  }\n}": types.UpdateProjectDocument,
     "mutation UpdateRegisteredClient($input: UpdateRegisteredClientInput!) {\n  payload: updateRegisteredClient(input: $input) {\n    registeredClient {\n      ...RegisteredClientFragment\n    }\n  }\n}": types.UpdateRegisteredClientDocument,
+    "mutation UpdateRelease($input: UpdateReleaseInput!) {\n  payload: updateRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}": types.UpdateReleaseDocument,
     "mutation UpdateSshKey($input: UpdateSshKeyInput!) {\n  payload: updateSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}": types.UpdateSshKeyDocument,
     "mutation UpdateUser($input: UpdateUserInput!) {\n  payload: updateUser(input: $input) {\n    user {\n      ...UserDetailFragment\n    }\n  }\n}": types.UpdateUserDocument,
     "mutation UpdateVisibility($input: UpdateVisibilityInput!) {\n  payload: updateVisibility(input: $input) {\n    namespace {\n      ...UserFragment\n      ...GroupFragment\n      ...ProjectFragment\n    }\n  }\n}": types.UpdateVisibilityDocument,
@@ -157,6 +162,10 @@ export function graphql(source: "mutation CreateRegisteredClient($input: CreateR
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation CreateRelease($input: CreateReleaseInput!) {\n  payload: createRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}"): (typeof documents)["mutation CreateRelease($input: CreateReleaseInput!) {\n  payload: createRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation CreateSshKey($input: CreateSshKeyInput!) {\n  payload: createSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"): (typeof documents)["mutation CreateSshKey($input: CreateSshKeyInput!) {\n  payload: createSshKey(input: $input) {\n    sshKey {\n      ...SshKeyFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -182,6 +191,10 @@ export function graphql(source: "mutation DeleteMember($input: DeleteMemberInput
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation DeleteRegisteredClient($input: DeleteRegisteredClientInput!) {\n  payload: deleteRegisteredClient(input: $input) {\n    registeredClient {\n      ...RegisteredClientFragment\n    }\n  }\n}"): (typeof documents)["mutation DeleteRegisteredClient($input: DeleteRegisteredClientInput!) {\n  payload: deleteRegisteredClient(input: $input) {\n    registeredClient {\n      ...RegisteredClientFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation DeleteRelease($input: DeleteReleaseInput!) {\n  payload: deleteRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}"): (typeof documents)["mutation DeleteRelease($input: DeleteReleaseInput!) {\n  payload: deleteRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -273,6 +286,14 @@ export function graphql(source: "query RegisteredClients($fullPath: String!, $fi
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "fragment ReleaseFragment on Release {\n  id\n  createdAt\n  updatedAt\n  tagName\n  title\n  description\n}\n\nquery Release($fullPath: String!, $tagName: String!) {\n  release(fullPath: $fullPath, tagName: $tagName) {\n    ...ReleaseFragment\n  }\n}"): (typeof documents)["fragment ReleaseFragment on Release {\n  id\n  createdAt\n  updatedAt\n  tagName\n  title\n  description\n}\n\nquery Release($fullPath: String!, $tagName: String!) {\n  release(fullPath: $fullPath, tagName: $tagName) {\n    ...ReleaseFragment\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Releases($fullPath: String!, $first: Int!, $after: String, $filterBy: ReleaseFilter, $orderBy: ReleaseOrder) {\n  releases(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...ReleaseFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}"): (typeof documents)["query Releases($fullPath: String!, $first: Int!, $after: String, $filterBy: ReleaseFilter, $orderBy: ReleaseOrder) {\n  releases(\n    fullPath: $fullPath\n    first: $first\n    after: $after\n    filterBy: $filterBy\n    orderBy: $orderBy\n  ) {\n    edges {\n      node {\n        ...ReleaseFragment\n      }\n      cursor\n    }\n    pageInfo {\n      ...PageInfoFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation ResetPassword($input: ResetPasswordInput!) {\n  payload: resetPassword(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation ResetPassword($input: ResetPasswordInput!) {\n  payload: resetPassword(input: $input) {\n    message\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -301,7 +322,7 @@ export function graphql(source: "query SshKeys($fullPath: String!, $first: Int!,
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "fragment TagFragment on Tag {\n  id\n  name\n  commit {\n    ...CommitFragment\n  }\n  tagger {\n    ...GitUserFragment\n  }\n  shortMessage\n  fullMessage\n}"): (typeof documents)["fragment TagFragment on Tag {\n  id\n  name\n  commit {\n    ...CommitFragment\n  }\n  tagger {\n    ...GitUserFragment\n  }\n  shortMessage\n  fullMessage\n}"];
+export function graphql(source: "fragment TagFragment on Tag {\n  id\n  name\n  commit {\n    ...CommitFragment\n  }\n  tagger {\n    ...GitUserFragment\n  }\n  shortMessage\n  fullMessage\n  isRelease\n}\n\nquery Tag($fullPath: String!, $name: String!) {\n  repository(fullPath: $fullPath) {\n    id\n    tag(name: $name) {\n      ...TagFragment\n    }\n  }\n}"): (typeof documents)["fragment TagFragment on Tag {\n  id\n  name\n  commit {\n    ...CommitFragment\n  }\n  tagger {\n    ...GitUserFragment\n  }\n  shortMessage\n  fullMessage\n  isRelease\n}\n\nquery Tag($fullPath: String!, $name: String!) {\n  repository(fullPath: $fullPath) {\n    id\n    tag(name: $name) {\n      ...TagFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -338,6 +359,10 @@ export function graphql(source: "mutation UpdateProject($input: UpdateProjectInp
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation UpdateRegisteredClient($input: UpdateRegisteredClientInput!) {\n  payload: updateRegisteredClient(input: $input) {\n    registeredClient {\n      ...RegisteredClientFragment\n    }\n  }\n}"): (typeof documents)["mutation UpdateRegisteredClient($input: UpdateRegisteredClientInput!) {\n  payload: updateRegisteredClient(input: $input) {\n    registeredClient {\n      ...RegisteredClientFragment\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdateRelease($input: UpdateReleaseInput!) {\n  payload: updateRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}"): (typeof documents)["mutation UpdateRelease($input: UpdateReleaseInput!) {\n  payload: updateRelease(input: $input) {\n    release {\n      ...ReleaseFragment\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

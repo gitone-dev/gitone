@@ -89,7 +89,7 @@ public class ArchiveController {
                         .headers(headers -> headers
                                 .setContentDisposition(ContentDisposition
                                         .inline()
-                                        .filename(String.format("%s%s", projectEntity.getPath(), suffix))
+                                        .filename(String.format("%s-%s%s", projectEntity.getPath(), revision ,suffix))
                                         .build()))
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .body(new FileSystemResource(outFile));

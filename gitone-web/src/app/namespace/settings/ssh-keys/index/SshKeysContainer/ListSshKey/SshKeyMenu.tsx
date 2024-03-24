@@ -57,7 +57,7 @@ export default function SshKeyMenu(props: Props) {
     <>
       <IconButton
         disabled={!actions.includes(Action.Update)}
-        title="删除公钥"
+        title="操作"
         onClick={onClick}
       >
         <MoreVertIcon />

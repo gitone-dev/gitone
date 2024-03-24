@@ -231,6 +231,18 @@ export type CreateRegisteredClientPayload = {
   registeredClient?: Maybe<RegisteredClient>;
 };
 
+export type CreateReleaseInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  fullPath: Scalars['String']['input'];
+  tagName: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type CreateReleasePayload = {
+  __typename?: 'CreateReleasePayload';
+  release: Release;
+};
+
 export type CreateSshKeyInput = {
   expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
   fullPath: Scalars['String']['input'];
@@ -323,6 +335,15 @@ export type DeleteRegisteredClientInput = {
 export type DeleteRegisteredClientPayload = {
   __typename?: 'DeleteRegisteredClientPayload';
   registeredClient?: Maybe<RegisteredClient>;
+};
+
+export type DeleteReleaseInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type DeleteReleasePayload = {
+  __typename?: 'DeleteReleasePayload';
+  release: Release;
 };
 
 export type DeleteSshKeyInput = {
@@ -536,6 +557,7 @@ export type Mutation = {
   createProject?: Maybe<CreateProjectPayload>;
   /**  oauth2 / open connect id */
   createRegisteredClient?: Maybe<CreateRegisteredClientPayload>;
+  createRelease?: Maybe<CreateReleasePayload>;
   /**  ssh key */
   createSshKey?: Maybe<CreateSshKeyPayload>;
   createTag?: Maybe<CreateTagPayload>;
@@ -547,6 +569,7 @@ export type Mutation = {
   deleteMember?: Maybe<DeleteMemberPayload>;
   deleteProject?: Maybe<DeleteProjectPayload>;
   deleteRegisteredClient?: Maybe<DeleteRegisteredClientPayload>;
+  deleteRelease?: Maybe<DeleteReleasePayload>;
   deleteSshKey?: Maybe<DeleteSshKeyPayload>;
   deleteTag?: Maybe<DeleteTagPayload>;
   deleteUser?: Maybe<DeleteUserPayload>;
@@ -561,6 +584,7 @@ export type Mutation = {
   updatePath?: Maybe<UpdatePathPayload>;
   updateProject?: Maybe<UpdateProjectPayload>;
   updateRegisteredClient?: Maybe<UpdateRegisteredClientPayload>;
+  updateRelease?: Maybe<UpdateReleasePayload>;
   updateSshKey?: Maybe<UpdateSshKeyPayload>;
   updateUser?: Maybe<UpdateUserPayload>;
   /**  namespaces */
@@ -608,6 +632,11 @@ export type MutationCreateRegisteredClientArgs = {
 };
 
 
+export type MutationCreateReleaseArgs = {
+  input: CreateReleaseInput;
+};
+
+
 export type MutationCreateSshKeyArgs = {
   input: CreateSshKeyInput;
 };
@@ -650,6 +679,11 @@ export type MutationDeleteProjectArgs = {
 
 export type MutationDeleteRegisteredClientArgs = {
   input: DeleteRegisteredClientInput;
+};
+
+
+export type MutationDeleteReleaseArgs = {
+  input: DeleteReleaseInput;
 };
 
 
@@ -720,6 +754,11 @@ export type MutationUpdateProjectArgs = {
 
 export type MutationUpdateRegisteredClientArgs = {
   input: UpdateRegisteredClientInput;
+};
+
+
+export type MutationUpdateReleaseArgs = {
+  input: UpdateReleaseInput;
 };
 
 
@@ -874,6 +913,8 @@ export type Query = {
   projects?: Maybe<ProjectConnection>;
   registeredClient: RegisteredClient;
   registeredClients?: Maybe<RegisteredClientConnection>;
+  release: Release;
+  releases?: Maybe<ReleaseConnection>;
   repository: Repository;
   sshKeys?: Maybe<SshKeyConnection>;
   user: User;
@@ -960,6 +1001,21 @@ export type QueryRegisteredClientsArgs = {
 };
 
 
+export type QueryReleaseArgs = {
+  fullPath: Scalars['String']['input'];
+  tagName: Scalars['String']['input'];
+};
+
+
+export type QueryReleasesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<ReleaseFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  fullPath: Scalars['String']['input'];
+  orderBy?: InputMaybe<ReleaseOrder>;
+};
+
+
 export type QueryRepositoryArgs = {
   fullPath: Scalars['String']['input'];
 };
@@ -1028,6 +1084,44 @@ export enum RegisteredClientOrderField {
   UpdatedAt = 'UPDATED_AT'
 }
 
+/**  release */
+export type Release = Node & {
+  __typename?: 'Release';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  creator?: Maybe<User>;
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  tagName: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ReleaseConnection = {
+  __typename?: 'ReleaseConnection';
+  edges?: Maybe<Array<ReleaseEdge>>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type ReleaseEdge = {
+  __typename?: 'ReleaseEdge';
+  cursor: Scalars['String']['output'];
+  node: Release;
+};
+
+export type ReleaseFilter = {
+  query?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ReleaseOrder = {
+  direction: OrderDirection;
+  field: ReleaseOrderField;
+};
+
+export enum ReleaseOrderField {
+  CreatedAt = 'CREATED_AT',
+  TagName = 'TAG_NAME'
+}
+
 /**  repository */
 export type Repository = Node & {
   __typename?: 'Repository';
@@ -1040,6 +1134,7 @@ export type Repository = Node & {
   empty?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ID']['output'];
   revisionPath?: Maybe<RevisionPath>;
+  tag?: Maybe<Tag>;
   tags?: Maybe<TagConnection>;
   tree?: Maybe<TreeEntryConnection>;
 };
@@ -1087,6 +1182,12 @@ export type RepositoryDiffsArgs = {
 /**  repository */
 export type RepositoryRevisionPathArgs = {
   revisionPath?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+/**  repository */
+export type RepositoryTagArgs = {
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1210,6 +1311,7 @@ export type Tag = {
   commit?: Maybe<Commit>;
   fullMessage?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  isRelease?: Maybe<Scalars['Boolean']['output']>;
   name: Scalars['String']['output'];
   shortMessage?: Maybe<Scalars['String']['output']>;
   tagger?: Maybe<GitUser>;
@@ -1337,6 +1439,18 @@ export type UpdateRegisteredClientInput = {
 export type UpdateRegisteredClientPayload = {
   __typename?: 'UpdateRegisteredClientPayload';
   registeredClient?: Maybe<RegisteredClient>;
+};
+
+export type UpdateReleaseInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  tagName: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+export type UpdateReleasePayload = {
+  __typename?: 'UpdateReleasePayload';
+  release: Release;
 };
 
 export type UpdateSshKeyInput = {
@@ -1538,6 +1652,13 @@ export type CreateRegisteredClientMutationVariables = Exact<{
 
 export type CreateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
+export type CreateReleaseMutationVariables = Exact<{
+  input: CreateReleaseInput;
+}>;
+
+
+export type CreateReleaseMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateReleasePayload', release: { __typename?: 'Release', id: string, createdAt?: any | null, updatedAt?: any | null, tagName: string, title: string, description?: string | null } } | null };
+
 export type CreateSshKeyMutationVariables = Exact<{
   input: CreateSshKeyInput;
 }>;
@@ -1550,7 +1671,7 @@ export type CreateTagMutationVariables = Exact<{
 }>;
 
 
-export type CreateTagMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateTagPayload', repositoryId: string, tag: { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } } | null };
+export type CreateTagMutation = { __typename?: 'Mutation', payload?: { __typename?: 'CreateTagPayload', repositoryId: string, tag: { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, isRelease?: boolean | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } } | null };
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -1587,6 +1708,13 @@ export type DeleteRegisteredClientMutationVariables = Exact<{
 
 export type DeleteRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
 
+export type DeleteReleaseMutationVariables = Exact<{
+  input: DeleteReleaseInput;
+}>;
+
+
+export type DeleteReleaseMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteReleasePayload', release: { __typename?: 'Release', id: string, createdAt?: any | null, updatedAt?: any | null, tagName: string, title: string, description?: string | null } } | null };
+
 export type DeleteSshKeyMutationVariables = Exact<{
   input: DeleteSshKeyInput;
 }>;
@@ -1599,7 +1727,7 @@ export type DeleteTagMutationVariables = Exact<{
 }>;
 
 
-export type DeleteTagMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteTagPayload', repositoryId: string, tag: { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } } | null };
+export type DeleteTagMutation = { __typename?: 'Mutation', payload?: { __typename?: 'DeleteTagPayload', repositoryId: string, tag: { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, isRelease?: boolean | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } } | null };
 
 export type DeleteUserMutationVariables = Exact<{
   input: DeleteUserInput;
@@ -1736,6 +1864,27 @@ export type RegisteredClientsQueryVariables = Exact<{
 
 export type RegisteredClientsQuery = { __typename?: 'Query', registeredClients?: { __typename?: 'RegisteredClientConnection', edges?: Array<{ __typename?: 'RegisteredClientEdge', cursor: string, node: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
+export type ReleaseFragmentFragment = { __typename?: 'Release', id: string, createdAt?: any | null, updatedAt?: any | null, tagName: string, title: string, description?: string | null };
+
+export type ReleaseQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  tagName: Scalars['String']['input'];
+}>;
+
+
+export type ReleaseQuery = { __typename?: 'Query', release: { __typename?: 'Release', id: string, createdAt?: any | null, updatedAt?: any | null, tagName: string, title: string, description?: string | null } };
+
+export type ReleasesQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  filterBy?: InputMaybe<ReleaseFilter>;
+  orderBy?: InputMaybe<ReleaseOrder>;
+}>;
+
+
+export type ReleasesQuery = { __typename?: 'Query', releases?: { __typename?: 'ReleaseConnection', edges?: Array<{ __typename?: 'ReleaseEdge', cursor: string, node: { __typename?: 'Release', id: string, createdAt?: any | null, updatedAt?: any | null, tagName: string, title: string, description?: string | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
+
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
 }>;
@@ -1785,7 +1934,15 @@ export type SshKeysQueryVariables = Exact<{
 
 export type SshKeysQuery = { __typename?: 'Query', sshKeys?: { __typename?: 'SshKeyConnection', edges?: Array<{ __typename?: 'SshKeyEdge', cursor: string, node: { __typename?: 'SshKey', id: string, createdAt?: any | null, updatedAt?: any | null, title?: string | null, key?: string | null, fingerprint?: string | null, usages?: Array<SshKeyUsage> | null, lastUsedAt?: any | null, expiresAt?: any | null, isExpired?: boolean | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null };
 
-export type TagFragmentFragment = { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null };
+export type TagFragmentFragment = { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, isRelease?: boolean | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null };
+
+export type TagQueryVariables = Exact<{
+  fullPath: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type TagQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, tag?: { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, isRelease?: boolean | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null } };
 
 export type TagsQueryVariables = Exact<{
   fullPath: Scalars['String']['input'];
@@ -1796,7 +1953,7 @@ export type TagsQueryVariables = Exact<{
 }>;
 
 
-export type TagsQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, tags?: { __typename?: 'TagConnection', edges?: Array<{ __typename?: 'TagEdge', cursor: string, node: { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
+export type TagsQuery = { __typename?: 'Query', repository: { __typename?: 'Repository', id: string, tags?: { __typename?: 'TagConnection', edges?: Array<{ __typename?: 'TagEdge', cursor: string, node: { __typename?: 'Tag', id: string, name: string, shortMessage?: string | null, fullMessage?: string | null, isRelease?: boolean | null, commit?: { __typename?: 'Commit', id: string, sha: string, parentShas?: Array<string> | null, shortMessage?: string | null, fullMessage?: string | null, author?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null, committer?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } | null, tagger?: { __typename?: 'GitUser', name?: string | null, email?: string | null, date?: any | null } | null } }> | null, pageInfo?: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor?: string | null, endCursor?: string | null } | null } | null } };
 
 export type TreeEntryFragmentFragment = { __typename?: 'TreeEntry', id: string, name?: string | null, path?: string | null, mode?: number | null, type?: string | null };
 
@@ -1857,6 +2014,13 @@ export type UpdateRegisteredClientMutationVariables = Exact<{
 
 
 export type UpdateRegisteredClientMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateRegisteredClientPayload', registeredClient?: { __typename?: 'RegisteredClient', id: string, createdAt?: any | null, updatedAt?: any | null, clientId?: string | null, clientName?: string | null, clientSecret?: string | null, redirectUris?: Array<string> | null, description?: string | null, avatarUrl?: string | null, namespace?: { __typename?: 'Group', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'Project', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | { __typename?: 'User', id: string, createdAt?: any | null, updatedAt?: any | null, name?: string | null, path?: string | null, fullName?: string | null, fullPath?: string | null, username?: string | null, visibility: Visibility, description?: string | null, avatarUrl?: string | null } | null } | null } | null };
+
+export type UpdateReleaseMutationVariables = Exact<{
+  input: UpdateReleaseInput;
+}>;
+
+
+export type UpdateReleaseMutation = { __typename?: 'Mutation', payload?: { __typename?: 'UpdateReleasePayload', release: { __typename?: 'Release', id: string, createdAt?: any | null, updatedAt?: any | null, tagName: string, title: string, description?: string | null } } | null };
 
 export type UpdateSshKeyMutationVariables = Exact<{
   input: UpdateSshKeyInput;
@@ -2096,6 +2260,16 @@ export const RegisteredClientFragmentFragmentDoc = gql`
     ${UserFragmentFragmentDoc}
 ${GroupFragmentFragmentDoc}
 ${ProjectFragmentFragmentDoc}`;
+export const ReleaseFragmentFragmentDoc = gql`
+    fragment ReleaseFragment on Release {
+  id
+  createdAt
+  updatedAt
+  tagName
+  title
+  description
+}
+    `;
 export const SshKeyFragmentFragmentDoc = gql`
     fragment SshKeyFragment on SshKey {
   id
@@ -2129,6 +2303,7 @@ export const TagFragmentFragmentDoc = gql`
   }
   shortMessage
   fullMessage
+  isRelease
 }
     ${CommitFragmentFragmentDoc}
 ${GitUserFragmentFragmentDoc}`;
@@ -2704,6 +2879,41 @@ export function useCreateRegisteredClientMutation(baseOptions?: Apollo.MutationH
 export type CreateRegisteredClientMutationHookResult = ReturnType<typeof useCreateRegisteredClientMutation>;
 export type CreateRegisteredClientMutationResult = Apollo.MutationResult<CreateRegisteredClientMutation>;
 export type CreateRegisteredClientMutationOptions = Apollo.BaseMutationOptions<CreateRegisteredClientMutation, CreateRegisteredClientMutationVariables>;
+export const CreateReleaseDocument = gql`
+    mutation CreateRelease($input: CreateReleaseInput!) {
+  payload: createRelease(input: $input) {
+    release {
+      ...ReleaseFragment
+    }
+  }
+}
+    ${ReleaseFragmentFragmentDoc}`;
+export type CreateReleaseMutationFn = Apollo.MutationFunction<CreateReleaseMutation, CreateReleaseMutationVariables>;
+
+/**
+ * __useCreateReleaseMutation__
+ *
+ * To run a mutation, you first call `useCreateReleaseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReleaseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReleaseMutation, { data, loading, error }] = useCreateReleaseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateReleaseMutation(baseOptions?: Apollo.MutationHookOptions<CreateReleaseMutation, CreateReleaseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateReleaseMutation, CreateReleaseMutationVariables>(CreateReleaseDocument, options);
+      }
+export type CreateReleaseMutationHookResult = ReturnType<typeof useCreateReleaseMutation>;
+export type CreateReleaseMutationResult = Apollo.MutationResult<CreateReleaseMutation>;
+export type CreateReleaseMutationOptions = Apollo.BaseMutationOptions<CreateReleaseMutation, CreateReleaseMutationVariables>;
 export const CreateSshKeyDocument = gql`
     mutation CreateSshKey($input: CreateSshKeyInput!) {
   payload: createSshKey(input: $input) {
@@ -2951,6 +3161,41 @@ export function useDeleteRegisteredClientMutation(baseOptions?: Apollo.MutationH
 export type DeleteRegisteredClientMutationHookResult = ReturnType<typeof useDeleteRegisteredClientMutation>;
 export type DeleteRegisteredClientMutationResult = Apollo.MutationResult<DeleteRegisteredClientMutation>;
 export type DeleteRegisteredClientMutationOptions = Apollo.BaseMutationOptions<DeleteRegisteredClientMutation, DeleteRegisteredClientMutationVariables>;
+export const DeleteReleaseDocument = gql`
+    mutation DeleteRelease($input: DeleteReleaseInput!) {
+  payload: deleteRelease(input: $input) {
+    release {
+      ...ReleaseFragment
+    }
+  }
+}
+    ${ReleaseFragmentFragmentDoc}`;
+export type DeleteReleaseMutationFn = Apollo.MutationFunction<DeleteReleaseMutation, DeleteReleaseMutationVariables>;
+
+/**
+ * __useDeleteReleaseMutation__
+ *
+ * To run a mutation, you first call `useDeleteReleaseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteReleaseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteReleaseMutation, { data, loading, error }] = useDeleteReleaseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteReleaseMutation(baseOptions?: Apollo.MutationHookOptions<DeleteReleaseMutation, DeleteReleaseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteReleaseMutation, DeleteReleaseMutationVariables>(DeleteReleaseDocument, options);
+      }
+export type DeleteReleaseMutationHookResult = ReturnType<typeof useDeleteReleaseMutation>;
+export type DeleteReleaseMutationResult = Apollo.MutationResult<DeleteReleaseMutation>;
+export type DeleteReleaseMutationOptions = Apollo.BaseMutationOptions<DeleteReleaseMutation, DeleteReleaseMutationVariables>;
 export const DeleteSshKeyDocument = gql`
     mutation DeleteSshKey($input: DeleteSshKeyInput!) {
   payload: deleteSshKey(input: $input) {
@@ -3702,6 +3947,106 @@ export type RegisteredClientsQueryHookResult = ReturnType<typeof useRegisteredCl
 export type RegisteredClientsLazyQueryHookResult = ReturnType<typeof useRegisteredClientsLazyQuery>;
 export type RegisteredClientsSuspenseQueryHookResult = ReturnType<typeof useRegisteredClientsSuspenseQuery>;
 export type RegisteredClientsQueryResult = Apollo.QueryResult<RegisteredClientsQuery, RegisteredClientsQueryVariables>;
+export const ReleaseDocument = gql`
+    query Release($fullPath: String!, $tagName: String!) {
+  release(fullPath: $fullPath, tagName: $tagName) {
+    ...ReleaseFragment
+  }
+}
+    ${ReleaseFragmentFragmentDoc}`;
+
+/**
+ * __useReleaseQuery__
+ *
+ * To run a query within a React component, call `useReleaseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReleaseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReleaseQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      tagName: // value for 'tagName'
+ *   },
+ * });
+ */
+export function useReleaseQuery(baseOptions: Apollo.QueryHookOptions<ReleaseQuery, ReleaseQueryVariables> & ({ variables: ReleaseQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ReleaseQuery, ReleaseQueryVariables>(ReleaseDocument, options);
+      }
+export function useReleaseLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReleaseQuery, ReleaseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ReleaseQuery, ReleaseQueryVariables>(ReleaseDocument, options);
+        }
+export function useReleaseSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ReleaseQuery, ReleaseQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ReleaseQuery, ReleaseQueryVariables>(ReleaseDocument, options);
+        }
+export type ReleaseQueryHookResult = ReturnType<typeof useReleaseQuery>;
+export type ReleaseLazyQueryHookResult = ReturnType<typeof useReleaseLazyQuery>;
+export type ReleaseSuspenseQueryHookResult = ReturnType<typeof useReleaseSuspenseQuery>;
+export type ReleaseQueryResult = Apollo.QueryResult<ReleaseQuery, ReleaseQueryVariables>;
+export const ReleasesDocument = gql`
+    query Releases($fullPath: String!, $first: Int!, $after: String, $filterBy: ReleaseFilter, $orderBy: ReleaseOrder) {
+  releases(
+    fullPath: $fullPath
+    first: $first
+    after: $after
+    filterBy: $filterBy
+    orderBy: $orderBy
+  ) {
+    edges {
+      node {
+        ...ReleaseFragment
+      }
+      cursor
+    }
+    pageInfo {
+      ...PageInfoFragment
+    }
+  }
+}
+    ${ReleaseFragmentFragmentDoc}
+${PageInfoFragmentFragmentDoc}`;
+
+/**
+ * __useReleasesQuery__
+ *
+ * To run a query within a React component, call `useReleasesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReleasesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReleasesQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filterBy: // value for 'filterBy'
+ *      orderBy: // value for 'orderBy'
+ *   },
+ * });
+ */
+export function useReleasesQuery(baseOptions: Apollo.QueryHookOptions<ReleasesQuery, ReleasesQueryVariables> & ({ variables: ReleasesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ReleasesQuery, ReleasesQueryVariables>(ReleasesDocument, options);
+      }
+export function useReleasesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReleasesQuery, ReleasesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ReleasesQuery, ReleasesQueryVariables>(ReleasesDocument, options);
+        }
+export function useReleasesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ReleasesQuery, ReleasesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ReleasesQuery, ReleasesQueryVariables>(ReleasesDocument, options);
+        }
+export type ReleasesQueryHookResult = ReturnType<typeof useReleasesQuery>;
+export type ReleasesLazyQueryHookResult = ReturnType<typeof useReleasesLazyQuery>;
+export type ReleasesSuspenseQueryHookResult = ReturnType<typeof useReleasesSuspenseQuery>;
+export type ReleasesQueryResult = Apollo.QueryResult<ReleasesQuery, ReleasesQueryVariables>;
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($input: ResetPasswordInput!) {
   payload: resetPassword(input: $input) {
@@ -3942,6 +4287,50 @@ export type SshKeysQueryHookResult = ReturnType<typeof useSshKeysQuery>;
 export type SshKeysLazyQueryHookResult = ReturnType<typeof useSshKeysLazyQuery>;
 export type SshKeysSuspenseQueryHookResult = ReturnType<typeof useSshKeysSuspenseQuery>;
 export type SshKeysQueryResult = Apollo.QueryResult<SshKeysQuery, SshKeysQueryVariables>;
+export const TagDocument = gql`
+    query Tag($fullPath: String!, $name: String!) {
+  repository(fullPath: $fullPath) {
+    id
+    tag(name: $name) {
+      ...TagFragment
+    }
+  }
+}
+    ${TagFragmentFragmentDoc}`;
+
+/**
+ * __useTagQuery__
+ *
+ * To run a query within a React component, call `useTagQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTagQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTagQuery({
+ *   variables: {
+ *      fullPath: // value for 'fullPath'
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useTagQuery(baseOptions: Apollo.QueryHookOptions<TagQuery, TagQueryVariables> & ({ variables: TagQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TagQuery, TagQueryVariables>(TagDocument, options);
+      }
+export function useTagLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TagQuery, TagQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TagQuery, TagQueryVariables>(TagDocument, options);
+        }
+export function useTagSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TagQuery, TagQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<TagQuery, TagQueryVariables>(TagDocument, options);
+        }
+export type TagQueryHookResult = ReturnType<typeof useTagQuery>;
+export type TagLazyQueryHookResult = ReturnType<typeof useTagLazyQuery>;
+export type TagSuspenseQueryHookResult = ReturnType<typeof useTagSuspenseQuery>;
+export type TagQueryResult = Apollo.QueryResult<TagQuery, TagQueryVariables>;
 export const TagsDocument = gql`
     query Tags($fullPath: String!, $first: Int!, $after: String, $filterBy: TagFilter, $orderBy: TagOrder) {
   repository(fullPath: $fullPath) {
@@ -4303,6 +4692,41 @@ export function useUpdateRegisteredClientMutation(baseOptions?: Apollo.MutationH
 export type UpdateRegisteredClientMutationHookResult = ReturnType<typeof useUpdateRegisteredClientMutation>;
 export type UpdateRegisteredClientMutationResult = Apollo.MutationResult<UpdateRegisteredClientMutation>;
 export type UpdateRegisteredClientMutationOptions = Apollo.BaseMutationOptions<UpdateRegisteredClientMutation, UpdateRegisteredClientMutationVariables>;
+export const UpdateReleaseDocument = gql`
+    mutation UpdateRelease($input: UpdateReleaseInput!) {
+  payload: updateRelease(input: $input) {
+    release {
+      ...ReleaseFragment
+    }
+  }
+}
+    ${ReleaseFragmentFragmentDoc}`;
+export type UpdateReleaseMutationFn = Apollo.MutationFunction<UpdateReleaseMutation, UpdateReleaseMutationVariables>;
+
+/**
+ * __useUpdateReleaseMutation__
+ *
+ * To run a mutation, you first call `useUpdateReleaseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateReleaseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateReleaseMutation, { data, loading, error }] = useUpdateReleaseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateReleaseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateReleaseMutation, UpdateReleaseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateReleaseMutation, UpdateReleaseMutationVariables>(UpdateReleaseDocument, options);
+      }
+export type UpdateReleaseMutationHookResult = ReturnType<typeof useUpdateReleaseMutation>;
+export type UpdateReleaseMutationResult = Apollo.MutationResult<UpdateReleaseMutation>;
+export type UpdateReleaseMutationOptions = Apollo.BaseMutationOptions<UpdateReleaseMutation, UpdateReleaseMutationVariables>;
 export const UpdateSshKeyDocument = gql`
     mutation UpdateSshKey($input: UpdateSshKeyInput!) {
   payload: updateSshKey(input: $input) {

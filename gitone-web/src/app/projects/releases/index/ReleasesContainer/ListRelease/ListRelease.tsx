@@ -1,34 +1,34 @@
 import {
-  DeleteTagInput,
+  DeleteReleaseInput,
   PageInfo,
   Policy,
-  TagEdge,
+  ReleaseEdge,
 } from "@/generated/types";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemTag from "./ListItemTag";
+import ListItemRelease from "./ListItemRelease";
 
 interface Props {
   fullPath: string;
   policy: Policy;
-  edges: Array<TagEdge>;
+  edges: Array<ReleaseEdge>;
   pageInfo: PageInfo;
   loadMore: () => void;
-  onDelete: (input: DeleteTagInput) => void;
+  onDelete: (input: DeleteReleaseInput) => void;
 }
 
-function ListTag(props: Props) {
+export default function ListRelease(props: Props) {
   const { fullPath, policy, edges, pageInfo, loadMore, onDelete } = props;
 
   return (
     <List>
       {edges.map((edge) => (
-        <ListItemTag
+        <ListItemRelease
           fullPath={fullPath}
           key={edge.cursor}
           policy={policy}
-          tag={edge.node}
+          release={edge.node}
           onDelete={onDelete}
         />
       ))}
@@ -40,5 +40,3 @@ function ListTag(props: Props) {
     </List>
   );
 }
-
-export default ListTag;

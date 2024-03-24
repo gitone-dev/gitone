@@ -8,7 +8,7 @@ import LoadingBox from "@/shared/LoadingBox";
 import { useLocation } from "react-router-dom";
 import Form from "./Form";
 
-function New() {
+export default function New() {
   const location = useLocation();
   const viewer = useViewerQuery({ fetchPolicy: "cache-only" }).data?.viewer;
   const { data, loading, error } = useNamespaceQuery({
@@ -29,5 +29,3 @@ function New() {
 
   return <Form namespace={namespace} />;
 }
-
-export default New;

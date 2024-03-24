@@ -104,6 +104,15 @@ type Query {
   ): ProjectConnection
 
   repository(fullPath: String!): Repository!
+
+  releases(
+    fullPath: String!
+    first: Int = 20
+    after: String
+    filterBy: ReleaseFilter
+    orderBy: ReleaseOrder = { field: CREATED_AT, direction: DESC }
+  ): ReleaseConnection
+  release(fullPath: String! tagName: String!): Release!
 }
 
 type Policy implements Node {
@@ -181,6 +190,10 @@ type Mutation {
 
   createTag(input: CreateTagInput!): CreateTagPayload
   deleteTag(input: DeleteTagInput!): DeleteTagPayload
+
+  createRelease(input: CreateReleaseInput!): CreateReleasePayload
+  updateRelease(input: UpdateReleaseInput!): UpdateReleasePayload
+  deleteRelease(input: DeleteReleaseInput!): DeleteReleasePayload
 }
 
 # namespace
@@ -826,6 +839,7 @@ type Repository implements Node {
     filterBy: TagFilter
     orderBy: TagOrder = { field: NAME, direction: ASC }
   ): TagConnection
+  tag(name: String): Tag
   commits(
     first: Int = 20
     after: String
@@ -910,6 +924,7 @@ type Tag {
   tagger: GitUser
   shortMessage: String
   fullMessage: String
+  isRelease: Boolean
 }
 
 type TagEdge {
@@ -957,6 +972,72 @@ input DeleteTagInput {
 type DeleteTagPayload {
   repositoryId: ID!
   tag: Tag!
+}
+
+# release
+
+type Release implements Node {
+  id: ID!
+  createdAt: DateTime
+  updatedAt: DateTime
+  tagName: String!
+  title: String!
+  description: String
+  creator: User
+}
+
+type ReleaseEdge {
+  node: Release!
+  cursor: String!
+}
+
+type ReleaseConnection {
+  edges: [ReleaseEdge!]
+  pageInfo: PageInfo
+}
+
+input ReleaseFilter {
+  query: String
+}
+
+input ReleaseOrder {
+  direction: OrderDirection!
+  field: ReleaseOrderField!
+}
+
+enum ReleaseOrderField {
+  CREATED_AT
+  TAG_NAME
+}
+
+input CreateReleaseInput {
+  fullPath: String!
+  tagName: String!
+  title: String!
+  description: String
+}
+
+type CreateReleasePayload {
+  release: Release!
+}
+
+input UpdateReleaseInput {
+  id: ID!
+  tagName: String!
+  title: String!
+  description: String
+}
+
+type UpdateReleasePayload {
+  release: Release!
+}
+
+input DeleteReleaseInput {
+  id: ID!
+}
+
+type DeleteReleasePayload {
+  release: Release!
 }
 
 # revision path

@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class GitRepository implements Node<String> {
+public class GitRepository implements Node<Integer> {
 
     public static final String TYPE = "Repository";
 
@@ -45,10 +45,10 @@ public class GitRepository implements Node<String> {
     private final String relativePath;
     private final File gitDir;
     final Repository repository;
-    private final String id;
+    private final Integer id;
 
     public GitRepository(ProjectEntity projectEntity) throws IOException {
-        this.id = projectEntity.getId().toString();
+        this.id = projectEntity.getId();
         this.relativePath = StoragePath.get(projectEntity);
 
         Assert.notNull(rootPath, "rootPath 为空");
@@ -67,7 +67,7 @@ public class GitRepository implements Node<String> {
     }
 
     @Override
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
